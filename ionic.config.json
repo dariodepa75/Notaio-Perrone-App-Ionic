@@ -1,0 +1,7 @@
+{
+  "name": "notaio_perrone",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

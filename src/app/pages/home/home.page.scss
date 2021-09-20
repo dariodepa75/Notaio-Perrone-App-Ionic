@@ -1,0 +1,11 @@
+.toolbar-content {
+    display: inline-flex;
+    flex: 1 1 0%;
+    order: 4;
+    min-width: 0px;
+}
+ion-segment {
+    margin: 0px auto;
+    width: auto;
+    max-width: 80%;
+}
