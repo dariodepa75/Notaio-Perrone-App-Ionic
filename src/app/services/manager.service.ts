@@ -105,6 +105,10 @@ export class ManagerService {
 
   setRequests(data){
     this.requests = data;
+    this.requests.forEach(element => {
+      this.checkRequestStatus(element);
+    });
+    
     console.log('************* setRequests ***',this.requests);
   }
 
@@ -144,6 +148,26 @@ export class ManagerService {
       this.isShowingLoader = false
     }
   }
-  
+
+
+  checkRequestStatus(request){
+    switch(request.status) { 
+      case '0': { 
+        request.chr_status = 'R';
+        request.msg_status = "IN ATTESA DI RISPOSTA";
+         break; 
+      } 
+      case '1': { 
+        request.chr_status = 'C';
+        request.msg_status = "IN ATTESA DI CONSULENZA";
+         break; 
+      } 
+      default: { 
+        request.chr_status = 'F';
+        request.msg_status = "CONSULENZA CONCLUSA";
+         break; 
+      } 
+    } 
+  }
 
 }

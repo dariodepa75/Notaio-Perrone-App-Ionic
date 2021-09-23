@@ -38,7 +38,7 @@
       </ion-row>
       <ion-row class="ion-padding-top">
         <ion-col class="ion-text-center">
-          <div class="request_state ddp-hc"><span class="letter">R</span>IN ATTESA DI RISPOSTA</div>
+          <div class="request_state ddp-hc ddp-status-{{request.status}}"><span class="letter">{{request.chr_status}}</span>{{request.msg_status}}</div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -91,6 +91,6 @@
 <ion-footer class="ion-text-center ion-no-border">
   <ion-toolbar class="ion-text-center ion-no-border" color="transparent">
     <!-- <button ion-button (click)="Upload()"  full>Upload</button> -->
-    <ion-button color="primary" class="ion-text-uppercase ddp-hc" (click)="initModal()" >Formula preventivo</ion-button>
+    <ion-button *ngIf="request && request.status == 0" color="primary" class="ion-text-uppercase ddp-hc" (click)="initModal()" >{{btnPreventivo}}</ion-button>
   </ion-toolbar>
 </ion-footer>

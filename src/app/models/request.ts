@@ -14,6 +14,8 @@ export class RequestModel {
         public source_url: string,
         public user_agent: string,
         public ip: string,
-        public status: string
-    ) { }
+        public status: string,
+        public msg_status: string,
+        public chr_status: string
+    ) {}
   }

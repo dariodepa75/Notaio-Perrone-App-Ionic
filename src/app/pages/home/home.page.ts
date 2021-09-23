@@ -12,17 +12,56 @@ import { ManagerService } from '../../services/manager.service';
 export class HomePage {
   public requestList: RequestModel[] = [];
   segmentModel = "consulenza";
+  private subscriptions = [];
 
   constructor(
     private data: DataService,
     public managerService: ManagerService,
     public requestManagerService: RequestManagerService
-  ) {
+  ) {}
+  
+  /** */
+  ngOnInit() {
+    console.log('ngOnInit');
     this.initSubscriptions();
+    // this.requestManagerService.getRequests();
+  }
+
+  /** */
+  ngAfterViewInit(){
+    console.log('ngAfterViewInit');
     this.requestManagerService.getRequests();
   }
-  
 
+  /** */
+  ngOnDestroy() {
+    console.log('UserPresenceComponent - ngOnDestroy');
+    this.unsubescribeAll();
+  }
+
+
+  /** */
+  private initSubscriptions() {
+    let subscribtionKey = '';
+    let subscribtion: any;
+    const that = this;
+
+    /** BSGetEmailTemplates */
+    subscribtionKey = 'BSRequests';
+    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    if (!subscribtion) {
+      subscribtion =  this.requestManagerService.BSRequests.subscribe((data: any) => {
+        console.log('***** BSRequests *****', data);
+        if (data) {
+          this.requestList = data;
+        }
+      });
+      const subscribe = {key: subscribtionKey, value: subscribtion };
+      this.subscriptions.push(subscribe);
+    }
+  }
+
+  /** */
   refresh(ev) {
     setTimeout(() => {
       ev.detail.complete();
@@ -33,14 +72,7 @@ export class HomePage {
     return this.data.getMessages();
   }
 
-  initSubscriptions(){
-    this.requestManagerService.BSRequests.subscribe((requests: any) => {
-      console.log('requestManagerService ***** BSRequests *****', requests);
-      if (requests) {
-        this.requestList = requests;
-      }
-    });
-  }
+  
 
 
   getRequests() {
@@ -97,6 +129,15 @@ export class HomePage {
 
   segmentChanged(ev: any) {
     console.log('Segment changed', ev);
+  }
+
+  /** */
+  private unsubescribeAll() {
+    console.log('unsubescribeAll: ', this.subscriptions);
+    this.subscriptions.forEach(subscription => {
+      subscription.value.unsubscribe(); // vedere come fare l'unsubscribe!!!!
+    });
+    this.subscriptions = [];
   }
 
 }

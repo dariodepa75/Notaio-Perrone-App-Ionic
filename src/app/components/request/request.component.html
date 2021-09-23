@@ -6,7 +6,8 @@
         <ion-grid class="ion-no-padding">
           <ion-row>
             <ion-col size="7" class="padding-bottom">
-              <div class="request_state ion-text-start"><span class="letter">R</span>IN ATTESA DI RISPOSTA</div>
+              <div class="request_state ddp-hc ddp-status-{{request.status}}"><span class="letter">{{request.chr_status}}</span>{{request.msg_status}}</div>
+              <!-- <div class="request_state ion-text-start"><span class="letter">R</span>IN ATTESA DI RISPOSTA</div> -->
             </ion-col>
             <ion-col>
               <div class="ion-text-end"><span class="ddp-date">{{ dateRequest }}</span><span class="ddp-time">{{timeRequest}}</span></div>
