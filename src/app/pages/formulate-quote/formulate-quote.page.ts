@@ -53,14 +53,15 @@ export class FormulateQuotePage implements OnInit {
     let subscribtionKey = '';
     let subscribtion: any;
     const that = this;
-
+    console.log('***** initSubscriptions *****');
+    
     /** BSGetEmailTemplates */
     subscribtionKey = 'BSGetEmailTemplates';
     subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
     if (!subscribtion) {
       subscribtion =  this.requestManagerService.BSGetEmailTemplates.subscribe((data: any) => {
         console.log('***** BSGetEmailTemplates *****', data);
-        if (data && that.request.price > 0) {
+        if (data) {
           that.templates = data.templates;
           that.templateSelected = that.templates[0].title;
           that.message = that.templates[0].body;
@@ -80,7 +81,7 @@ export class FormulateQuotePage implements OnInit {
     if (!subscribtion) {
       subscribtion =  this.requestManagerService.BSRequestSendMailQuotation.subscribe((data: any) => {
         console.log('***** BSRequestSendMailQuotation *****', data);
-        if (data) {
+        if (data && that.request.price > 0) {
           if(data.message){
             that.presentAlertResponse(data.message, data.success);
             // this.presentAlertResponse('test error', true);
@@ -140,7 +141,7 @@ export class FormulateQuotePage implements OnInit {
       alert.dismiss().then(() => {
         if (success == true) {
           this.modalCtr.dismiss(true).then(() => {
-            let submission_id = this.request.id;
+            let submission_id = this.request.submission_id;
             let form_id = this.request.form_id;
             let amount = this.request.price;
             let email_content =this.message;

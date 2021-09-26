@@ -45,7 +45,6 @@ export class ViewMessagePage implements OnInit {
     this.btnPreventivo = "Formula preventivo";
     console.log('getRequestsById: ' + this.key);
     this.requestManagerService.getRequestById(this.key);
-    this.formatDate();
   }
 
   /** */
@@ -68,6 +67,7 @@ export class ViewMessagePage implements OnInit {
         console.log('***** BSRequestByID *****', data);
         if (data) {
           that.request = data;
+          that.formatDate();
           console.log('requestManagerService ***** BSRequestByID *****', that.request);
         }
       });
@@ -133,31 +133,10 @@ export class ViewMessagePage implements OnInit {
   /** */
   private checkStatusRequest(status){
     if(status == true){
-      this.request.status = 1;
-      this.checkRequestStatus();
+      this.request.status = 100;
       // this.btnPreventivo = "Dettaglio";
       // salva modifica nel db
     }
-  }
-
-  private checkRequestStatus(){
-    switch(this.request.status) { 
-      case '0': { 
-        this.request.chr_status = 'R';
-        this.request.msg_status = "IN ATTESA DI RISPOSTA";
-         break; 
-      } 
-      case '1': { 
-        this.request.chr_status = 'C';
-        this.request.msg_status = "IN ATTESA DI CONSULENZA";
-         break; 
-      } 
-      default: { 
-        this.request.chr_status = 'F';
-        this.request.msg_status = "CONSULENZA CONCLUSA";
-         break; 
-      } 
-    } 
   }
 
   /** */

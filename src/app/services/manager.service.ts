@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RequestModel } from '../models/request';
 import { LoadingController, AlertController, Platform } from '@ionic/angular';
+import { ARRAY_STATUS } from '../utils/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -108,7 +109,6 @@ export class ManagerService {
     this.requests.forEach(element => {
       this.checkRequestStatus(element);
     });
-    
     console.log('************* setRequests ***',this.requests);
   }
 
@@ -119,7 +119,19 @@ export class ManagerService {
 
   setRequestSelected(data){
     this.requestSelected = data;
+
     console.log('************* set request Selected ***',this.requestSelected);
+  }
+
+
+  public selectRequestById(key:any) {
+    console.log('selectRequestById', key);
+    if(this.requests && this.requests.length > 0 ){
+      let index = this.requests.findIndex(i => i.id === key);
+      console.log('--->', this.requests[index]);
+      this.requestSelected = this.requests[index];
+      return this.requestSelected;
+    }
   }
 
   getRequestSelected(){
@@ -149,25 +161,54 @@ export class ManagerService {
     }
   }
 
+  filterArrayForCode(code, array): any {
+    const item =  array.filter(function(handler) {
+      return handler.code === code;
+    });
+    return item;
+  }
 
   checkRequestStatus(request){
+    let arrayStatus = ARRAY_STATUS;
+    console.log(request.status);
+    let item = this.filterArrayForCode(request.status, arrayStatus);
+    if (item){
+      console.log('---->3 ',item[0]);
+      request.msg_status = item[0].message;
+      request.chr_status = item[0].char;
+    }
+    
+    //request.chr_status = arrayStatus['0'].char;
+    //request.msg_status = arrayStatus['0'].message;
+    /*
     switch(request.status) { 
       case '0': { 
-        request.chr_status = 'R';
-        request.msg_status = "IN ATTESA DI RISPOSTA";
-         break; 
+        request.chr_status = arrayStatus['0'].char;
+        request.msg_status = arrayStatus['0'].message;
+        break; 
       } 
-      case '1': { 
-        request.chr_status = 'C';
-        request.msg_status = "IN ATTESA DI CONSULENZA";
-         break; 
+      case '100': { 
+        request.chr_status = arrayStatus['100'].char;
+        request.msg_status = arrayStatus['100'].message;
+        break;
+      } 
+      case '200': { 
+        request.chr_status = arrayStatus['200'].char;
+        request.msg_status = arrayStatus['200'].message;
+        break;
+      } 
+      case '300': { 
+        request.chr_status = arrayStatus['300'].char;
+        request.msg_status = arrayStatus['300'].message;
+        break;
       } 
       default: { 
-        request.chr_status = 'F';
-        request.msg_status = "CONSULENZA CONCLUSA";
-         break; 
+        request.chr_status = arrayStatus['400'].char;
+        request.msg_status = arrayStatus['400'].message;
+        break; 
       } 
     } 
+    */
   }
 
 }

@@ -54,6 +54,8 @@ export class HomePage {
         console.log('***** BSRequests *****', data);
         if (data) {
           this.requestList = data;
+          //this.requestList = this.managerService.getRequests();
+          //console.log('***** BSRequests 2 *****', this.requestList );
         }
       });
       const subscribe = {key: subscribtionKey, value: subscribtion };

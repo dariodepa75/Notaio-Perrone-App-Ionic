@@ -2,7 +2,7 @@ ion-header {
   font-family: "Helvetica";
   font-size: 16px;
   line-height: 1.5;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: #F2F2F2;
 }
 
 ion-toolbar {
@@ -98,16 +98,16 @@ p {
   padding: 2px 10px 2px 2px;
   height: 24px;
   vertical-align: middle;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
   .letter{
-    width: 20px;
+    width: auto;
     height: 20px;
-    
     display: inline-block;
     text-align: center;
     margin-right: 4px;
     font-weight: bolder;
+    padding: 0 2px;
   }
 }
 
@@ -118,14 +118,14 @@ p {
   }
 }
 
-.ddp-status-1 {
+.ddp-status-100 {
   background-color: #91A300;
   .letter {
     background-color: #B1CE00;
   }
 }
 
-.ddp-status-2 {
+.ddp-status-200 {
   background-color: #405BAD;
   .letter {
     background-color: #4675E2;
@@ -137,4 +137,10 @@ p {
   display: inline-block;
 }   
 
+.ddp-row-title {
+  padding-top: 10px;
+}
+.ddp-row-text {
+  padding: 10px 0px;
+}
 
