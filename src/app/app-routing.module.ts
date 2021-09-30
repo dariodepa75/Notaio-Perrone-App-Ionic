@@ -15,6 +15,7 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
+ 
   {
     path: 'request/:id',
     loadChildren: () => import('./pages/view-message/view-message.module').then( m => m.ViewMessagePageModule)
@@ -22,6 +23,14 @@ const routes: Routes = [
   {
     path: 'formulate-quote',
     loadChildren: () => import('./pages/formulate-quote/formulate-quote.module').then( m => m.FormulateQuotePageModule)
+  },
+  {
+    path: 'archived',
+    loadChildren: () => import('./pages/archived-requests/archived-requests.module').then( m => m.ArchivedRequestsPageModule)
+  },
+  {
+    path: 'trashed',
+    loadChildren: () => import('./pages/trashed-requests/trashed-requests.module').then( m => m.TrashedRequestsPageModule)
   },
 ];
 

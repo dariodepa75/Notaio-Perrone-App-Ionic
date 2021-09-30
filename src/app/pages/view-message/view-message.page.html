@@ -13,7 +13,7 @@
       </ion-button>
     </ion-buttons>
 
-    <ion-label *ngIf="request" slot="start" class="ddp-size12 ddp-light">RICHIESTA DEL: <span class="ddp-bold">{{ stringRequestTime }}</span></ion-label>
+    <ion-label *ngIf="request" slot="start" class="ddp-size12 ddp-light">RICHIESTA DEL: <span class="ddp-bold">{{ timeRequest }}</span></ion-label>
     <ion-title></ion-title> 
   </ion-toolbar>
 </ion-header>
@@ -25,20 +25,20 @@
         <ion-col class="ion-text-center">RICHIESTA CONSULENZA PER</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col class="ion-text-center ddp-light ddp-size20">lunedì</ion-col>
+        <ion-col class="ion-text-center ddp-light ddp-size20">{{day}}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col class="ion-text-center ddp-size90">21</ion-col>
+        <ion-col class="ion-text-center ddp-size90">{{numberDay}}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col class="ion-text-center ddp-light ddp-size20">settembre</ion-col>
+        <ion-col class="ion-text-center ddp-light ddp-size20">{{month}} {{year}}</ion-col>
       </ion-row>
       <ion-row >
-        <ion-col class="ion-text-center">dalle 10:30 alle 13:30</ion-col>
+        <ion-col class="ion-text-center">{{stringOraDesiderata}}</ion-col>
       </ion-row>
       <ion-row class="ion-padding-top">
         <ion-col class="ion-text-center">
-          <div class="request_state ddp-hc ddp-status-{{request.status}}"><span class="letter">{{request.chr_status}}</span>{{request.msg_status}}</div>
+          <div class="request_state ddp-hc ddp-status-{{request.status}} ddp-trash-{{request.trash}}"><span class="letter">{{request.chr_status}}</span>{{request.msg_status}}</div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -95,18 +95,27 @@
           <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-size12">QUESITO</ion-col>
         </ion-row>
         <ion-row class="ddp-row-text">
-          <ion-col class="ion-text-left">{{request.quesito}}</ion-col>
+          <ion-col class="ion-text-left"><div [innerHTML]="request.quesito"></div></ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
 
-    <ion-item *ngIf="request.risposta">
+    <ion-item *ngIf="request.amount">
       <ion-grid class="ion-no-padding">
         <ion-row>
-          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-size12">RISPOSTA</ion-col>
+          <ion-col size="8" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">IMPORTO PREVENTIVO</ion-col>
+          <ion-col class="ion-text-right ddp-bold">{{request.amount}}€</ion-col>
         </ion-row>
-        <ion-row>
-          <ion-col class="ion-text-left">{{request.risposta}}</ion-col>
+      </ion-grid>
+    </ion-item>
+
+    <ion-item *ngIf="request.email_content" >
+      <ion-grid class="ion-no-padding">
+        <ion-row class="ddp-row-title">
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-size12">RISPOSTA DEL: <span class="ddp-bold">{{ request.email_time }}</span></ion-col>
+        </ion-row>
+        <ion-row class="ddp-row-text">
+          <ion-col class="ion-text-left"><div [innerHTML]="request.email_content"></div></ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>

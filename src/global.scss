@@ -42,3 +42,40 @@
 .no-scroll {
     --overflow: hidden;
 }
+
+// CSS GLOBAL CUSTOM //
+.ddp-status-0 {
+  background-color: #7D199C;
+  .letter {
+    background-color: #A230D4;
+  }
+}
+
+.ddp-status-100 {
+  background-color: #BB7616;
+  .letter {
+    background-color: #E08001;
+  }
+}
+
+.ddp-status-200 {
+  background-color: #91A300;
+  .letter {
+    background-color: #B1CE00;
+  }
+}
+
+.ddp-status-300 {
+  background-color: #405BAD;
+  .letter {
+    background-color: #4675E2;
+  }
+}
+
+.ddp-trash-1 {
+  background-color: #704E2B;
+  .letter {
+    background-color: #705c48;
+  }
+}
+

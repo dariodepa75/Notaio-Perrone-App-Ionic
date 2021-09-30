@@ -1,0 +1,34 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="ios title-default hydrated">Richieste Cestinate</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="false">
+
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)" pullMin="100" pullMax="200"> 
+    <ion-refresher-content
+      pullingIcon="arrow-down-outline" 
+      pullingText="Pull to refresh" 
+      refreshingSpinner="crescent"
+      refreshingText=""
+      ></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-virtual-scroll *ngIf="requestList?.length; else emptyTag" #scheduleList [items]="requestList" approxItemHeight="117px">
+    <div *virtualItem="let item">
+      <app-request [request]="item"></app-request>
+    </div>
+    
+  </ion-virtual-scroll>
+
+  <ng-template #emptyTag>
+    <div  class="ddp-emty ion-text-center ion-padding">
+      {{MSG_EMPTY_REQUESTS}}
+    </div>
+  </ng-template>
+
+</ion-content>

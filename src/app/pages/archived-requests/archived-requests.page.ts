@@ -1,22 +1,20 @@
-import { Component } from '@angular/core';
-import { DataService, Message } from '../../services/data.service';
+import { Component, OnInit } from '@angular/core';
 import { RequestModel } from '../../models/request';
 import { RequestManagerService } from '../../services/request-manager.service';
 import { ManagerService } from '../../services/manager.service';
-import { STATUS_0, MSG_EMPTY_REQUESTS } from '../../utils/constants';
+import { STATUS_300, MSG_EMPTY_REQUESTS } from '../../utils/constants';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-archived-requests',
+  templateUrl: './archived-requests.page.html',
+  styleUrls: ['./archived-requests.page.scss'],
 })
-export class HomePage {
+export class ArchivedRequestsPage implements OnInit {
   public requestList: RequestModel[] = [];
   private subscriptions = [];
   MSG_EMPTY_REQUESTS = MSG_EMPTY_REQUESTS;
 
   constructor(
-    private data: DataService,
     public managerService: ManagerService,
     public requestManagerService: RequestManagerService
   ) {}
@@ -25,22 +23,19 @@ export class HomePage {
   ngOnInit() {
     console.log('ngOnInit');
     this.initSubscriptions();
-    // this.requestManagerService.getRequests();
   }
 
   /** */
   ngAfterViewInit(){
     console.log('ngAfterViewInit');
-    this.getRequests(null);
-    //this.requestManagerService.getRequests();
+    this.getArchivedRequests(null);
   }
 
   /** */
   ngOnDestroy() {
-    console.log('UserPresenceComponent - ngOnDestroy');
+    console.log('ngOnDestroy');
     this.unsubescribeAll();
   }
-
 
   /** */
   private initSubscriptions() {
@@ -49,19 +44,18 @@ export class HomePage {
     const that = this;
 
     /** BSGetEmailTemplates */
-    subscribtionKey = 'BSRequests';
-    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
-    if (!subscribtion) {
-      subscribtion =  this.requestManagerService.BSRequests.subscribe((data: any) => {
-        console.log('***** BSRequests *****', data);
-        if (data) {
-          that.requestList = data;
-        }
-      });
-      const subscribe = {key: subscribtionKey, value: subscribtion };
-      this.subscriptions.push(subscribe);
-    }
-
+    // subscribtionKey = 'BSArchivedRequests';
+    // subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    // if (!subscribtion) {
+    //   subscribtion =  this.requestManagerService.BSArchivedRequests.subscribe((data: any) => {
+    //     console.log('***** BSArchivedRequests *****', data);
+    //     if (data) {
+    //       that.requestList = data;
+    //     }
+    //   });
+    //   const subscribe = {key: subscribtionKey, value: subscribtion };
+    //   this.subscriptions.push(subscribe);
+    // }
 
     /** BSGetEmailTemplates */
     subscribtionKey = 'BSChangeStatus';
@@ -70,8 +64,7 @@ export class HomePage {
       subscribtion =  this.requestManagerService.BSChangeStatus.subscribe((data: any) => {
         console.log('***** BSChangeStatus *****', data);
         if (data) {
-          // that.requestList = that.requestList.filter(item => item.id !== data.id);
-          that.getRequests(null);
+          that.getArchivedRequests(null);
         }
       });
       const subscribe = {key: subscribtionKey, value: subscribtion };
@@ -84,34 +77,24 @@ export class HomePage {
   refresh(event) {
     console.log(' refresh: ', event);
     setTimeout(() => {
-      this.getRequests(event);
+      this.getArchivedRequests(event);
     }, 2000);
   }
 
-  getMessages(): Message[] {
-    return this.data.getMessages();
-  }
-
-  getRequests(event) {
-    console.log(' getRequests: ', event);
+  /** */
+  getArchivedRequests(event) {
+    console.log(' getArchivedRequests: ', event);
     const that = this;
-    this.requestManagerService.getRequestsWithSubcribe(STATUS_0, false)
+    this.requestManagerService.getRequestsWithSubcribe(STATUS_300, false)
       .subscribe(data => {
         console.log(' data: ', data);
-        that.managerService.setRequests(data);
-        that.requestList = that.managerService.getRequests();
+        that.managerService.setArchivedRequests(data);
+        that.requestList = that.managerService.getArchivedRequests();
         if (event) event.target.complete();
       }, error => {
-        console.log('error getRequestsDesktop', error);
         if (event) event.target.complete();
+        console.log('error getRequestsDesktop', error);
       });
-  }
-
-  loadRequestsForm(){
-  }
-
-  segmentChanged(ev: any) {
-    console.log('Segment changed', ev);
   }
 
   /** */

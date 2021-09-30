@@ -6,7 +6,7 @@
         <ion-grid class="ion-no-padding">
           <ion-row>
             <ion-col size="8" class="padding-bottom">
-              <div class="request_state ddp-hc ddp-status-{{request.status}}"><span class="letter">{{request.chr_status}}</span>{{request.msg_status}}</div>
+              <div class="request_state ddp-hc ddp-status-{{request.status}} ddp-trash-{{request.trash}}"><span class="letter">{{request.chr_status}}</span>{{request.msg_status}}</div>
               <!-- <div class="request_state ion-text-start"><span class="letter">R</span>IN ATTESA DI RISPOSTA</div> -->
             </ion-col>
             <ion-col>
@@ -31,6 +31,29 @@
       Remove
     </ion-item-option>
   </ion-item-options>  -->
+
+  <ion-item-options side="start">
+    <ion-item-option *ngIf="request && request.status == STATUS_200 && request.trash == false" color="primary" (click)="requestToBeArchived(slidingItem)">
+      <ion-icon slot="icon-only" name="archive-outline"></ion-icon>
+    </ion-item-option>
+    <ion-item-option *ngIf="request && request.trash == false && request.status !== STATUS_0" color="secondary" (click)="requestToBePrevious(slidingItem)">
+      <ion-icon slot="icon-only" name="arrow-undo-outline"></ion-icon>
+    </ion-item-option>
+  </ion-item-options>
+
+
+  <ion-item-options *ngIf="request && request.trash !== true" side="end">
+    <ion-item-option color="danger" (click)="requestToBeTrashed(slidingItem)">
+      <ion-icon slot="icon-only" name="trash"></ion-icon>
+    </ion-item-option>
+  </ion-item-options>
+
+  <ion-item-options *ngIf="request && request.trash == true" side="end">
+    <ion-item-option color="tertiary" (click)="requestToBeRestored(slidingItem)">
+      <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+    </ion-item-option>
+  </ion-item-options>
+
 
 </ion-item-sliding>
 

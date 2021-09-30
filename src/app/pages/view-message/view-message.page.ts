@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 
+
 // import { DataService, Message } from '../../services/data.service';
 import { RequestManagerService } from '../../services/request-manager.service';
 import { RequestModel } from '../../models/request';
 import { FormulateQuotePage } from '../formulate-quote/formulate-quote.page';
 import * as moment from 'moment';
 import { NavController } from '@ionic/angular';
+
+import {STATUS_100} from '../../utils/constants';
 
 
 @Component({
@@ -19,19 +22,21 @@ export class ViewMessagePage implements OnInit {
   public request: any;
   public key: string;
   public modalDataResponse: any;
-  public stringRequestTime: string;
   public btnPreventivo: string;
   private subscriptions = [];
+  public day: string;
+  public numberDay: string;
+  public month: string;
+  public year: string;
+  public timeRequest: string;
+  public stringOraDesiderata: string;
 
   constructor(
-    // private data: DataService,
     private requestManagerService : RequestManagerService,
     private activatedRoute: ActivatedRoute,
     public modalCtrl: ModalController,
     public navCtrl: NavController
-  ) { 
-
-  }
+  ) { }
 
   /** */
   ngOnInit() {
@@ -67,6 +72,7 @@ export class ViewMessagePage implements OnInit {
         console.log('***** BSRequestByID *****', data);
         if (data) {
           that.request = data;
+          that.setDate();
           that.formatDate();
           console.log('requestManagerService ***** BSRequestByID *****', that.request);
         }
@@ -102,13 +108,25 @@ export class ViewMessagePage implements OnInit {
   
 
   /** */
+  setDate(){
+    moment.locale('it');
+    var  d = new Date(this.request.data_desiderata); 
+    let date = (moment(d).format('LLLL')).split(" ");
+    console.log('data_richiesta: ', date);
+    this.day = date[0];
+    this.numberDay = date[1];
+    this.month = date[2];
+    this.year = date[3];
+    this.stringOraDesiderata = "alle "+this.request.ora_desiderata;
+  }
+
   formatDate(){
     moment.locale('it');
     var  d = new Date(this.request.time); 
     let dateRequest = moment(d).format("D MMM YY");
     let timeRequest = moment(d).format("HH:mm");
-    this.stringRequestTime = dateRequest+" ore "+timeRequest;
-    console.log('curr_date:', this.stringRequestTime);
+    this.timeRequest = dateRequest+" ora "+timeRequest;
+    console.log('curr_date:', this.timeRequest);
   }
 
   /** */
@@ -119,23 +137,17 @@ export class ViewMessagePage implements OnInit {
   }
 
   /** */
-  goBack() {
-    // this.router.navigate(['/login'])
+  goBack(): void {
+    this.navCtrl.back();
     // this.location.back();
-    // let animations:AnimationOptions={
-    //   animated: true,
-    //   animationDirection: "back"
-    // }
-    // this.navCtrl.back(animations)
-    this.navCtrl.navigateBack('/');
+    // this.navCtrl.navigateBack('/');
   }
 
   /** */
   private checkStatusRequest(status){
+    this.requestManagerService.getRequestById(this.key);
     if(status == true){
-      this.request.status = 100;
-      // this.btnPreventivo = "Dettaglio";
-      // salva modifica nel db
+      this.request.status = STATUS_100;
     }
   }
 

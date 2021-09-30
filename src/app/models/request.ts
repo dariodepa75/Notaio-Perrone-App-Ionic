@@ -8,6 +8,7 @@ export class RequestModel {
         public user_agent: string,
         public ip: string,
         public status: string,
+        public trash: boolean,
 
         public nome: string,
         public email: string,
