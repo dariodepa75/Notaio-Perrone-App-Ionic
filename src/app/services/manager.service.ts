@@ -19,13 +19,25 @@ export class ManagerService {
   public trashedRequests: RequestModel[] = [];
   public requestSelected: RequestModel;
   public isMobile = true;
-  
+  private token: string;
+  private username: string;
+  private password: string;
 
   constructor(
     public platform: Platform,
     public loadingController: LoadingController
-  ) { }
+  ) { 
+    this.platform.ready().then(() => {
+      // localStorage.getItem(JWT_KEY);
+      // .then(data => {
+      //   if (data) {
+      //     this.user.next(data);
+      //   }
+      // })
+    })
+  }
 
+  
   initialize() {
     this.requests = [];
     this.archivedRequests = [];
@@ -33,9 +45,30 @@ export class ManagerService {
     console.log('************* init manager ***');
   }
 
-
+  /** */
   checkPlatform(){
     this.isMobile = detectIsMobile(this.platform);
+  }
+
+  /** */
+  setToken(token){
+    this.token = token;
+  }
+
+  /** */
+  getToken(){
+    return this.token;
+  }
+
+  /** */
+  setAuthentication(username, password){
+    this.username = username;
+    this.password = password;
+  }
+
+  /** */
+  getAuthentication(){
+    return ({ 'username': this.username, 'password': this.password })
   }
 
 

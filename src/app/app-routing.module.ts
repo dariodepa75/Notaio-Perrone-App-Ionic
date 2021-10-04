@@ -32,6 +32,14 @@ const routes: Routes = [
     path: 'trashed',
     loadChildren: () => import('./pages/trashed-requests/trashed-requests.module').then( m => m.TrashedRequestsPageModule)
   },
+  {
+    path: 'login',
+    loadChildren: () => import('./pages/authentication/login/login.module').then( m => m.LoginPageModule)
+  },
+  {
+    path: 'forgot-password',
+    loadChildren: () => import('./pages/authentication/forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule)
+  },
 ];
 
 @NgModule({

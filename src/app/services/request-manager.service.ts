@@ -314,13 +314,15 @@ export class RequestManagerService {
   sendMailQuotationDesktop(request, mailTo, subject, message){
     const that = this;
     console.log(' sendMailQuotationDesktop ----->');
-    let basicAuth: string = btoa("admin:12345678");
+    this.managerService.getAuthentication();
+    // let basicAuth: string = btoa("admin:12345678");
+    let token = this.managerService.getToken();
     let url = this.sendMailEndpoint;
     this.managerService.showLoader();
     const headers = { 
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + basicAuth,
+      'Authorization': 'Bearer ' + token,
     } 
     const params = new HttpParams({
       fromObject: { 
@@ -352,11 +354,12 @@ export class RequestManagerService {
     console.log(' setQuotationDesktop ----->');
     let url = this.setQuotationEndpoint;
     this.managerService.showLoader();
-    let basicAuth: string = btoa("admin:12345678");
+    // let basicAuth: string = btoa("admin:12345678");
+    let token = this.managerService.getToken();
     const headers = { 
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + basicAuth,
+      'Authorization': 'Bearer ' + token
     } 
     const params = new HttpParams({
       fromObject: { 
@@ -420,11 +423,12 @@ export class RequestManagerService {
   private changeStatus(requestId, STATUS, trash){
     const that = this;
     let url = this.setStatusRequestEndpoint;
-    let basicAuth: string = btoa("admin:12345678");
+    // let basicAuth: string = btoa("admin:12345678");
+    let token = this.managerService.getToken();
     const headers = { 
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + basicAuth,
+      'Authorization': 'Bearer ' + token
     } 
     const params = new HttpParams()
     .set('request_id', requestId)

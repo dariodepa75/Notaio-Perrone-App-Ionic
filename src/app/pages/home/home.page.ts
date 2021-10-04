@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DataService, Message } from '../../services/data.service';
 import { RequestModel } from '../../models/request';
 import { RequestManagerService } from '../../services/request-manager.service';
 import { ManagerService } from '../../services/manager.service';
@@ -16,7 +15,6 @@ export class HomePage {
   MSG_EMPTY_REQUESTS = MSG_EMPTY_REQUESTS;
 
   constructor(
-    private data: DataService,
     public managerService: ManagerService,
     public requestManagerService: RequestManagerService
   ) {}
@@ -86,10 +84,6 @@ export class HomePage {
     setTimeout(() => {
       this.getRequests(event);
     }, 2000);
-  }
-
-  getMessages(): Message[] {
-    return this.data.getMessages();
   }
 
   getRequests(event) {

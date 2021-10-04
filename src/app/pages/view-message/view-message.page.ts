@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 
-
-// import { DataService, Message } from '../../services/data.service';
 import { RequestManagerService } from '../../services/request-manager.service';
 import { RequestModel } from '../../models/request';
 import { FormulateQuotePage } from '../formulate-quote/formulate-quote.page';

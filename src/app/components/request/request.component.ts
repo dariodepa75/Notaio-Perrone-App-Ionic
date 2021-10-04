@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { RequestModel } from '../../models/request';
 import { RequestManagerService } from '../../services/request-manager.service';
+import { AuthenticationService } from '../../services/authentication.service';
+
 import * as moment from 'moment';
 import { STATUS_0, STATUS_100, STATUS_200, STATUS_300 } from '../../utils/constants';
 
@@ -24,7 +26,8 @@ export class RequestComponent implements OnInit {
   STATUS_300 = STATUS_300; // consulenza conclusa
 
   constructor(
-    public requestManagerService: RequestManagerService
+    public requestManagerService: RequestManagerService,
+    public authenticationService: AuthenticationService
   ) { 
   }
 

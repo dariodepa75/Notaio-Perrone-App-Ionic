@@ -16,3 +16,5 @@ export const STATUS_300 = "300";
 export const STATUS_400 = "400";
 
 export const MSG_EMPTY_REQUESTS =  'NESSUN RISULTATO';
+
+export const TOKEN_KEY = 'token';
