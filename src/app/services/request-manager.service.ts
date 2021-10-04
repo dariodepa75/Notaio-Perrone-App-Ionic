@@ -314,7 +314,7 @@ export class RequestManagerService {
   sendMailQuotationDesktop(request, mailTo, subject, message){
     const that = this;
     console.log(' sendMailQuotationDesktop ----->');
-    this.managerService.getAuthentication();
+    // this.managerService.getAuthentication();
     // let basicAuth: string = btoa("admin:12345678");
     let token = this.managerService.getToken();
     let url = this.sendMailEndpoint;

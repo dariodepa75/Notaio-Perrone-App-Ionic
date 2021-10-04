@@ -71,7 +71,7 @@ export class AuthenticationService {
       console.log(data.token);
       that.managerService.stopLoader();
       that.isAuthenticated.next(true);
-      that.managerService.setAuthentication(username, password);
+      //that.managerService.setAuthentication(username, password);
       localStorage.setItem('token', data.token);
     }, error => {
       that.managerService.stopLoader();

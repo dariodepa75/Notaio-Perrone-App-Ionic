@@ -42,10 +42,10 @@ export class AppComponent {
     this.authenticationService.isAuthenticated.subscribe((data: any) => {
       console.log('***** isAuthenticated *****', data);
       if (!data || data == false) {
-        this.managerService.setToken(this.authenticationService.token);
+        //this.managerService.setToken(this.authenticationService.token);
         this.router.navigateByUrl('/login', { replaceUrl: true });
       } else if (data && data == true) {
-        this.managerService.setToken(this.authenticationService.token);
+        //this.managerService.setToken(this.authenticationService.token);
         this.router.navigateByUrl('/home', { replaceUrl: true });
       }
       

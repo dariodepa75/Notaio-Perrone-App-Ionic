@@ -20,8 +20,8 @@ export class ManagerService {
   public requestSelected: RequestModel;
   public isMobile = true;
   private token: string;
-  private username: string;
-  private password: string;
+  // private username: string;
+  // private password: string;
 
   constructor(
     public platform: Platform,
@@ -60,16 +60,16 @@ export class ManagerService {
     return this.token;
   }
 
-  /** */
-  setAuthentication(username, password){
-    this.username = username;
-    this.password = password;
-  }
+  // /** */
+  // setAuthentication(username, password){
+  //   this.username = username;
+  //   this.password = password;
+  // }
 
-  /** */
-  getAuthentication(){
-    return ({ 'username': this.username, 'password': this.password })
-  }
+  // /** */
+  // getAuthentication(){
+  //   return ({ 'username': this.username, 'password': this.password })
+  // }
 
 
   /**

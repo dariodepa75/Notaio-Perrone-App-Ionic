@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  wpJsonUrl: 'https://studio.notaioperrone.it/wp-json'
 };
