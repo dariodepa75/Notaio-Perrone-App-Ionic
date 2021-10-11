@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { TrashedRequestsPageRoutingModule } from './trashed-requests-routing.module';
 import { TrashedRequestsPage } from './trashed-requests.page';
 import { RequestComponentModule } from '../../components/request/request.module';
+import { DateRequestComponentModule } from '../../components/date-request/date-request.module';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { RequestComponentModule } from '../../components/request/request.module'
     FormsModule,
     IonicModule,
     TrashedRequestsPageRoutingModule,
-    RequestComponentModule
+    RequestComponentModule,
+    DateRequestComponentModule
   ],
   declarations: [TrashedRequestsPage]
 })

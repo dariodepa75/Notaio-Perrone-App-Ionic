@@ -1,3 +1,28 @@
+import * as moment from 'moment/moment';
+import 'moment/locale/it.js';
+import { LBL_DAY, LBL_NUM_DAY, LBL_MONTH, LBL_YEAR } from './constants';
+
+/** */
+export function getFormattedDate(date, lbl){
+    moment.locale('it');
+    var  d = new Date(date);  //this.request.data_desiderata
+    let dateTEMP = (moment(d).format('LLLL')).split(" ");
+    console.log('data_richiesta: ', dateTEMP);
+    if (lbl == LBL_DAY) return dateTEMP[0];
+    if (lbl == LBL_NUM_DAY) return dateTEMP[1];
+    if (lbl == LBL_MONTH) return dateTEMP[2];
+    if (lbl == LBL_YEAR) return dateTEMP[3];
+}
+
+/** */
+export function formatFromDateToString(time){
+    moment.locale('it');
+    var  d = new Date(time); 
+    let dateRequest = moment(d).format("D MMM YY");
+    let timeRequest = moment(d).format("HH:mm");
+    return dateRequest+" ora "+timeRequest;
+}
+
 /** */
 export function encodeHTML(str) {
     if (str) {

@@ -8,7 +8,7 @@ import { FormulateQuotePage } from '../formulate-quote/formulate-quote.page';
 import * as moment from 'moment';
 import { NavController } from '@ionic/angular';
 
-import {STATUS_100} from '../../utils/constants';
+import {STATUS_0, STATUS_100} from '../../utils/constants';
 
 
 @Component({
@@ -17,7 +17,7 @@ import {STATUS_100} from '../../utils/constants';
   styleUrls: ['./view-message.page.scss'],
 })
 export class ViewMessagePage implements OnInit {
-  public request: any;
+  public request: RequestModel;
   public key: string;
   public modalDataResponse: any;
   public btnPreventivo: string;
@@ -28,6 +28,9 @@ export class ViewMessagePage implements OnInit {
   public year: string;
   public timeRequest: string;
   public stringOraDesiderata: string;
+
+  STATUS_0 = STATUS_0; // in attesa di risposta
+  STATUS_100 = STATUS_100; // in attesa di pagamento
 
   constructor(
     private requestManagerService : RequestManagerService,

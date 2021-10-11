@@ -1,19 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RequestModel } from '../../models/request';
 import { RequestManagerService } from '../../services/request-manager.service';
 import { ManagerService } from '../../services/manager.service';
-import { STATUS_0, MSG_EMPTY_REQUESTS, ARRAY_STATUS } from '../../utils/constants';
+import { ARRAY_STATUS, STATUS_0, MSG_EMPTY_REQUESTS } from '../../utils/constants';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-pending-payment-request',
+  templateUrl: './pending-payment-request.page.html',
+  styleUrls: ['./pending-payment-request.page.scss'],
 })
-export class HomePage {
+export class PendingPaymentRequestPage implements OnInit {
+
   public requestList: RequestModel[] = [];
   private subscriptions = [];
-  MSG_EMPTY_REQUESTS = MSG_EMPTY_REQUESTS;
+  public MSG_EMPTY_REQUESTS = MSG_EMPTY_REQUESTS;
+  public status = 100; // indica le request "in attesa di pagamento"
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -91,7 +93,7 @@ export class HomePage {
   getRequests(event) {
     console.log(' getRequests: ', event);
     const that = this;
-    this.requestManagerService.getRequestsWithSubcribe(null, false)
+    this.requestManagerService.getRequestsWithSubcribe(this.status, false)
       .subscribe(data => {
         console.log(' data: ', data);
         that.managerService.setRequests(data);

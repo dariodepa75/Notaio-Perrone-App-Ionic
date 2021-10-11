@@ -3,10 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
-
-import { ArchivedRequestsPageRoutingModule } from './archived-requests-routing.module';
-import { ArchivedRequestsPage } from './archived-requests.page';
-import { RequestComponentModule } from '../../components/request/request.module';
+import { DateRequestsPageRoutingModule } from './date-requests-routing.module';
+import { DateRequestsPage } from './date-requests.page';
 import { DateRequestComponentModule } from '../../components/date-request/date-request.module';
 
 @NgModule({
@@ -14,10 +12,9 @@ import { DateRequestComponentModule } from '../../components/date-request/date-r
     CommonModule,
     FormsModule,
     IonicModule,
-    ArchivedRequestsPageRoutingModule,
-    RequestComponentModule,
+    DateRequestsPageRoutingModule, 
     DateRequestComponentModule
   ],
-  declarations: [ArchivedRequestsPage]
+  declarations: [DateRequestsPage]
 })
-export class ArchivedRequestsPageModule {}
+export class DateRequestsPageModule {}

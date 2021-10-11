@@ -1,12 +1,35 @@
 <ion-header [translucent]="true">
+
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title class="ios title-default hydrated">Richieste Cestinate</ion-title>
   </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="segment" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="{{LBL_CONSULENZE}}">
+        <ion-label>{{LBL_CONSULENZE}}</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="{{LBL_APPUNTAMENTI}}">
+        <ion-label>{{LBL_APPUNTAMENTI}}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+
 </ion-header>
 
+
+  <!-- <ion-item-options>
+    <ion-item-option color="favorite" (click)="addFavorite(slidingItem, session)" *ngIf="segment === 'all'">
+      Favorite
+    </ion-item-option>
+    <ion-item-option color="danger" (click)="removeFavorite(slidingItem, session, 'Remove Favorite')"
+      *ngIf="segment === 'favorites'">
+      Remove
+    </ion-item-option>
+  </ion-item-options>  -->
 <ion-content fullscreen="false">
 
   <ion-refresher slot="fixed" (ionRefresh)="refresh($event)" pullMin="100" pullMax="200"> 
@@ -18,12 +41,22 @@
       ></ion-refresher-content>
   </ion-refresher>
 
-  <ion-virtual-scroll *ngIf="requestList?.length; else emptyTag" #scheduleList [items]="requestList" approxItemHeight="117px">
-    <div *virtualItem="let item">
-      <app-request [request]="item"></app-request>
-    </div>
-    
-  </ion-virtual-scroll>
+  <div *ngIf="segment == LBL_APPUNTAMENTI">
+    <ion-virtual-scroll *ngIf="dateRequestList?.length; else emptyTag" #scheduleList [items]="dateRequestList" approxItemHeight="117px">
+      <div *virtualItem="let item">
+        <app-date-request [request]="item"></app-date-request>
+      </div>
+    </ion-virtual-scroll>
+  </div>
+  <div *ngIf="segment == LBL_CONSULENZE">
+    <ion-virtual-scroll *ngIf="requestList?.length; else emptyTag" #scheduleList [items]="requestList" approxItemHeight="117px">
+      <div *virtualItem="let item">
+        <app-request [request]="item"></app-request>
+      </div>
+    </ion-virtual-scroll>
+  </div>
+
+  
 
   <ng-template #emptyTag>
     <div  class="ddp-emty ion-text-center ion-padding">

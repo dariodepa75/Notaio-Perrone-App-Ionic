@@ -14,7 +14,8 @@ export class AppComponent {
 
   public appPages = [
     { title: 'Consulenze', url: 'home', icon: 'mail' },
-    { title: 'Appuntamenti', url: '/folder/Outbox', icon: 'calendar' },
+    { title: 'In attesa di pagamento', url: 'pending-payment-request', icon: 'card' },
+    { title: 'Appuntamenti', url: '/date-requests', icon: 'calendar' },
     { title: 'Archiviati', url: '/archived', icon: 'archive' },
     { title: 'Cestino', url: '/trashed', icon: 'trash' },
     { title: 'Profilo', url: '/folder/Spam', icon: 'person' },

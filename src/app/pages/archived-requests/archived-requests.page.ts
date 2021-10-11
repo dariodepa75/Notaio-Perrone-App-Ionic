@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { RequestModel } from '../../models/request';
+import { DateRequestModel } from '../../models/date-request';
 import { RequestManagerService } from '../../services/request-manager.service';
+import { DateRequestManagerService } from '../../services/date-request-manager.service';
 import { ManagerService } from '../../services/manager.service';
-import { STATUS_300, MSG_EMPTY_REQUESTS } from '../../utils/constants';
+import { STATUS_300, MSG_EMPTY_REQUESTS, LBL_CONSULENZE, LBL_APPUNTAMENTI } from '../../utils/constants';
 
 @Component({
   selector: 'app-archived-requests',
@@ -11,12 +13,17 @@ import { STATUS_300, MSG_EMPTY_REQUESTS } from '../../utils/constants';
 })
 export class ArchivedRequestsPage implements OnInit {
   public requestList: RequestModel[] = [];
+  public dateRequestList: DateRequestModel[] = [];
   private subscriptions = [];
   MSG_EMPTY_REQUESTS = MSG_EMPTY_REQUESTS;
+  LBL_CONSULENZE = LBL_CONSULENZE;
+  LBL_APPUNTAMENTI = LBL_APPUNTAMENTI;
+  segment: string = LBL_CONSULENZE;
 
   constructor(
     public managerService: ManagerService,
-    public requestManagerService: RequestManagerService
+    public requestManagerService: RequestManagerService,
+    public dateRequestManagerService: DateRequestManagerService
   ) {}
   
   /** */
@@ -85,7 +92,19 @@ export class ArchivedRequestsPage implements OnInit {
   getArchivedRequests(event) {
     console.log(' getArchivedRequests: ', event);
     const that = this;
-    this.requestManagerService.getRequestsWithSubcribe(STATUS_300, false)
+    if(this.segment == LBL_APPUNTAMENTI){
+      this.dateRequestManagerService.getDateRequestsWithSubcribe(STATUS_300, false)
+      .subscribe(data => {
+        console.log(' data: ', data);
+        that.managerService.setArchivedDateRequests(data);
+        that.dateRequestList = that.managerService.getArchivedDateRequests();
+        if (event) event.target.complete();
+      }, error => {
+        if (event) event.target.complete();
+        console.log('error getArchivedDateRequests', error);
+      });
+    } else {
+      this.requestManagerService.getRequestsWithSubcribe(STATUS_300, false)
       .subscribe(data => {
         console.log(' data: ', data);
         that.managerService.setArchivedRequests(data);
@@ -93,8 +112,9 @@ export class ArchivedRequestsPage implements OnInit {
         if (event) event.target.complete();
       }, error => {
         if (event) event.target.complete();
-        console.log('error getRequestsDesktop', error);
+        console.log('error getArchivedRequestsDesktop', error);
       });
+    }
   }
 
   /** */
@@ -104,6 +124,12 @@ export class ArchivedRequestsPage implements OnInit {
       subscription.value.unsubscribe(); // vedere come fare l'unsubscribe!!!!
     });
     this.subscriptions = [];
+  }
+
+  /** */
+  segmentChanged(ev: any) {
+    console.log('Segment changed', ev);
+    this.getArchivedRequests(null);
   }
 
 }

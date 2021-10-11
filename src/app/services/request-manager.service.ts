@@ -8,7 +8,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ManagerService } from './manager.service';
 import { RequestModel } from '../models/request';
-import { STATUS_0, STATUS_100, STATUS_200, STATUS_300 } from '../utils/constants';
+import { ARRAY_STATUS, STATUS_0, STATUS_100, STATUS_200, STATUS_300 } from '../utils/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +32,7 @@ export class RequestManagerService {
   private emailTemplateEndpoint = 'https://notaioperrone.it/API/emailTemplate.php';
   private setQuotationEndpoint = 'https://notaioperrone.it/API/setQuotation.php';
   private setStatusRequestEndpoint = 'https://notaioperrone.it/API/setStatus.php';
+
   
 
   constructor(

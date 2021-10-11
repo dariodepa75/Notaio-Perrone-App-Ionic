@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { RequestModel } from '../../models/request';
+import { DateRequestModel } from '../../models/date-request';
 import { RequestManagerService } from '../../services/request-manager.service';
+import { DateRequestManagerService } from '../../services/date-request-manager.service';
 import { ManagerService } from '../../services/manager.service';
-import { MSG_EMPTY_REQUESTS } from '../../utils/constants';
-
+import { MSG_EMPTY_REQUESTS, LBL_CONSULENZE, LBL_APPUNTAMENTI } from '../../utils/constants';
 
 @Component({
   selector: 'app-trashed-requests',
@@ -13,12 +14,17 @@ import { MSG_EMPTY_REQUESTS } from '../../utils/constants';
 export class TrashedRequestsPage implements OnInit {
 
   public requestList: RequestModel[] = [];
+  public dateRequestList: DateRequestModel[] = [];
   private subscriptions = [];
   MSG_EMPTY_REQUESTS = MSG_EMPTY_REQUESTS;
+  LBL_CONSULENZE = LBL_CONSULENZE;
+  LBL_APPUNTAMENTI = LBL_APPUNTAMENTI;
+  segment: string = LBL_CONSULENZE;
 
   constructor(
     public managerService: ManagerService,
-    public requestManagerService: RequestManagerService
+    public requestManagerService: RequestManagerService,
+    public dateRequestManagerService: DateRequestManagerService
   ) {}
   
   /** */
@@ -45,7 +51,7 @@ export class TrashedRequestsPage implements OnInit {
     let subscribtion: any;
     const that = this;
 
-    /** BSGetEmailTemplates */
+    /**  */
     subscribtionKey = 'BSChangeStatus';
     subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
     if (!subscribtion) {
@@ -73,7 +79,19 @@ export class TrashedRequestsPage implements OnInit {
   getTrashedRequests(event) {
     console.log(' getTrashedRequests: ', event);
     const that = this;
-    this.requestManagerService.getRequestsWithSubcribe(null, true)
+    if(this.segment == LBL_APPUNTAMENTI){
+      this.dateRequestManagerService.getDateRequestsWithSubcribe(null, true)
+      .subscribe(data => {
+        console.log(' data: ', data);
+        that.managerService.setTrashedDateRequests(data);
+        that.dateRequestList = that.managerService.getTrashedDateRequests();
+        if (event) event.target.complete();
+      }, error => {
+        if (event) event.target.complete();
+        console.log('error getTrashedDateRequests', error);
+      });
+    } else {
+      this.requestManagerService.getRequestsWithSubcribe(null, true)
       .subscribe(data => {
         console.log(' data: ', data);
         that.managerService.setTrashedRequests(data);
@@ -83,6 +101,9 @@ export class TrashedRequestsPage implements OnInit {
         if (event) event.target.complete();
         console.log('error getTrashedRequests', error);
       });
+    }
+    
+    
   }
 
   /** */
@@ -94,4 +115,10 @@ export class TrashedRequestsPage implements OnInit {
     this.subscriptions = [];
   }
 
+
+
+  segmentChanged(ev: any) {
+    console.log('Segment changed', ev);
+    this.getTrashedRequests(null);
+  }
 }

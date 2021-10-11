@@ -1,11 +1,5 @@
 <ion-header [translucent]="false" translucent="false"  class="ion-no-border">
   <ion-toolbar color="transparent">
-    
-    <!-- <ion-buttons slot="start">
-        <ion-button color="dark" (click)="goBack()">
-          <ion-icon name="arrow-back-outline"></ion-icon>
-        </ion-button>
-    </ion-buttons> -->
 
     <ion-buttons slot="end">
       <ion-button color="dark" (click)="goBack()">
@@ -22,7 +16,7 @@
   <div class="ddp-panel">
     <ion-grid class="ion-no-padding">
       <ion-row>
-        <ion-col class="ion-text-center">RICHIESTA CONSULENZA PER</ion-col>
+        <ion-col class="ion-text-center">RICHIESTA APPUNTAMENTO PER</ion-col>
       </ion-row>
       <ion-row>
         <ion-col class="ion-text-center ddp-light ddp-size20">{{day}}</ion-col>
@@ -45,6 +39,7 @@
   </div>
 
   <ion-list>
+
     <ion-item>
       <ion-grid>
         <ion-row>
@@ -64,61 +59,15 @@
     </ion-item>
 
     <ion-item>
-      <ion-grid class="ion-no-padding">
-        <ion-row>
-          <ion-col size="12" class="ion-text-left ion-text-uppercase ddp-light ddp-size12">VOGLIO ESSERE CONTATTATO TRAMITE {{request.modalita}}</ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
-
-    <ion-item *ngIf="request.telefono">
-      <ion-grid class="ion-no-padding">
+      <ion-grid>
         <ion-row>
           <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">TELEFONO</ion-col>
           <ion-col class="ion-text-left">{{request.telefono}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
-
-    <ion-item *ngIf="request.contatto_skype">
-      <ion-grid class="ion-no-padding">
-        <ion-row>
-          <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">SKYPE</ion-col>
-          <ion-col class="ion-text-left">{{request.contatto_skype}}</ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
     
-    <ion-item> 
-      <ion-grid class="ion-no-padding">
-        <ion-row class="ddp-row-title">
-          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-size12">QUESITO</ion-col>
-        </ion-row>
-        <ion-row class="ddp-row-text">
-          <ion-col class="ion-text-left"><div [innerHTML]="request.quesito"></div></ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
-
-    <ion-item *ngIf="request.amount">
-      <ion-grid class="ion-no-padding">
-        <ion-row>
-          <ion-col size="8" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">IMPORTO PREVENTIVO</ion-col>
-          <ion-col class="ion-text-right ddp-bold">{{request.amount}}€</ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
-
-    <ion-item *ngIf="request.email_content" >
-      <ion-grid class="ion-no-padding">
-        <ion-row class="ddp-row-title">
-          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-size12">RISPOSTA DEL: <span class="ddp-bold">{{ request.email_time }}</span></ion-col>
-        </ion-row>
-        <ion-row class="ddp-row-text">
-          <ion-col class="ion-text-left"><div [innerHTML]="request.email_content"></div></ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
+    
 
   </ion-list>
 
@@ -126,7 +75,6 @@
 
 <ion-footer class="ion-text-center ion-no-border">
   <ion-toolbar class="ion-text-center ion-no-border" color="transparent">
-    <!-- <button ion-button (click)="Upload()"  full>Upload</button> -->
-    <ion-button *ngIf="request && request.status == STATUS_0" color="primary" class="ion-text-uppercase ddp-hc" (click)="initModal()" >{{btnPreventivo}}</ion-button>
+    <ion-button *ngIf="request && request.status == STATUS_0" color="primary" class="ion-text-uppercase ddp-hc" (click)="addDateToCalendar()" >{{btnCalendario}}</ion-button>
   </ion-toolbar>
 </ion-footer>
