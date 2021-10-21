@@ -13,7 +13,7 @@ const routes: Routes = [
   },
   {
     path: 'request/:id',
-    loadChildren: () => import('./pages/view-message/view-message.module').then( m => m.ViewMessagePageModule)
+    loadChildren: () => import('./pages/detail-request/detail-request.module').then( m => m.DetailRequestPageModule)
   },
   {
     path: 'formulate-quote',
@@ -50,6 +50,10 @@ const routes: Routes = [
   {
     path: 'detail-date-request',
     loadChildren: () => import('./pages/detail-date-request/detail-date-request.module').then( m => m.DetailDateRequestPageModule)
+  },
+  {
+    path: 'request-quote',
+    loadChildren: () => import('./pages/request-quote/request-quote.module').then( m => m.RequestQuotePageModule)
   },
 ];
 

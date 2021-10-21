@@ -28,6 +28,7 @@ export class ManagerService {
   
   public isMobile = true;
   private token: string;
+  private googleToken: string;
   // private username: string;
   // private password: string;
 
@@ -70,6 +71,16 @@ export class ManagerService {
   /** */
   getToken(){
     return this.token;
+  }
+
+  /** */
+  setGToken(token){
+    this.googleToken = token;
+  }
+
+  /** */
+  getGToken(){
+    return this.googleToken;
   }
 
   // /** */
@@ -245,26 +256,40 @@ export class ManagerService {
 
 
   /** */
-  async showLoader() {
-    if (!this.isShowingLoader) {
-      this.isShowingLoader = true
-      this.loader = await this.loadingController.create({
-        message: 'Please wait',
-        duration: 5000
-      });
-      return await this.loader.present();
-    }
+  showLoader() {
+    console.log('show Loader: ');
+    const that = this;
+    this.isShowingLoader = true;
+    this.loadingController.create({
+      message: 'Please wait',
+      duration: 10000,
+      backdropDismiss: true
+    }).then((res) => {
+      console.log(' present show Loader: ');
+      if(that.isShowingLoader == true){
+        res.present();
+      }
+    });
   }
 
   /** */
-  async stopLoader() {
-    if (this.loader) {
-      this.loader.dismiss()
-      this.loader = null
-      this.isShowingLoader = false
-    }
+  stopLoader() {
+    // Dismiss loader
+    const that = this;
+    this.isShowingLoader = false;
+    console.log('stop loader: ', this.loadingController);
+    // while (await this.loadingController.getTop() !== undefined) {
+    //   await this.loadingController.dismiss();
+    // }
+    this.loadingController.dismiss().then((response) => {
+      console.log('Loader closed!', response);
+    }).catch((err) => {
+      console.log('Error occured : ', err);
+    });
   }
 
+
+  /** */
   filterArrayForCode(code, array): any {
     const item =  array.filter(function(handler) {
       return handler.code === code;

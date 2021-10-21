@@ -45,8 +45,7 @@ ion-header {
   }
   
   ion-item ion-icon {
-    font-size: 42px;
-    margin-right: 8px;
+    font-size: x-large;
   }
   
   ion-item ion-note {
@@ -57,8 +56,22 @@ ion-header {
   ion-footer ion-button {
     margin-bottom: 20px;
   }
+
+  ion-button {
+    background-color: transparent;
+  }
   
-  
+  .ddp-round {
+    height: 100%;
+    width: 100%;
+    max-width: 50px;
+    max-height: 50px;
+    --border-radius: 100%;
+    border-radius: 100%;
+    padding: 0;
+    margin:0;
+  }
+
   h1 {
     margin: 0;
     font-weight: bold;
@@ -73,12 +86,19 @@ ion-header {
     font-size: 12px;
     line-height: 2;
   }
+  .ddp-size17{
+    font-size: 17px;
+  }
   .ddp-size20{
     font-size: 20px;
   }
   .ddp-size90{
     font-size: 90px;
     line-height: 88px;
+  }
+  .ddp-sizeSX{
+    font-size: 8px;
+    line-height: 1;
   }
   
   .ddp-bold {
@@ -89,7 +109,8 @@ ion-header {
   }
   
   .ddp-panel{
-    height: 252px;
+    height: auto;
+    padding-bottom: 20px;
     background-color: rgba(0, 0, 0, 0.05);
   }
   
@@ -123,5 +144,23 @@ ion-header {
   .ddp-row-text {
     padding: 10px 0px;
   }
-  
+
+
+  .ddp_tag_date {
+    color: #F2F2F7;
+    padding: 2px 10px 2px 10px;
+    height: auto;
+    vertical-align: middle;
+    font-size: 15px;
+    line-height: 1.5;
+    background-color: #333333;
+  }
+
+  .ddp-border-bottom {
+    border-bottom: 1px solid #333333;
+  }
+
+  ion-datetime .datetime-text{
+    display: none!important;
+  }
   

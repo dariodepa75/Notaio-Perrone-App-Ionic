@@ -15,59 +15,131 @@
 <ion-content [fullscreen]="true" fullscreen="true" fullscreen *ngIf="request">
   <div class="ddp-panel">
     <ion-grid class="ion-no-padding">
-      <ion-row>
-        <ion-col class="ion-text-center">RICHIESTA APPUNTAMENTO PER</ion-col>
+
+      <ion-row class="ddp-border-bottom">
+        <ion-col size="auto" class="ion-text-left ddp-light ddp-size17 ddp_tag_date">{{stringAppointmentDate}}</ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col class="ion-text-center ddp-light ddp-size20">{{day}}</ion-col>
+      
+      <ion-row class="ion-padding">
+        <ion-col class="ion-text-left">RICHIESTA APPUNTAMENTO</ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col class="ion-text-center ddp-size90">{{numberDay}}</ion-col>
+
+      <ion-row class="ion-padding">
+        <ion-col class="ion-text-center">
+          <div class="ion-text-left ddp-light ddp-size17">{{recapAppointment}}</div>
+        </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col class="ion-text-center ddp-light ddp-size20">{{month}} {{year}}</ion-col>
-      </ion-row>
-      <ion-row >
-        <ion-col class="ion-text-center">{{stringOraDesiderata}}</ion-col>
-      </ion-row>
+
       <ion-row class="ion-padding-top">
         <ion-col class="ion-text-center">
           <div class="request_state ddp-hc ddp-status-{{request.status}} ddp-trash-{{request.trash}}"><span class="letter">{{request.chr_status}}</span>{{request.msg_status}}</div>
         </ion-col>
       </ion-row>
+
+      
     </ion-grid>
   </div>
 
   <ion-list>
 
-    <ion-item>
+    <ion-item *ngIf="request.nome">
       <ion-grid>
         <ion-row>
-          <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">NOME</ion-col>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">NOME</ion-col>
+        </ion-row>
+        <ion-row>
           <ion-col class="ion-text-left">{{request.nome}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
 
-    <ion-item>
+    <!--
+    <ion-item *ngIf="request.data_desiderata">
       <ion-grid>
         <ion-row>
-          <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">EMAIL</ion-col>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">DATA</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-left">{{request.data_desiderata}}{{stringOraDesiderata}}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item> 
+    -->
+    <ion-item *ngIf="request.data_desiderata">
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">DATA</ion-col>
+        </ion-row>
+        <ion-row>
+     
+          <ion-col class="ion-text-left" (click)="openStart()">
+            {{stringAppointmentDate}}
+            <ion-datetime 
+              #dateTime
+              style="display:none"
+              class="ion-no-padding"
+              [(ngModel)]="ionDatetime"
+              [pickerOptions]="customPickerOptions" 
+              [displayFormat]="datetimeDisplayFormat"
+              [min]="datetimeToday"
+              [pickerFormat]="datetimePickerFormat"
+              [dayShortNames]="datetimeDayShortNames"
+              [monthShortNames]="dateMonthShortNames"
+              [minuteValues]="datetimeMinuteValues"
+              [cancelText]="datetimeCancelText"
+              [doneText]="datetimeDoneText"
+              (ionChange)="updateDate($event)"
+              
+            ></ion-datetime>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+    <ion-item *ngIf="request.email">
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">EMAIL</ion-col>
+        </ion-row>
+        <ion-row>
           <ion-col class="ion-text-left">{{request.email}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
 
-    <ion-item>
+    <ion-item *ngIf="request.telefono">
       <ion-grid>
         <ion-row>
-          <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">TELEFONO</ion-col>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">TELEFONO</ion-col>
+        </ion-row>
+        <ion-row>
           <ion-col class="ion-text-left">{{request.telefono}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
-    
-    
+
+    <ion-item *ngIf="request.sede">
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">SEDE</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-left">{{request.sede}}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+    <ion-item *ngIf="request.note">
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">NOTE</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-left">{{request.note}}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
 
   </ion-list>
 
@@ -75,6 +147,19 @@
 
 <ion-footer class="ion-text-center ion-no-border">
   <ion-toolbar class="ion-text-center ion-no-border" color="transparent">
-    <ion-button *ngIf="request && request.status == STATUS_0" color="primary" class="ion-text-uppercase ddp-hc" (click)="addDateToCalendar()" >{{btnCalendario}}</ion-button>
+
+    <!-- <p> <a href="https://www.google.com/calendar/event?eid=Y2tyNnNtbmpsZXFpbG92cG5zZDlob2FhMWtfMjAyMTA4MTlUMTgwMDAwWiB0amI1c24xZG5ndnQ5bmJocGJzNG01amIwNEBn&amp;ctz=America/Los_Angeles" target="_blank">See more details</a> /  <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Coffee+House+Blues&amp;dates=20210819T110000/20210819T130000&amp;details=Come+join+us+every+Thursday+for+lunch%2C+coffee%2C+and+some+local+blues+music+talent.+Large+groups+please+call+ahead.&amp;location=1122+North+Shore+Lake+Drive%2C+San+Francisco%2C+CA&amp;trp=false&amp;ctz=America%2FLos_Angeles" target="_blank">Add to GCal</a></p> -->
+
+    <div *ngIf="googleToken;else no_auth">
+      <ion-button *ngIf="request && request.status == STATUS_0" color="primary" class="ion-text-uppercase ddp-hc" (click)="addDateToCalendar()" >{{btnCalendario}}</ion-button>
+      <!-- <a *ngIf="request && request.status == STATUS_0" color="primary" class="ion-text-uppercase ddp-hc" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Coffee+House+Blues&amp;dates=20210819T110000/20210819T130000&amp;details=Come+join+us+every+Thursday+for+lunch%2C+coffee%2C+and+some+local+blues+music+talent.+Large+groups+please+call+ahead.&amp;location=1122+North+Shore+Lake+Drive%2C+San+Francisco%2C+CA&amp;trp=false&amp;ctz=America%2FLos_Angeles" target="_blank">{{btnCalendario}}</a> -->
+      <ion-button color="primary" class="ion-text-uppercase ddp-hc" (click)="goToCalendar()">vai al calendario</ion-button>
+    </div>
+  
+  <ng-template #no_auth>
+    <ion-button type="button" (click)="signInWithGoogle()" class="btn btn-danger">Login con Google</ion-button>
+  </ng-template>
+
+  
   </ion-toolbar>
 </ion-footer>

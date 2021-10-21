@@ -14,10 +14,14 @@ export class DateRequestModel {
         public email: string,
         public telefono: string,
         public sede: string,
+        public note: string,
         public data_desiderata: string,
         public ora_desiderata: string,
 
         public msg_status: string,
         public chr_status: string,
+
+        public calendarId: string,
+        public eventId: string
     ) {}
   }

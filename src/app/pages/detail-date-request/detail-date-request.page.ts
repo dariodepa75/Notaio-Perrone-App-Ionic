@@ -1,14 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController, NavController } from '@ionic/angular';
 
+import { ManagerService } from '../../services/manager.service';
 import { DateRequestManagerService } from '../../services/date-request-manager.service';
 import { DateRequestModel } from '../../models/date-request';
 
-import { NavController } from '@ionic/angular';
+import { 
+  MSG_DATE_REQUEST, 
+  MSG_ADD_EVENT_OK, 
+  MSG_AUTH_OK, 
+  MSG_AUTH_KO,
+  MSG_GENERIC_OK,
+  MSG_GENERIC_KO,
+  STATUS_0, 
+  STATUS_200,
+  ARRAY_STATUS_DATE_REQUEST,
+  TIME_MINUTES_APPOINTMENT
+} from '../../utils/constants';
 
-import {LBL_DAY, LBL_MONTH, LBL_NUM_DAY, LBL_YEAR, STATUS_0, STATUS_100} from '../../utils/constants';
-import { getFormattedDate, formatFromDateToString } from '../../utils/utils';
+import { formatFromDateToString, addTimeToDate, creationDate, formatDate } from '../../utils/utils';
+import { AuthenticationService } from '../../services/authentication.service';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -16,41 +29,101 @@ import { getFormattedDate, formatFromDateToString } from '../../utils/utils';
   templateUrl: './detail-date-request.page.html',
   styleUrls: ['./detail-date-request.page.scss'],
 })
+
+
 export class DetailDateRequestPage implements OnInit {
 
+  @ViewChild('dateTime') sTime;
+
   private subscriptions = [];
-  public request: DateRequestModel;
-  public key: string;
+  public googleToken: string;
+  private idCalendar = environment.googleIdCalendar;
+  private keyRequest: string;
   public btnCalendario: string;
+  public request: DateRequestModel;
 
-  public day: string;
-  public numberDay: string;
-  public month: string;
-  public year: string;
+  public startDateTime: string;
+  public endDateTime: string;
+  // public day: string;
+  // public numberDay: string;
+  // public month: string;
+  // public year: string;
   public timeRequest: string;
-  public stringOraDesiderata: string;
-
+  public stringAppointmentDate: string;
+  public recapAppointment: string;
+  
   STATUS_0 = STATUS_0; // in attesa di risposta
-  STATUS_100 = STATUS_100; // in attesa di pagamento
+  STATUS_200 = STATUS_200; // in attesa di pagamento
+  
+  // ion-datetime config ------------- //
+  public ionDatetime: string;
+  public datetimeDisplayFormat: string;
+  public datetimePickerFormat: string;
+  public datetimeDisplayTimezone: string;
+  public datetimeDayShortNames: (string)[];
+  public dateMonthShortNames: (string)[];
+  public datetimeToday: string;
+  public datetimeEndDate: string;
+  public datetimeMinuteValues: string;
+  public datetimeDoneText: string;
+  public datetimeCancelText: string;
+
+  customPickerOptions: any; 
+  // ---------------------------------- //
 
   constructor(
     private requestManagerService : DateRequestManagerService,
     private activatedRoute: ActivatedRoute,
     public modalCtrl: ModalController,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    public authenticationService: AuthenticationService,
+    public managerService: ManagerService,
+    public alertController: AlertController
   ) { }
 
+  
+  
   /** */
   ngOnInit() {
-    this.key = this.activatedRoute.snapshot.paramMap.get('id');
+    this.keyRequest = this.activatedRoute.snapshot.paramMap.get('id');
+    // this.googleToken = this.managerService.getGToken();
+    this.authenticationService.loadGoogleToken().then(res => {
+      this.googleToken = res;
+      console.log('this.googleToken: ', this.googleToken);
+    });
+    this.btnCalendario = "Aggiungi al calendario";
     this.initSubscriptions();
+
+
+    // this.customPickerOptions = {  
+    //   buttons: [{  
+    //     text: 'SALVA',  
+    //     handler: () => {
+    //       console.log('3-------> '+this.ionDatetime);
+    //       // --> wil contains $event.day.value, $event.month.value and $event.year.value
+    //       this.initDateRequest(this.ionDatetime, '');
+    //       //this.ionDatetime = this.stringAppointmentDate;
+    //       console.log ('Clicked Save');
+    //     } 
+    //   }, {  
+    //     text: 'ANNULLA',  
+    //     handler: () => {  
+    //       console.log ('Clicked Log. Do not Dismiss.');  
+    //       //return false;  
+    //     }  
+    //   }], 
+    // }
+
   }
 
   /** */
-  ngAfterViewInit(){
-    this.btnCalendario = "Fissa appuntamento";
-    console.log('getRequestsById: ' + this.key);
-    this.requestManagerService.getDateRequestById(this.key);
+  
+  // ngAfterViewInit(){
+  //   this.requestManagerService.getDateRequestById(this.keyRequest);
+  // }
+  ionViewWillEnter(){
+    console.log('ionViewWillEnter');
+    this.requestManagerService.getDateRequestById(this.keyRequest);
   }
 
   /** */
@@ -59,50 +132,297 @@ export class DetailDateRequestPage implements OnInit {
     let subscribtion: any;
     const that = this;
 
-    subscribtionKey = 'BSRequestByID';
+
+    /** */
+    
+    subscribtionKey = 'BSAddCalendarEvent';
     subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
     if (!subscribtion) {
-      subscribtion =  this.requestManagerService.BSRequestByID.subscribe((data: any) => {
-        console.log('***** BSRequestByID *****', data);
-        if (data) {
-          that.request = data;
-          that.setDate(this.request);
-          that.formatDate(this.request);
-          console.log('requestManagerService ***** BSRequestByID *****', that.request);
+      // console.log('***** BSAddCalendarEvent *****', this.requestManagerService.BSAddCalendarEvent);
+      subscribtion = this.requestManagerService.BSAddCalendarEvent.subscribe((data: any) => {
+        console.log('***** BSAddCalendarEvent *****', data);
+        if (data != null && data.message) {
+          that.presentAlertResponse(data.message, false);
+          that.googleToken = null;
+          that.authenticationService.signOutSocial();
+        } else if (data != null && data) {
+          //that.presentAlertResponse(MSG_ADD_EVENT_OK, true);
+          that.requestUpdate(data.id);
         }
       });
       const subscribe = {key: subscribtionKey, value: subscribtion };
       this.subscriptions.push(subscribe);
     }
+
+    subscribtionKey = 'BSRemoveCalendarEvent';
+    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    if (!subscribtion) {
+      // console.log('***** BSRemoveCalendarEvent *****', this.requestManagerService.BSRemoveCalendarEvent);
+      subscribtion = this.requestManagerService.BSRemoveCalendarEvent.subscribe((data: any) => {
+        console.log('***** BSRemoveCalendarEvent *****', data);
+        if (data != null && data == true) {
+          that.presentAlertResponse(MSG_GENERIC_OK, true);
+          //that.requestManagerService.getDateRequestById(this.keyRequest);
+        } else if (data != null && data == false) {
+          that.presentAlertResponse(MSG_GENERIC_KO, true);
+          //that.requestManagerService.getDateRequestById(this.keyRequest);
+        }
+      });
+      const subscribe = {key: subscribtionKey, value: subscribtion };
+      this.subscriptions.push(subscribe);
+    }
+
+
+    /** */
+    subscribtionKey = 'BSRequestByID';
+    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    if (!subscribtion) {
+      // console.log('***** BSRequestByID *****', this.requestManagerService.BSRequestByID);
+      subscribtion =  this.requestManagerService.BSRequestByID.subscribe((data: any) => {
+        console.log('***** BSRequestByID *****', data);
+        if (data != null && data) {
+          that.request = data;
+          that.initDateRequest(that.request.data_desiderata, that.request.ora_desiderata);
+          that.initDatetime();
+          that.initAppointment();
+        }
+      });
+      const subscribe = {key: subscribtionKey, value: subscribtion };
+      this.subscriptions.push(subscribe);
+    }
+
+
+    /** */
+    subscribtionKey = 'isGoogleToken';
+    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    if (!subscribtion) {
+      subscribtion = this.authenticationService.isGoogleToken.subscribe((data: any) => {
+        console.log('***** isGoogleToken *****', data);
+        if (data != null && data == false) {
+          console.log('***** isGoogleToken ***** FLASE');
+          that.presentAlertResponse(MSG_AUTH_KO, false);
+          that.googleToken = null;
+          that.authenticationService.signOutSocial();
+        } else if (data != null && data == true) {
+          console.log('***** isGoogleToken ***** TRUE');
+          // that.presentAlertResponse(MSG_AUTH_OK, true);
+          that.authenticationService.loadGoogleToken().then(res => {
+            that.googleToken = res;
+            console.log('***** that.googleToken *****', that.googleToken);
+          });
+          // that.googleToken = this.managerService.getGToken();
+        }
+      });
+      const subscribe = {key: subscribtionKey, value: subscribtion };
+      this.subscriptions.push(subscribe);
+    }
+
+    /** BSGetEmailTemplates */
+    subscribtionKey = 'BSChangeDateStatus';
+    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    if (!subscribtion) {
+      subscribtion =  this.requestManagerService.BSChangeDateStatus.subscribe((data: any) => {
+        console.log('***** BSChangeDateStatus *****', data);
+        if (data != null && data.success == true) {
+          that.presentAlertResponse(MSG_ADD_EVENT_OK, true);
+          that.requestManagerService.getDateRequestById(that.keyRequest);
+          // !!! LEGGI invio email se lo stato è quello corretto mi sembra 200!!!
+        }
+      });
+      const subscribe = {key: subscribtionKey, value: subscribtion };
+      this.subscriptions.push(subscribe);
+    }
+
+
+    /** BSRequestUpdate */
+    subscribtionKey = 'BSRequestUpdate';
+    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    if (!subscribtion) {
+      console.log('***** ADD - BSRequestUpdate *****');
+      subscribtion =  this.requestManagerService.BSRequestUpdate.subscribe((data: any) => {
+        console.log('***** 2 - BSRequestUpdate *****', data);
+        if (data != null && data.success == true) {
+          //that.presentAlertResponse(MSG_ADD_EVENT_OK, true);
+          console.log('***** TRUE BSRequestUpdate *****', data.success);
+          that.requestManagerService.changeStatus(that.request, STATUS_200, false);
+        } else if (data != null) {
+          console.log('***** FALSE BSRequestUpdate *****');
+          that.presentAlertResponse(MSG_GENERIC_KO, false);
+          that.removeEventToCalendar();
+        }
+      });
+      const subscribe = {key: subscribtionKey, value: subscribtion };
+      this.subscriptions.push(subscribe);
+    }
+
+    console.log("sottoscrizioni: ",this.subscriptions);
+  }
+
+
+  /** */
+  initDateRequest(appointmentDate, timeDate){
+    console.log ('appointmentDate : '+appointmentDate);
+    // this.day = getFormattedDate(request.data_desiderata, LBL_DAY);
+    // this.numberDay = getFormattedDate(request.data_desiderata, LBL_NUM_DAY);
+    // this.month = getFormattedDate(request.data_desiderata, LBL_MONTH);
+    // this.year = getFormattedDate(request.data_desiderata, LBL_YEAR);
+    this.startDateTime  = creationDate(appointmentDate, timeDate);
+    this.endDateTime  = addTimeToDate(this.startDateTime, '', 0, 0, TIME_MINUTES_APPOINTMENT);
+    let dateAppointment = creationDate(this.startDateTime, '', 'dddd, D MMM YYYY');
+    let startTime  = formatDate(this.startDateTime, 'HH:mm');
+    let endTime = formatDate(this.endDateTime, 'HH:mm');
+    this.stringAppointmentDate = dateAppointment + " dalle "+ startTime + " alle " + endTime;
+    console.log ('initDateRequest : '+this.stringAppointmentDate);
+    let data_desiderata  = formatDate(this.startDateTime, 'YYYY-MM-DD');
+    this.request.ora_desiderata = startTime;
+    this.request.data_desiderata = data_desiderata;
   }
 
   /** */
-  setDate(request){
-    this.day = getFormattedDate(request.data_desiderata, LBL_DAY);
-    this.numberDay = getFormattedDate(request.data_desiderata, LBL_NUM_DAY);
-    this.month = getFormattedDate(request.data_desiderata, LBL_MONTH);
-    this.year = getFormattedDate(request.data_desiderata, LBL_YEAR);
-    this.stringOraDesiderata = "alle "+request.ora_desiderata;
+  initDatetime(){
+    //this.ionDatetime = new Date(this.request.data_desiderata).toLocaleString("it-IT");//.toLocaleTimeString("it-IT", {timeZone: "Europe/Rome"});
+    var isoDate = creationDate(this.request.data_desiderata, this.request.ora_desiderata, "YYYY-MM-DDThh:mmZ"); //, "YYYY-MM-DDThh:mmTZD"
+    // this.ionDatetime = formatDate(this.request.data_desiderata, "YYYY-MM-DD H:mm:ssZ"); //, 'YYYY-MM-DDThh:mmTZD'
+    // this.ionDatetime = new Date(this.request.data_desiderata).toLocaleTimeString('YYYY-MM-DDThh:mmTZD'); //'dddd DD MMM YYYY HH:mm'
+    // this.ionDatetime = new Date(dataX).toLocaleTimeString('YYYY-MM-DDThh:mmTZD');
+  
+    this.ionDatetime = new Date(isoDate).toISOString();
+    console.log("1-----------> ",isoDate);
+    console.log("2-----------> ",this.ionDatetime);
+     //sabato 09 ott 2021 02:00
+    this.datetimeDisplayFormat = "DDD, DD MMM YYYY HH:mm";
+    this.datetimePickerFormat = "DD MMM YYYY HH:mm";
+    this.datetimeDisplayTimezone = "UTC";
+    this.dateMonthShortNames = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+    this.datetimeDayShortNames = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+    this.datetimeToday = formatDate(new Date()); // new Date().toLocaleTimeString("it-IT", {timeZone: "Europe/Rome"});
+    this.datetimeEndDate = addTimeToDate(this.datetimeToday, '', 730, 0, 0);
+    this.datetimeMinuteValues = "0, 15, 30, 45";
+    this.datetimeDoneText = "CONFERMA";
+    this.datetimeCancelText = "ANNULLA";
+  
   }
 
   /** */
-  formatDate(request){
-    this.timeRequest = formatFromDateToString(request.time);
+  initAppointment(){
+    this.timeRequest = formatFromDateToString(this.request.time);
+    this.recapAppointment =  "Appuntamento con "+this.request.nome+" indirizzo email: "+this.request.email+" presso la sede di "+this.request.sede + ". La richiesta è pervenuta il "+this.timeRequest+" dall'indirizzo "+this.request.source_url; 
+    console.log('requestManagerService ***** BSRequestByID *****', this.request);
+  }
+
+
+  /** */
+  async presentAlertResponse(msg, success) {
+    const alert = await this.alertController.create({
+      message: msg
+    });
+    alert.dismiss();
+    await alert.present();
+    setTimeout(()=>{
+      alert.dismiss().then(() => {
+        if (success == true) {
+          // this.requestManagerService.getDateRequestById(this.keyRequest);
+        } else {
+          // this.requestManagerService.getDateRequestById(this.keyRequest);
+        }
+      });
+    }, 3000);
+  }
+
+
+  /**
+   * updateRequest 
+   * chiamato da BSChangeCalendarEvent
+   * che scatta dopo aver aggiunto un evento a google calendar
+   * 
+   * completo request con i dati dell'evento aggiunto a googlecalendar idEventCalendar e idCalendar
+   * cambio lo stato della request (200)
+   * cambio label della request ('appuntamento fissato')
+   * chiamo API per aggiornare dati form eventualmente cambiati (data appuntamento ecc...)
+   */
+   requestUpdate(idEventCalendar?){
+    console.log('updateRequest:::'+idEventCalendar);
+    this.request.eventId = idEventCalendar;
+    this.request.calendarId = this.idCalendar;
+    this.request.status = STATUS_200;
+    this.managerService.checkRequestStatus(this.request, ARRAY_STATUS_DATE_REQUEST);
+    this.requestManagerService.requestUpdate(this.request, STATUS_200, false);
+    // this.requestManagerService.requestToBeAddedToCalendar(this.request);
+  }
+
+  /** */
+  updateDate($event){
+    console.log('4-------> '+this.ionDatetime);
+    this.initDateRequest(this.ionDatetime, '');
+  }
+
+  /** */
+  openStart(){
+    this.sTime.open();
+    console.log('openStart');
+  }
+
+  // -------------------------------- //
+  // GOOGLE CALENDAR 
+  // -------------------------------- //
+
+  /** */
+  addDateToCalendar(){
+    //let format = "YYYY-MM-DDTHH:mm:ss";
+    let startDateTime  = creationDate(this.startDateTime);
+    let endDateTime  = creationDate(this.endDateTime);
+    // console.log('endDateTime: ', endDateTime);
+    let description =  "Appuntamento con "+this.request.nome+" indirizzo email: "+this.request.email+" presso la sede di "+this.request.sede + ". La richiesta è pervenuta il "+this.timeRequest+" dall'indirizzo "+this.request.source_url; 
+    let event = {
+      "summary":  MSG_DATE_REQUEST,
+      "location": this.request.sede,
+      "description": description,
+      "start": {
+        "dateTime": startDateTime,
+        "timeZone": "Europe/Rome"
+      },
+      "end": {
+        "dateTime": endDateTime,
+        "timeZone": "Europe/Rome"
+      },
+      "recurrence": ["RRULE:FREQ=DAILY;COUNT=1"]
+    }
+    // let event2 = "{\n  \"summary\": \"Google I/O 2015\",\n  \"location\": \"800 Howard St., San Francisco, CA 94103\",\n  \"description\": \"A chance to hear more about Google\\'s developer products.\",\n  \"start\": {\n    \"dateTime\": \"2021-10-12T09:00:00-07:00\",\n    \"timeZone\": \"America/Los_Angeles\"\n  },\n  \"end\": {\n    \"dateTime\": \"2021-10-12T17:00:00-07:00\",\n    \"timeZone\": \"America/Los_Angeles\"\n  },\n  \"recurrence\": [\n    \"RRULE:FREQ=DAILY;COUNT=2\"\n  ]\n}";
+    this.requestManagerService.addEventToCalendar(this.googleToken, this.idCalendar, event);
+  }
+
+  /** */
+  removeEventToCalendar(){
+    console.log('removeEventToCalendar:: ', this.request.eventId);
+    this.requestManagerService.removeEventToCalendar(this.googleToken, this.idCalendar, this.request.eventId);
+  }
+
+
+  goToCalendar(){
+    let url = "https://calendar.google.com/calendar/embed?src=dt87td23ioa6dhp5k1g0rirtds%40group.calendar.google.com&ctz=Europe%2FRome";
+    window.open(url,"_blank");
   }
   
-
-  addDateToCalendar(){
-
+  /** */
+  removeDateToCalendar(){  
   }
-  removeDateToCalendar(){
-    
-  }
+
+  /** */
   modifyDateToCalendar(){
-    
   }
+
+  /** */
+  signInWithGoogle(): void {
+    this.authenticationService.signInWithGoogle();
+  }
+  // -------------------------------- //
+
 
 
   // -------------------------------- //
+  // NAV FUNCTIONS 
+  // -------------------------------- //
+
   /** */
   ngOnDestroy() {
     console.log('UserPresenceComponent - ngOnDestroy');
@@ -112,14 +432,6 @@ export class DetailDateRequestPage implements OnInit {
   /** */
   goBack(): void {
     this.navCtrl.back();
-  }
-
-  /** */
-  private checkStatusRequest(status){
-    this.requestManagerService.getDateRequestById(this.key);
-    if(status == true){
-      this.request.status = STATUS_100;
-    }
   }
 
   /** */

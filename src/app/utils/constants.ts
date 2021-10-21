@@ -10,7 +10,7 @@ export const ARRAY_STATUS = [{ 'code':'0', 'char': 'AP', 'message': 'IN ATTESA D
 {'code':'400', 'char': 'RC', 'message': 'RICHIESTA CESTINATA'}];
 
 export const ARRAY_STATUS_DATE_REQUEST = [{ 'code':'0', 'char': 'AC', 'message': 'IN ATTESA DI CONFERMA'},
-{'code':'200', 'char': 'AF', 'message': 'APPUNTAMENTO FISSATO'},
+{'code':'200', 'char': 'AA', 'message': 'APPUNTAMENTO AGGIUNTO AL CALENDARIO'},
 {'code':'300', 'char': 'RA', 'message': 'RICHIESTA ARCHIVIATA'},
 {'code':'400', 'char': 'RC', 'message': 'RICHIESTA CESTINATA'}];
 
@@ -21,6 +21,7 @@ export const STATUS_300 = "300";
 export const STATUS_400 = "400";
 
 export const MSG_EMPTY_REQUESTS =  'NESSUN RISULTATO';
+export const MSG_FORMULATE_QUOTE =  'FORMULA UN PREVENTIVO';
 
 export const LBL_CONSULENZE =  'Consulenze';
 export const LBL_APPUNTAMENTI =  'Appuntamenti';
@@ -31,3 +32,17 @@ export const LBL_MONTH =  'month';
 export const LBL_YEAR =  'year';
 
 export const TOKEN_KEY = 'token';
+export const GOOGLE_TOKEN_KEY = 'googleToken';
+
+
+export const MSG_AUTH_OK = 'Autenticazione google riuscita';
+export const MSG_AUTH_KO = 'Autenticazione google NON riuscita';
+export const MSG_ADD_EVENT_OK = 'Evento aggiunto al calendario correttamente';
+
+export const MSG_DATE_REQUEST = 'APPUNTAMENTO';
+export const TIME_MINUTES_APPOINTMENT = 60;
+
+export const MSG_GENERIC_KO  = "Operazione fallita";
+export const MSG_GENERIC_OK  = "Operazione conclusa con successo";
+
+

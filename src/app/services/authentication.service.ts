@@ -4,7 +4,11 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ManagerService } from './manager.service';
 import { environment } from '../../environments/environment';
-import { TOKEN_KEY } from '../utils/constants';
+import { TOKEN_KEY, GOOGLE_TOKEN_KEY } from '../utils/constants';
+
+import { UserModel } from '../models/user';
+import { SocialAuthService } from "angularx-social-login";
+import { FacebookLoginProvider, GoogleLoginProvider } from "angularx-social-login";
 
  
 @Injectable({
@@ -15,13 +19,32 @@ export class AuthenticationService {
 
 
   isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+  isGoogleToken: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   token = '';
- 
+  googleToken = '';
+  user: UserModel;
+
   constructor(
     private httpClient: HttpClient,
-    public managerService: ManagerService
+    public managerService: ManagerService,
+    private authService: SocialAuthService
   ) {
+    //this.refreshToken();
     this.loadToken();
+    const that = this;
+
+    this.authService.authState.subscribe((user) => {
+      console.log('-------------------->>>>>> user: ', user, user.authToken);
+      // this.isLoggedin = (user != null);
+      if(user){
+        that.user = user;
+        localStorage.setItem(GOOGLE_TOKEN_KEY, user.authToken);
+        that.managerService.setGToken(user.authToken);
+        that.isGoogleToken.next(true);
+      } else {
+        that.isGoogleToken.next(false);
+      }
+    });
   }
  
   /** */
@@ -35,6 +58,18 @@ export class AuthenticationService {
     } else {
       this.isAuthenticated.next(false);
     }
+  }
+
+  /** */
+  async loadGoogleToken() {
+    const token = await localStorage.getItem(GOOGLE_TOKEN_KEY);    
+    if (token) {
+      console.log('set google token: ', token);
+      this.googleToken = token;
+      this.managerService.setGToken(token);
+      return token;
+    }
+    return null;
   }
  
   /** */
@@ -81,6 +116,32 @@ export class AuthenticationService {
   }
 
 
+
+  refreshToken(): void {
+    const googleLoginOptions = {
+      scope: 'profile, email, https://www.googleapis.com/auth/calendar, https://www.googleapis.com/auth/calendar.events'
+    }; 
+    this.authService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
+  }
+
+  //----------------------------//
+  signInWithGoogle(): void {
+    const googleLoginOptions = {
+      scope: 'profile email https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events'
+    }; // https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiauth2clientconfig
+    
+    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID, googleLoginOptions);
+  }
+
+  signInWithFB(): void {
+    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID);
+  }
+
+  signOutSocial(): void {
+    localStorage.removeItem(GOOGLE_TOKEN_KEY);
+    this.authService.signOut();
+  }
+  //----------------------------//
   
  
   /** */

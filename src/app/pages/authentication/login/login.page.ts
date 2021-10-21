@@ -15,6 +15,7 @@ export class LoginPage implements OnInit {
   ionicForm: FormGroup;
   isSubmitted = false;
 
+
   constructor(
     private router: Router,
     public formBuilder: FormBuilder,
@@ -22,6 +23,7 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    const that = this;
     this.ionicForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
       password: ['', [Validators.required, Validators.minLength(4)]]
@@ -31,9 +33,9 @@ export class LoginPage implements OnInit {
   }
 
   /** */
-  ngAfterViewInit(){
-    //this.router.navigateByUrl('/home', { replaceUrl: true });
-  }
+  // ngAfterViewInit(){
+  //   //this.router.navigateByUrl('/home', { replaceUrl: true });
+  // }
 
 
   get errorControl() {
@@ -51,5 +53,6 @@ export class LoginPage implements OnInit {
       this.authenticationService.login(this.ionicForm.value.username, this.ionicForm.value.password);
     }
   }
+
 
 }

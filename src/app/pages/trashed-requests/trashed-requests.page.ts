@@ -34,8 +34,12 @@ export class TrashedRequestsPage implements OnInit {
   }
 
   /** */
-  ngAfterViewInit(){
-    console.log('ngAfterViewInit');
+  // ngAfterViewInit(){
+  //   console.log('ngAfterViewInit');
+  // }
+
+  ionViewWillEnter(){
+    console.log('ionViewWillEnter');
     this.getTrashedRequests(null);
   }
 
@@ -57,6 +61,20 @@ export class TrashedRequestsPage implements OnInit {
     if (!subscribtion) {
       subscribtion =  this.requestManagerService.BSChangeStatus.subscribe((data: any) => {
         console.log('***** BSChangeStatus *****', data);
+        if (data) {
+          that.getTrashedRequests(null);
+        }
+      });
+      const subscribe = {key: subscribtionKey, value: subscribtion };
+      this.subscriptions.push(subscribe);
+    }
+
+    /**  */
+    subscribtionKey = 'BSChangeDateStatus';
+    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    if (!subscribtion) {
+      subscribtion =  this.dateRequestManagerService.BSChangeDateStatus.subscribe((data: any) => {
+        console.log('***** BSChangeDateStatus *****', data);
         if (data) {
           that.getTrashedRequests(null);
         }

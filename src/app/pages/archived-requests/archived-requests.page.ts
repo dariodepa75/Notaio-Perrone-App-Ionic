@@ -33,10 +33,14 @@ export class ArchivedRequestsPage implements OnInit {
   }
 
   /** */
-  ngAfterViewInit(){
-    console.log('ngAfterViewInit');
+  ionViewWillEnter(){
+    console.log('ionViewWillEnter');
     this.getArchivedRequests(null);
   }
+
+  // ngAfterViewInit(){
+  //   console.log('ngAfterViewInit');
+  // }
 
   /** */
   ngOnDestroy() {
@@ -77,6 +81,20 @@ export class ArchivedRequestsPage implements OnInit {
       const subscribe = {key: subscribtionKey, value: subscribtion };
       this.subscriptions.push(subscribe);
     }
+
+    subscribtionKey = 'BSChangeDateStatus';
+    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    if (!subscribtion) {
+      subscribtion =  this.dateRequestManagerService.BSChangeDateStatus.subscribe((data: any) => {
+        console.log('***** BSChangeDateStatus *****', data);
+        if (data) {
+          that.getArchivedRequests(null);
+        }
+      });
+      const subscribe = {key: subscribtionKey, value: subscribtion };
+      this.subscriptions.push(subscribe);
+    }
+    
     
   }
 

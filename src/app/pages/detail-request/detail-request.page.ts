@@ -1,22 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { ModalController, NavController } from '@ionic/angular';
+
+import * as moment from 'moment';
 
 import { RequestManagerService } from '../../services/request-manager.service';
 import { RequestModel } from '../../models/request';
-import { FormulateQuotePage } from '../formulate-quote/formulate-quote.page';
-import * as moment from 'moment';
-import { NavController } from '@ionic/angular';
-
-import {STATUS_0, STATUS_100} from '../../utils/constants';
+// import { FormulateQuotePage } from '../formulate-quote/formulate-quote.page';
+import {
+  STATUS_0, 
+  STATUS_100, 
+  MSG_FORMULATE_QUOTE
+} from '../../utils/constants';
 
 
 @Component({
-  selector: 'app-view-message',
-  templateUrl: './view-message.page.html',
-  styleUrls: ['./view-message.page.scss'],
+  selector: 'app-detail-request',
+  templateUrl: './detail-request.page.html',
+  styleUrls: ['./detail-request.page.scss'],
 })
-export class ViewMessagePage implements OnInit {
+export class DetailRequestPage implements OnInit {
   public request: RequestModel;
   public key: string;
   public modalDataResponse: any;
@@ -31,12 +34,14 @@ export class ViewMessagePage implements OnInit {
 
   STATUS_0 = STATUS_0; // in attesa di risposta
   STATUS_100 = STATUS_100; // in attesa di pagamento
+  MSG_FORMULATE_QUOTE = MSG_FORMULATE_QUOTE;
 
   constructor(
     private requestManagerService : RequestManagerService,
     private activatedRoute: ActivatedRoute,
     public modalCtrl: ModalController,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    public router: Router
   ) { }
 
   /** */
@@ -47,9 +52,14 @@ export class ViewMessagePage implements OnInit {
   }
 
   /** */
-  ngAfterViewInit(){
-    this.btnPreventivo = "Formula preventivo";
-    console.log('getRequestsById: ' + this.key);
+  // ngAfterViewInit(){
+  //   this.btnPreventivo = "Formula preventivo";
+  //   console.log('getRequestsById: ' + this.key);
+  //   this.requestManagerService.getRequestById(this.key);
+  // }
+
+  ionViewWillEnter(){
+    console.log('ionViewWillEnter');
     this.requestManagerService.getRequestById(this.key);
   }
 
@@ -85,25 +95,25 @@ export class ViewMessagePage implements OnInit {
 
 
   /** */
-  async initModal() {
-    const that = this;
-    const modal = await this.modalCtrl.create({
-      component: FormulateQuotePage,
-      cssClass: 'setting-modal',
-      componentProps: {
-        'request': that.request
-      },
-      backdropDismiss: true
-    });
-    modal.dismiss();
-    modal.onDidDismiss().then((modalDataResponse) => {
-      console.log('Modal Sent Data XXX : '+ modalDataResponse.data);
-      if (modalDataResponse.data == true) {
-        this.checkStatusRequest(modalDataResponse.data);
-      }
-    });
-    return await modal.present();
-  }
+  // async initModal() {
+  //   const that = this;
+  //   const modal = await this.modalCtrl.create({
+  //     component: FormulateQuotePage,
+  //     cssClass: 'setting-modal',
+  //     componentProps: {
+  //       'request': that.request
+  //     },
+  //     backdropDismiss: true
+  //   });
+  //   modal.dismiss();
+  //   modal.onDidDismiss().then((modalDataResponse) => {
+  //     // console.log('Modal Sent Data : '+ modalDataResponse.data);
+  //     if (modalDataResponse.data == true) {
+  //       this.checkStatusRequest(modalDataResponse.data);
+  //     }
+  //   });
+  //   return await modal.present();
+  // }
   
 
   
@@ -142,6 +152,18 @@ export class ViewMessagePage implements OnInit {
     this.navCtrl.back();
     // this.location.back();
     // this.navCtrl.navigateBack('/');
+  }
+
+  /** */
+  formulateQuote(){
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        //special: JSON.stringify('ciao')
+        request: JSON.stringify(this.request)
+      }
+    };
+    this.router.navigate(['request-quote'], navigationExtras);
+    //this.router.navigateByUrl('/request-quote', { replaceUrl: true });
   }
 
   /** */

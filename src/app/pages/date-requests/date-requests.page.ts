@@ -28,10 +28,25 @@ export class DateRequestsPage implements OnInit {
   }
 
   /** */
-  ngAfterViewInit(){
-    console.log('ngAfterViewInit');
+ 
+  ionViewWillEnter(){
+    console.log('ionViewWillEnter');
     this.getDateRequests(null);
   }
+
+  // ionViewDidEnter(){
+  //   console.log('ionViewDidEnter');
+  // }
+  // ionViewWillLeave(){
+  //   console.log('ionViewWillLeave');
+  // }
+  // ionViewDidLeave(){
+  //   console.log('ionViewDidLeave');
+  // }
+  // ngAfterViewInit(){
+  //   console.log('ngAfterViewInit');
+  // }
+
 
   /** */
   ngOnDestroy() {

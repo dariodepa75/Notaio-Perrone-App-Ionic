@@ -7,11 +7,20 @@ export function getFormattedDate(date, lbl){
     moment.locale('it');
     var  d = new Date(date);  //this.request.data_desiderata
     let dateTEMP = (moment(d).format('LLLL')).split(" ");
-    console.log('data_richiesta: ', dateTEMP);
+    // console.log('data_richiesta: ', dateTEMP);
     if (lbl == LBL_DAY) return dateTEMP[0];
     if (lbl == LBL_NUM_DAY) return dateTEMP[1];
     if (lbl == LBL_MONTH) return dateTEMP[2];
     if (lbl == LBL_YEAR) return dateTEMP[3];
+}
+
+export function formatDate(date, format?, locale?){
+    moment.locale('it');
+    locale = locale ? locale : 'it';
+    format = format ? format : ''; //YYYY-MM-DDTHH:mm:ss
+    var  d = new Date(date); 
+    var dateRequest = moment(d).format(format);
+    return dateRequest;
 }
 
 /** */
@@ -21,6 +30,41 @@ export function formatFromDateToString(time){
     let dateRequest = moment(d).format("D MMM YY");
     let timeRequest = moment(d).format("HH:mm");
     return dateRequest+" ora "+timeRequest;
+}
+
+export function creationDate(date, time?, format?, locale?){
+    // console.log('data: ', date);
+    // console.log('ora: ', time);
+    locale = locale ? locale : 'it';
+    moment.locale('it');
+    format = format ? format : ''; //"YYYY-MM-DDTHH:mm:ss"
+    var  d = new Date(date); 
+    var dateRequest = moment(d).format(format);
+    if(time){
+        let momentTimes    = moment(time, 'HH:mm');
+        let momentDate     = moment(d);
+        momentDate.set({
+            hour:   momentTimes.get('hour'),
+            minute: momentTimes.get('minute'),
+            second: momentTimes.get('second')
+        });
+        // console.log('momentDate: ', momentDate);
+        dateRequest = moment(momentDate).format(format);
+    }
+    // console.log('dateRequest: ', dateRequest);
+    return dateRequest;
+}
+
+export function addTimeToDate(date, format?, d?, h?, m?){
+    moment.locale('it');
+    format = format ? format : ''; 
+    d = d ? d : '0';
+    h = h ? h : '0';
+    m = m ? m : '0';
+    var endate = moment(date).add({'days':d,'hours':h,'minutes':m});
+    let returned_endate = endate.format(format);
+    // console.log('returned_endate: ', returned_endate);
+    return returned_endate;
 }
 
 /** */

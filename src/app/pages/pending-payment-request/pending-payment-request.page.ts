@@ -31,10 +31,12 @@ export class PendingPaymentRequestPage implements OnInit {
   }
 
   /** */
-  ngAfterViewInit(){
-    console.log('ngAfterViewInit');
+  // ngAfterViewInit(){
+  //   console.log('ngAfterViewInit');
+  // }
+  ionViewWillEnter(){
+    console.log('ionViewWillEnter');
     this.getRequests(null);
-    //this.requestManagerService.getRequests();
   }
 
   /** */

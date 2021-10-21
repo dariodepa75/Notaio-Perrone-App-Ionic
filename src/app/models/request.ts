@@ -24,6 +24,9 @@ export class RequestModel {
 
         public amount: string,
         public email_content: string,
-        public email_time: string
+        public email_time: string,
+
+        public calendarId: string,
+        public eventId: string
     ) {}
   }

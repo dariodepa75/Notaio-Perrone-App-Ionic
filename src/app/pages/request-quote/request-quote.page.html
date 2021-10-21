@@ -1,31 +1,18 @@
-<ion-header [translucent]="false" translucent="false"  class="ion-no-border">
+<ion-header [translucent]="false" translucent="false"  class="ion-border ion-padding">
   <ion-toolbar color="transparent">
     <ion-buttons slot="end">
       <ion-button color="dark" (click)="goBack()">
         <ion-icon name="close-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-label *ngIf="request" slot="start" class="ddp-size12 ddp-light">RICHIESTA DEL: <span class="ddp-bold">{{ timeRequest }}</span></ion-label>
+    <ion-label *ngIf="request" slot="start" class="ddp-size12 ddp-light">{{LBL_RICHIESTA_DEL}} <span class="ddp-bold">{{ timeRequest }}</span></ion-label>
     <ion-title></ion-title> 
   </ion-toolbar>
 </ion-header>
 
-<!-- <ion-header [translucent]="true" translucent="true"  class="ion-no-border">
-  <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-button color="dark" (click)="close()">
-        <ion-icon name="close-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>
-      {{request.nome}}
-    </ion-title> 
-  </ion-toolbar>
-</ion-header> -->
 
+<ion-content *ngIf="request" [fullscreen]="true" fullscreen="true" fullscreen class="auto-scroll ion-padding">
 
-<ion-content [fullscreen]="true" fullscreen="true" fullscreen class="auto-scroll" *ngIf="request">
-  
   <div class="ddp-panel">
     <ion-grid class="ion-no-padding">
       <ion-row class="ion-padding-bottom">
@@ -37,32 +24,16 @@
     </ion-grid>
   </div>
 
-  <!-- 
-  <ion-grid class="ion-padding">
-    <ion-row>
-      <ion-col size="7" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">
-        <ion-button class="ddp-margin-6v0h" size="small" expand="block" (click)="presentAlertPrompt()">Modifica importo</ion-button>
-      </ion-col>
-      <ion-col class="ion-text-right">
-        <ion-chip>
-          <ion-label>{{request.price}}</ion-label>
-          <ion-icon name="logo-euro"></ion-icon>
-        </ion-chip>
-        </ion-col>
-    </ion-row>
-  </ion-grid> 
-  -->
-
   <ion-list>
     <ion-item (click)="presentAlertPrompt()">
-      <ion-label>Modifica importo</ion-label>
+      <ion-label>{{LBL_MODIFICA_IMPORTO}}</ion-label>
       <ion-chip slot="end">
-        <ion-label>{{request.price}}</ion-label>
+        <ion-label>{{request.amount}}</ion-label>
         <ion-icon name="logo-euro"></ion-icon>
       </ion-chip>
     </ion-item>
     <ion-item>
-      <ion-label>Modello risposta</ion-label>
+      <ion-label>{{LBL_MODELLO_RISPOSTA}}</ion-label>
       <ion-select [(ngModel)]="templateSelected" (ngModelChange)="templateFormSelected($event)"  okText="Conferma" cancelText="Annulla">
         <ion-select-option  *ngFor="let template of templates; let idx = index;" [value]="template.title" >{{template.title}}</ion-select-option> 
       </ion-select>
@@ -80,9 +51,10 @@
   </div>
 
 </ion-content>
-
+  
 <ion-footer class="ion-text-center ion-no-border">
   <ion-toolbar class="ion-text-center ion-no-border" color="transparent">
-    <ion-button color="primary" class="ion-text-uppercase ddp-hc" (click)="sendMessage()">Invia messaggio</ion-button>
+    <ion-button color="primary" class="ion-text-uppercase ddp-hc" (click)="sendMessage()">{{LBL_INVIA_MESSAGGIO}}</ion-button>
   </ion-toolbar>
 </ion-footer>
+
