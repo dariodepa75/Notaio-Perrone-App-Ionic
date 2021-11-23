@@ -9,6 +9,13 @@ ion-toolbar {
     --ion-background-color:#111D12;
 }
 
+ion-label {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 ion-content {
     font-family: "Helvetica";
     font-size: 16px;
@@ -22,7 +29,10 @@ ion-item {
 ion-textarea { 
     background-color: rgba(0, 0, 0, 0.05);
     padding: 10px;
+    max-height: calc(100vh - 360px);
+    overflow: hidden;
 }
+
 ion-footer ion-button {
     margin-bottom: 20px;
 }
@@ -58,3 +68,7 @@ textarea, input {
 .ddp-margin-6v0h{
     margin: 6px 0;
 }
+.ddp-panel{
+    margin-top: 15px;
+}
+

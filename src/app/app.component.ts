@@ -18,7 +18,7 @@ export class AppComponent {
     { title: 'Appuntamenti', url: '/date-requests', icon: 'calendar' },
     { title: 'Archiviati', url: '/archived', icon: 'archive' },
     { title: 'Cestino', url: '/trashed', icon: 'trash' },
-    { title: 'Profilo', url: '/folder/Spam', icon: 'person' },
+    { title: 'Log-out', url: '/login', icon: 'person' },
   ];
   // public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   constructor(

@@ -16,10 +16,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/detail-request/detail-request.module').then( m => m.DetailRequestPageModule)
   },
   {
-    path: 'formulate-quote',
-    loadChildren: () => import('./pages/formulate-quote/formulate-quote.module').then( m => m.FormulateQuotePageModule)
-  },
-  {
     path: 'archived',
     loadChildren: () => import('./pages/archived-requests/archived-requests.module').then( m => m.ArchivedRequestsPageModule)
   },

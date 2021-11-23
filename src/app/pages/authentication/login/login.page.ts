@@ -37,11 +37,18 @@ export class LoginPage implements OnInit {
   //   //this.router.navigateByUrl('/home', { replaceUrl: true });
   // }
 
+  ionViewWillEnter(){
+    console.log('ionViewWillEnter');
+    this.logout();
+  }
+  
 
   get errorControl() {
     return this.ionicForm.controls;
   }
 
+
+  /** */
   submitForm() {
     this.isSubmitted = true;
     if (!this.ionicForm.valid) {
@@ -52,6 +59,13 @@ export class LoginPage implements OnInit {
       console.log(this.ionicForm.value.password);
       this.authenticationService.login(this.ionicForm.value.username, this.ionicForm.value.password);
     }
+  }
+
+
+  /** */
+  logout() {
+    console.log('logout');
+    this.authenticationService.logout();
   }
 
 

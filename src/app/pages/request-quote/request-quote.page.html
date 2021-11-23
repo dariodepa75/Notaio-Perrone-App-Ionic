@@ -1,4 +1,4 @@
-<ion-header [translucent]="false" translucent="false"  class="ion-border ion-padding">
+<ion-header [translucent]="false" translucent="false"  class="ion-border ion-no-padding">
   <ion-toolbar color="transparent">
     <ion-buttons slot="end">
       <ion-button color="dark" (click)="goBack()">
@@ -11,7 +11,7 @@
 </ion-header>
 
 
-<ion-content *ngIf="request" [fullscreen]="true" fullscreen="true" fullscreen class="auto-scroll ion-padding">
+<ion-content *ngIf="request" [fullscreen]="true" fullscreen="true" fullscreen scroll-y="false" class="ion-padding">
 
   <div class="ddp-panel">
     <ion-grid class="ion-no-padding">
@@ -44,7 +44,7 @@
     <ion-grid class="ion-no-padding">
       <ion-row>
         <ion-col class="ion-text-left">
-        <ion-textarea [(ngModel)]="message" class="ion-no-padding" clearOnEdit="false" rows="6" cols="1" placeholder="Aggiungi un messaggio..."></ion-textarea>
+        <ion-textarea [(ngModel)]="message" class="ion-no-padding email-content" clearOnEdit="false" autoGrow="true" cols="1" placeholder="Aggiungi un messaggio..."></ion-textarea>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -54,7 +54,7 @@
   
 <ion-footer class="ion-text-center ion-no-border">
   <ion-toolbar class="ion-text-center ion-no-border" color="transparent">
-    <ion-button color="primary" class="ion-text-uppercase ddp-hc" (click)="sendMessage()">{{LBL_INVIA_MESSAGGIO}}</ion-button>
+    <ion-button color="primary" class="ion-text-uppercase ddp-hc" (click)="saveQuotationOnBD()">{{LBL_INVIA_MESSAGGIO}}</ion-button>
   </ion-toolbar>
 </ion-footer>
 

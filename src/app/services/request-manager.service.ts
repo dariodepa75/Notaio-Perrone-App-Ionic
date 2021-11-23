@@ -371,7 +371,6 @@ export class RequestManagerService {
         to : mailTo,
         subject : subject,
         message : message,
-        from : request.email, 
         name: request.nome
       }
     });
@@ -397,18 +396,20 @@ export class RequestManagerService {
   /**
    * 
    */
-  setQuotationDesktop(submission_id, form_id, amount, email_content){
+  setQuotation(submission_id, form_id, amount, email_content){
     const that = this;
     this.managerService.showLoader();
-    console.log(' setQuotationDesktop ----->');
+    console.log(' setQuotation 2 ----->');
     let url = environment.setQuotationEndpoint;
     // let basicAuth: string = btoa("admin:12345678");
     let token = this.managerService.getToken();
+    // console.log(' token ----->'+token);
     const headers = { 
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Bearer ' + token
     } 
+
     const params = new HttpParams({
       fromObject: { 
         submission_id: submission_id,

@@ -70,7 +70,8 @@ export class ManagerService {
 
   /** */
   getToken(){
-    return this.token;
+    return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc3R1ZGlvLm5vdGFpb3BlcnJvbmUuaXQiLCJpYXQiOjE2MzcyNDE4NTYsIm5iZiI6MTYzNzI0MTg1NiwiZXhwIjoxNjM3ODQ2NjU2LCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.6SJUg0GPnzZPlQwhZex9d0fKmzZZxKHK8N8XmyObEiU";
+    // return this.token;
   }
 
   /** */

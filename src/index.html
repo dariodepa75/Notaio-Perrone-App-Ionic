@@ -3,9 +3,9 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Ionic App</title>
+  <title>App Notaio Perrone</title>
 
-  <base href="/" />
+  <base href="./" />
 
   <meta name="color-scheme" content="light dark" />
   <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -17,6 +17,17 @@
   <!-- add to homescreen for ios -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+  <!-- add onesignal push notification -->
+  <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+  <script>
+    window.OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+      OneSignal.init({
+        appId: "30fc7d33-aa53-47dc-8209-e4abd86dcece",
+      });
+    });
+  </script>
 
  </head>
 

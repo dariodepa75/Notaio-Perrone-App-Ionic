@@ -5,9 +5,15 @@ ion-header {
   background-color: #F2F2F2;
 }
 
-ion-toolbar {
-  --ion-background-color:#111D12;
+// ion-toolbar {
+//   --ion-background-color:#111D12;
+// }
+.toolbar-container {
+  --ion-background-color:rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
+
+
 
 ion-content {
   font-family: "Helvetica";
@@ -89,8 +95,9 @@ p {
 }
 
 .ddp-panel{
-  height: 252px;
+  // height: 252px;
   background-color: rgba(0, 0, 0, 0.05);
+  // padding: 15px;
 }
 
 .request_state {
@@ -124,3 +131,6 @@ p {
   padding: 10px 0px;
 }
 
+.no-scroll {
+  --overflow: hidden;
+}

@@ -106,6 +106,7 @@ export class AuthenticationService {
       console.log(data.token);
       that.managerService.stopLoader();
       that.isAuthenticated.next(true);
+      this.managerService.setToken(data.token);
       //that.managerService.setAuthentication(username, password);
       localStorage.setItem('token', data.token);
     }, error => {
@@ -145,8 +146,8 @@ export class AuthenticationService {
   
  
   /** */
-  logout(): Promise<void> {
+  logout(): void {
+    localStorage.removeItem(TOKEN_KEY);
     this.isAuthenticated.next(false);
-    return localStorage.remove(TOKEN_KEY);
   }
 }

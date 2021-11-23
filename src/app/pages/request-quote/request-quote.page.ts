@@ -5,6 +5,19 @@ import { ActivatedRoute } from '@angular/router';
 import { RequestManagerService } from '../../services/request-manager.service';
 import { RequestModel } from '../../models/request';
 import { formatDate } from '../../utils/utils';
+import { 
+  MSG_GENERIC_KO,
+  LBL_RICHIESTA_DEL,
+  LBL_MODIFICA_IMPORTO,
+  LBL_MODELLO_RISPOSTA,
+  LBL_INVIA_MESSAGGIO,
+  LBL_PREVENTIVO,
+  LBL_ANNULLA,
+  LBL_CONFERMA,
+  MSG_ERROR_AMOUNT
+} from '../../utils/constants';
+
+import { environment } from '../../../environments/environment';
 
 
 
@@ -26,15 +39,17 @@ export class RequestQuotePage implements OnInit {
   public timeRequest: string;
 
   // ------------------------- //
-  LBL_RICHIESTA_DEL = "RICHIESTA DEL";
-  LBL_MODIFICA_IMPORTO = "Modifica importo";
-  LBL_MODELLO_RISPOSTA = "Modello risposta";
-  LBL_INVIA_MESSAGGIO = "Invia messaggio";
-  LBL_PREVENTIVO = "Preventivo";
-  LBL_ANNULLA = 'Annulla';
-  LBL_CONFERMA = 'Conferma';
+  LBL_RICHIESTA_DEL = LBL_RICHIESTA_DEL;
+  LBL_MODIFICA_IMPORTO = LBL_MODIFICA_IMPORTO;
+  LBL_MODELLO_RISPOSTA = LBL_MODELLO_RISPOSTA;
+  LBL_INVIA_MESSAGGIO = LBL_INVIA_MESSAGGIO;
+  LBL_PREVENTIVO = LBL_PREVENTIVO;
+  LBL_ANNULLA = LBL_ANNULLA;
+  LBL_CONFERMA = LBL_CONFERMA;
+  // MSG_ERROR_AMOUNT = MSG_ERROR_AMOUNT;
+  // MSG_GENERIC_KO = MSG_GENERIC_KO;
 
-  MSG_ERROR_AMOUNT = 'Importo non valido';
+  private urlPayment = environment.urlPayment;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,7 +68,7 @@ export class RequestQuotePage implements OnInit {
 
   /** */
   ngOnInit() {
-    this.request.amount = "0,00";
+    this.request.amount = "100,00";
     this.initSubscriptions();
     this.getEmailTemplates();
   }
@@ -82,11 +97,33 @@ export class RequestQuotePage implements OnInit {
           that.templates = data.templates;
           that.templateSelected = that.templates[0].title;
           that.message = that.templates[0].body;
-          that.message = that.message.replace("$price", that.request.amount+"€"); 
-          that.message = that.message.replace("$name", that.request.nome); 
+          let amount = that.request.amount.replace(".", ",")+"€";
+          let urlPayment = that.urlPayment+"?submission_id="+that.request.submission_id;
+          that.message = that.message.replace("{{amount}}", amount); 
+          that.message = that.message.replace("{{name}}", that.request.nome); 
+          that.message = that.message.replace("{{urlPayment}}", urlPayment); 
           that.mailTo = data.info.mailTo;
           that.subject = data.info.subject;
         }
+      });
+      const subscribe = {key: subscribtionKey, value: subscribtion };
+      this.subscriptions.push(subscribe);
+    }
+
+    /** BSSetQuotation */
+    subscribtionKey = 'BSSetQuotation';
+    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    if (!subscribtion) {
+      subscribtion =  this.requestManagerService.BSSetQuotation.subscribe((data: any) => {
+        console.log('***** BSSetQuotation *****', data);
+        if (data != null) {
+          let msg = data.message?data.message:MSG_GENERIC_KO;
+          if(data.success == true){
+            that.sendMessage();
+          } else {
+            that.presentAlertResponse(msg, false);
+          }
+        } 
       });
       const subscribe = {key: subscribtionKey, value: subscribtion };
       this.subscriptions.push(subscribe);
@@ -99,16 +136,18 @@ export class RequestQuotePage implements OnInit {
       subscribtion =  this.requestManagerService.BSRequestSendMailQuotation.subscribe((data: any) => {
         console.log('***** BSRequestSendMailQuotation *****', data);
         if (data != null) {
-          if(data.message){
-            that.presentAlertResponse(data.message, data.success);
+          let msg = data.message?data.message:MSG_GENERIC_KO;
+          if(data.success == true){
+            that.presentAlertResponse(msg, data.success);
           } else {
-            that.presentAlertResponse(data, false);
+            that.presentAlertResponse(msg, false);
           }
         } 
       });
       const subscribe = {key: subscribtionKey, value: subscribtion };
       this.subscriptions.push(subscribe);
     }
+
   }
 
 
@@ -127,12 +166,21 @@ export class RequestQuotePage implements OnInit {
   }
   
   /** */
+  saveQuotationOnBD(){
+    let submission_id = this.request.submission_id;
+    let form_id = this.request.form_id;
+    let amount = this.request.amount;
+    let email_content =this.message;
+    this.requestManagerService.setQuotation(submission_id, form_id, amount, email_content);
+  }
+
+  /** */
   sendMessage(){
     console.log('sendMessage');
     if(parseFloat(this.request.amount) > 0){
       this.requestManagerService.sendMailQuotationDesktop(this.request, this.mailTo, this.subject, this.message);
     } else {
-      this.presentAlertResponse(this.MSG_ERROR_AMOUNT, false);
+      this.presentAlertResponse(MSG_ERROR_AMOUNT, false);
     }
   }
  
@@ -150,8 +198,11 @@ export class RequestQuotePage implements OnInit {
     });
     console.log('selectedForm: ', selectedForm);
     this.message = selectedForm.body;
-    this.message = this.message.replace("$price", this.request.amount+"€"); 
-    this.message = this.message.replace("$name", this.request.nome); 
+    let amount = this.request.amount.replace(".", ",")+"€";
+    let urlPayment = this.urlPayment+"?submission_id="+this.request.submission_id;
+    this.message = this.message.replace("{{amount}}", amount); 
+    this.message = this.message.replace("{{name}}", this.request.nome); 
+    this.message = this.message.replace("{{urlPayment}}", urlPayment); 
   }
 
   /** */
@@ -165,13 +216,13 @@ export class RequestQuotePage implements OnInit {
       alert.dismiss().then(() => {
         if (success == true) {
           this.navCtrl.back();
-          // this.modalCtr.dismiss(true).then(() => {
-          //   let submission_id = this.request.submission_id;
-          //   let form_id = this.request.form_id;
-          //   let amount = this.request.price;
-          //   let email_content =this.message;
-          //   this.requestManagerService.setQuotationDesktop(submission_id, form_id, amount, email_content);
-          // });
+          //this.modalCtr.dismiss(true).then(() => {
+            // let submission_id = this.request.submission_id;
+            // let form_id = this.request.form_id;
+            // let amount = this.request.amount;
+            // let email_content =this.message;
+            // this.requestManagerService.setQuotationDesktop(submission_id, form_id, amount, email_content);
+          //});
         }
       });
     }, 3000);
@@ -181,7 +232,7 @@ export class RequestQuotePage implements OnInit {
   async presentAlertPrompt() {
     const alert = await this.alertController.create({
       cssClass: 'ddp-alert',
-      header: this.LBL_PREVENTIVO,
+      header: LBL_PREVENTIVO,
       inputs: [
         {
           name: 'amount',
@@ -193,14 +244,14 @@ export class RequestQuotePage implements OnInit {
       ],
       buttons: [
         {
-          text: this.LBL_ANNULLA,
+          text: LBL_ANNULLA,
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
             console.log('Confirm Cancel');
           }
         }, {
-          text: this.LBL_CONFERMA,
+          text: LBL_CONFERMA,
           handler: (alertData) => {
             this.setQuotation(alertData.amount);
             console.log('Confirm Ok', alertData.amount);

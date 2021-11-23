@@ -6,7 +6,6 @@ import * as moment from 'moment';
 
 import { RequestManagerService } from '../../services/request-manager.service';
 import { RequestModel } from '../../models/request';
-// import { FormulateQuotePage } from '../formulate-quote/formulate-quote.page';
 import {
   STATUS_0, 
   STATUS_100, 
@@ -128,7 +127,7 @@ export class DetailRequestPage implements OnInit {
     this.numberDay = date[1];
     this.month = date[2];
     this.year = date[3];
-    this.stringOraDesiderata = "alle "+this.request.ora_desiderata;
+    this.stringOraDesiderata = "ore "+this.request.ora_desiderata;
   }
 
   formatDate(){

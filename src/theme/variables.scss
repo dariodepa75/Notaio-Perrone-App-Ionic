@@ -83,6 +83,14 @@
   --ion-color-transparent-shade: #1e2023;
   --ion-color-transparent-tint: #383a3e;
 
+  /** gray **/
+  --ion-color-gray: #F2F2F2;
+  --ion-color-gray-rgb: 242, 242, 242, 1;
+  --ion-color-gray-contrast: #ffffff;
+  --ion-color-gray-contrast-rgb: 255, 255, 255;
+  --ion-color-gray-shade: #1e2023;
+  --ion-color-gray-tint: #383a3e;
+
 }
 
 @media (prefers-color-scheme: dark) {
