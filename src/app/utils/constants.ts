@@ -10,6 +10,8 @@ export const ARRAY_STATUS_DATE_REQUEST = [{ 'code':'0', 'char': 'AC', 'message':
 {'code':'300', 'char': 'RA', 'message': 'RICHIESTA ARCHIVIATA'},
 {'code':'400', 'char': 'RC', 'message': 'RICHIESTA CESTINATA'}];
 
+
+export const STATUS_ERROR = "-1";
 export const STATUS_0 = "0";
 export const STATUS_100 = "100";
 export const STATUS_200 = "200";

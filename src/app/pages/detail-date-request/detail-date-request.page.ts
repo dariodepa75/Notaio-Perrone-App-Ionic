@@ -193,29 +193,29 @@ export class DetailDateRequestPage implements OnInit {
 
 
     /** */
-    subscribtionKey = 'isGoogleToken';
-    subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
-    if (!subscribtion) {
-      subscribtion = this.authenticationService.isGoogleToken.subscribe((data: any) => {
-        console.log('***** isGoogleToken *****', data);
-        if (data != null && data == false) {
-          console.log('***** isGoogleToken ***** FLASE');
-          that.presentAlertResponse(MSG_AUTH_KO, false);
-          that.googleToken = null;
-          that.authenticationService.signOutSocial();
-        } else if (data != null && data == true) {
-          console.log('***** isGoogleToken ***** TRUE');
-          // that.presentAlertResponse(MSG_AUTH_OK, true);
-          that.authenticationService.loadGoogleToken().then(res => {
-            that.googleToken = res;
-            console.log('***** that.googleToken *****', that.googleToken);
-          });
-          // that.googleToken = this.managerService.getGToken();
-        }
-      });
-      const subscribe = {key: subscribtionKey, value: subscribtion };
-      this.subscriptions.push(subscribe);
-    }
+    // subscribtionKey = 'isGoogleToken';
+    // subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    // if (!subscribtion) {
+    //   subscribtion = this.authenticationService.isGoogleToken.subscribe((data: any) => {
+    //     console.log('***** isGoogleToken *****', data);
+    //     if (data != null && data == false) {
+    //       console.log('***** isGoogleToken ***** FLASE');
+    //       that.presentAlertResponse(MSG_AUTH_KO, false);
+    //       that.googleToken = null;
+    //       that.authenticationService.signOutSocial();
+    //     } else if (data != null && data == true) {
+    //       console.log('***** isGoogleToken ***** TRUE');
+    //       // that.presentAlertResponse(MSG_AUTH_OK, true);
+    //       that.authenticationService.loadGoogleToken().then(res => {
+    //         that.googleToken = res;
+    //         console.log('***** that.googleToken *****', that.googleToken);
+    //       });
+    //       // that.googleToken = this.managerService.getGToken();
+    //     }
+    //   });
+    //   const subscribe = {key: subscribtionKey, value: subscribtion };
+    //   this.subscriptions.push(subscribe);
+    // }
 
     /** BSGetEmailTemplates */
     subscribtionKey = 'BSChangeDateStatus';
@@ -297,10 +297,9 @@ export class DetailDateRequestPage implements OnInit {
     this.datetimeDayShortNames = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
     this.datetimeToday = formatDate(new Date()); // new Date().toLocaleTimeString("it-IT", {timeZone: "Europe/Rome"});
     this.datetimeEndDate = addTimeToDate(this.datetimeToday, '', 730, 0, 0);
-    this.datetimeMinuteValues = "0, 15, 30, 45";
+    this.datetimeMinuteValues = "0, 30";
     this.datetimeDoneText = "CONFERMA";
     this.datetimeCancelText = "ANNULLA";
-  
   }
 
   /** */
@@ -362,6 +361,15 @@ export class DetailDateRequestPage implements OnInit {
     console.log('openStart');
   }
 
+  callNumber(telefono){
+    window.open('tel:' + telefono, '_system');
+  }
+
+  openEmail(email){
+    window.open('mailto:' + email, '_blank')
+  }
+  
+
   // -------------------------------- //
   // GOOGLE CALENDAR 
   // -------------------------------- //
@@ -402,6 +410,8 @@ export class DetailDateRequestPage implements OnInit {
     let url = "https://calendar.google.com/calendar/embed?src=dt87td23ioa6dhp5k1g0rirtds%40group.calendar.google.com&ctz=Europe%2FRome";
     window.open(url,"_blank");
   }
+  
+
   
   /** */
   removeDateToCalendar(){  

@@ -1,25 +1,30 @@
 <ion-header [translucent]="false" translucent="false"  class="ion-border ion-no-padding">
   <ion-toolbar color="transparent">
-    <ion-buttons slot="end">
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <!-- <ion-buttons slot="end">
       <ion-button color="dark" (click)="goBack()">
         <ion-icon name="close-outline"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
     <ion-label *ngIf="request" slot="start" class="ddp-size12 ddp-light">{{LBL_RICHIESTA_DEL}} <span class="ddp-bold">{{ timeRequest }}</span></ion-label>
     <ion-title></ion-title> 
   </ion-toolbar>
 </ion-header>
 
 
-<ion-content *ngIf="request" [fullscreen]="true" fullscreen="true" fullscreen scroll-y="false" class="ion-padding">
+<ion-content *ngIf="request" [fullscreen]="true" fullscreen="true" fullscreen scroll-y="auto" class="ion-padding">
 
-  <div class="ddp-panel">
-    <ion-grid class="ion-no-padding">
+  <div>
+    <ion-grid class="ion-padding-bottom">
       <ion-row class="ion-padding-bottom">
-        <ion-col class="ion-text-center ddp-light">{{request.email}}</ion-col>
+        <ion-col class="ion-text-left ddp-light">{{request.nome}} chiede:</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col class="ion-text-center ddp-overflow ddp-light">{{request.quesito}}</ion-col>
+        <ion-col class="ion-text-left ddp-overflow ddp-light">{{request.quesito}}</ion-col>
       </ion-row>
     </ion-grid>
   </div>
@@ -40,8 +45,8 @@
     </ion-item>
   </ion-list>
 
-  <div class="ddp-panel">
-    <ion-grid class="ion-no-padding">
+  <div>
+    <ion-grid class="ion-padding-top">
       <ion-row>
         <ion-col class="ion-text-left">
         <ion-textarea [(ngModel)]="message" class="ion-no-padding email-content" clearOnEdit="false" autoGrow="true" cols="1" placeholder="Aggiungi un messaggio..."></ion-textarea>

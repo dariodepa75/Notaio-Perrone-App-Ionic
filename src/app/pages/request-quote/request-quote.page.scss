@@ -1,5 +1,6 @@
 ion-header {
-    font-family: "Helvetica";
+    font-family: 'HelveticaNeue-Light','Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,sans-serif;
+
     font-size: 16px;
     line-height: 1.5;
     background-color: #F2F2F2;
@@ -17,7 +18,7 @@ ion-label {
 }
 
 ion-content {
-    font-family: "Helvetica";
+    font-family: 'HelveticaNeue-Light','Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-size: 16px;
     line-height: 1.5;
 }
@@ -29,29 +30,15 @@ ion-item {
 ion-textarea { 
     background-color: rgba(0, 0, 0, 0.05);
     padding: 10px;
-    max-height: calc(100vh - 360px);
+    // max-height: calc(100vh - 360px);
     overflow: hidden;
+    margin: 0px;
 }
 
 ion-footer ion-button {
     margin-bottom: 20px;
 }
 
-
-.ddp-size12 {
-    font-size: 12px;
-    line-height: 2;
-} 
-.ddp-size18 {
-    font-size: 18px;
-    line-height: 2;
-}
-.ddp-bold {
-    font-weight: bolder;
-}
-.ddp-light {
-    font-weight: lighter;
-}
 
 textarea, input { 
     background: none; 
@@ -65,10 +52,4 @@ textarea, input {
     --inner-padding-top: 0;
 }
 
-.ddp-margin-6v0h{
-    margin: 6px 0;
-}
-.ddp-panel{
-    margin-top: 15px;
-}
 

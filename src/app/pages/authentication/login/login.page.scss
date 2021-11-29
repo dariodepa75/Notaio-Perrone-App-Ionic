@@ -7,3 +7,49 @@
 input.ng-invalid.ng-touched{
     border: 1px solid red;
 }
+
+ion-content{
+    --color: #062f77;
+    --background: #ffffff;
+    --offset-bottom: auto!important;
+    --overflow: hidden;
+    overflow: auto;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.content-img {
+    margin: 10vh auto 0 auto; 
+    width: 200px;
+}
+
+ion-item {
+    --background: #ffffff;
+    --color: #062f77;
+    margin-bottom: 10px;
+    
+}
+.item-inner{
+    --padding:0;
+    --margin:0;
+}
+ion-button{
+    --background: #062f77;
+}
+
+a{
+    color: #062f77;
+}
+.item .item-input {
+    background-color: transparent;
+}
+
+ion-grid{
+    --padding: 0 30px;
+}
+
+.remove_inner_bottom{
+    --inner-border-width: 0; // this removes the inner border width
+    height: 20px;
+ }

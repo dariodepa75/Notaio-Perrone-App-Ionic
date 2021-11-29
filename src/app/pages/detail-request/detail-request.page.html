@@ -1,17 +1,19 @@
 <ion-header [translucent]="false" translucent="false"  class="ion-border">
   <ion-toolbar color="transparent">
     
-    <!-- <ion-buttons slot="start">
+    <ion-buttons slot="start">
         <ion-button color="dark" (click)="goBack()">
           <ion-icon name="arrow-back-outline"></ion-icon>
         </ion-button>
-    </ion-buttons> -->
+    </ion-buttons>
 
-    <ion-buttons slot="end">
+    <!-- <ion-buttons slot="end">
       <ion-button color="dark" (click)="goBack()">
         <ion-icon name="close-outline"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
+
+
 
     <ion-label *ngIf="request" slot="start" class="ddp-size12 ddp-light">RICHIESTA DEL: <span class="ddp-bold">{{ timeRequest }}</span></ion-label>
     <ion-title></ion-title> 
@@ -27,14 +29,36 @@
       <ion-row>
         <ion-col class="ion-text-center ddp-light ddp-size20">{{day}}</ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col class="ion-text-center ddp-size90">{{numberDay}}</ion-col>
+      <ion-row style="position:relative">
+        <ion-col class="ion-text-center ddp-size70" >{{numberDay}}</ion-col>
+        <ion-icon *ngIf="request.status == STATUS_ERROR" class="ddp-pencil-date" name="pencil" (click)="openStart()">
+            <ion-datetime 
+              #dateTime
+              style="display:none"
+              class="ion-no-padding"
+              [(ngModel)]="ionDatetime"
+              [pickerOptions]="customPickerOptions" 
+              [displayFormat]="datetimeDisplayFormat"
+              [min]="datetimeToday"
+              [max]="datetimeEndDate"
+              [pickerFormat]="datetimePickerFormat"
+              [dayShortNames]="datetimeDayShortNames"
+              [monthShortNames]="dateMonthShortNames"
+              [minuteValues]="datetimeMinuteValues"
+              [cancelText]="datetimeCancelText"
+              [doneText]="datetimeDoneText"
+              (ionChange)="updateDate($event)"
+            ></ion-datetime>
+        </ion-icon>
+            
       </ion-row>
+      
       <ion-row>
         <ion-col class="ion-text-center ddp-light ddp-size20">{{month}} {{year}}</ion-col>
       </ion-row>
-      <ion-row >
-        <ion-col class="ion-text-center">{{stringOraDesiderata}}</ion-col>
+      <ion-row style="position:relative">
+        <ion-col class="ion-text-center ddp-hour">{{stringOraDesiderata}}</ion-col>
+        <ion-icon *ngIf="request.status == STATUS_ERROR" class="ddp-pencil-time" name="pencil"></ion-icon>
       </ion-row>
       <ion-row class="ion-padding-top">
         <ion-col class="ion-text-center">
@@ -45,10 +69,20 @@
   </div>
 
   <ion-list>
-    <ion-item>
+    <!-- <ion-item>
       <ion-grid>
         <ion-row>
           <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">NOME</ion-col>
+          <ion-col class="ion-text-left">{{request.nome}}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item> -->
+    <ion-item *ngIf="request.nome">
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">NOME</ion-col>
+        </ion-row>
+        <ion-row>
           <ion-col class="ion-text-left">{{request.nome}}</ion-col>
         </ion-row>
       </ion-grid>
@@ -57,14 +91,17 @@
     <ion-item>
       <ion-grid>
         <ion-row>
-          <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">EMAIL</ion-col>
-          <ion-col class="ion-text-left">{{request.email}}</ion-col>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">EMAIL</ion-col>
+        </ion-row>
+        <ion-row>
+          <!-- <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">EMAIL</ion-col> -->
+          <ion-col class="ion-text-left" (click)="openEmail(request.email)">{{request.email}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
 
     <ion-item>
-      <ion-grid class="ion-no-padding">
+      <ion-grid>
         <ion-row>
           <ion-col size="12" class="ion-text-left ion-text-uppercase ddp-light ddp-size12">VOGLIO ESSERE CONTATTATO TRAMITE {{request.modalita}}</ion-col>
         </ion-row>
@@ -72,27 +109,33 @@
     </ion-item>
 
     <ion-item *ngIf="request.telefono">
-      <ion-grid class="ion-no-padding">
+      <ion-grid>
         <ion-row>
-          <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">TELEFONO</ion-col>
-          <ion-col class="ion-text-left">{{request.telefono}}</ion-col>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">TELEFONO</ion-col>
+        </ion-row>
+        <ion-row>
+          <!-- <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">TELEFONO</ion-col> -->
+          <ion-col class="ion-text-left" (click)="callNumber(request.telefono)" >{{request.telefono}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
 
     <ion-item *ngIf="request.contatto_skype">
-      <ion-grid class="ion-no-padding">
+      <ion-grid >
         <ion-row>
-          <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">SKYPE</ion-col>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">SKYPE</ion-col>
+        </ion-row>
+        <ion-row>
+          <!-- <ion-col size="4" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">SKYPE</ion-col> -->
           <ion-col class="ion-text-left">{{request.contatto_skype}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
     
     <ion-item> 
-      <ion-grid class="ion-no-padding">
-        <ion-row class="ddp-row-title">
-          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-size12">QUESITO</ion-col>
+      <ion-grid >
+        <ion-row>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">QUESITO</ion-col>
         </ion-row>
         <ion-row class="ddp-row-text">
           <ion-col class="ion-text-left"><div [innerHTML]="request.quesito"></div></ion-col>
@@ -101,7 +144,7 @@
     </ion-item>
 
     <ion-item *ngIf="request.amount">
-      <ion-grid class="ion-no-padding">
+      <ion-grid>
         <ion-row>
           <ion-col size="8" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">IMPORTO PREVENTIVO</ion-col>
           <ion-col class="ion-text-right ddp-bold">{{request.amount}}€</ion-col>
@@ -110,9 +153,9 @@
     </ion-item>
 
     <ion-item *ngIf="request.email_content" >
-      <ion-grid class="ion-no-padding">
-        <ion-row class="ddp-row-title">
-          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-size12">RISPOSTA DEL: <span class="ddp-bold">{{ request.email_time }}</span></ion-col>
+      <ion-grid >
+        <ion-row>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">RISPOSTA DEL: <span class="ddp-bold">{{ request.email_time }}</span></ion-col>
         </ion-row>
         <ion-row class="ddp-row-text">
           <ion-col class="ion-text-left"><div [innerHTML]="request.email_content"></div></ion-col>
@@ -124,9 +167,9 @@
 
 </ion-content>
 
-<ion-footer class="ion-text-center ion-no-border">
+<ion-footer *ngIf="request && request.status == STATUS_0 && request.trash == false" class="ion-text-center ion-no-border">
   <ion-toolbar class="ion-text-center ion-no-border" color="transparent">
     <!-- <button ion-button (click)="Upload()"  full>Upload</button> -->
-    <ion-button *ngIf="request && request.status == STATUS_0" color="primary" class="ion-text-uppercase ddp-hc" (click)="formulateQuote()">{{MSG_FORMULATE_QUOTE}}</ion-button>
+    <ion-button color="primary" class="ion-text-uppercase ddp-hc" (click)="formulateQuote()">{{MSG_FORMULATE_QUOTE}}</ion-button>
   </ion-toolbar>
 </ion-footer>

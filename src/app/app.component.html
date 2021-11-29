@@ -3,14 +3,23 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
-          <ion-list-header>Notaio Alessandro Perrone</ion-list-header>
-          <ion-note>ver 0.3</ion-note>
+          <ion-list-header>
+            <img src="/assets/icon.png" />
+            <h3>Notaio<br>Alessandro Perrone</h3>
+          </ion-list-header>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+
+            <ion-item *ngIf="p.url" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
               <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
+
+            <ion-item *ngIf="p.link" routerDirection="root" (click)="goToCalendar(p.link)" lines="none" detail="false" routerLinkActive="selected">
+              <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+
           </ion-menu-toggle>
         </ion-list>
 
@@ -22,7 +31,17 @@
             <ion-label>{{ label }}</ion-label>
           </ion-item>
         </ion-list> -->
+
+        
       </ion-content>
+      
+      <ion-footer>
+        <ion-toolbar>
+          <ion-title></ion-title>
+          <ion-note>{{versionApp}}</ion-note>
+        </ion-toolbar>
+      </ion-footer>
+
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>

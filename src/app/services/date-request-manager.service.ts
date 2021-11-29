@@ -111,6 +111,38 @@ export class DateRequestManagerService {
 
 
   /** */
+  public googleCalendarGetToken(){
+    const that = this;
+    this.managerService.showLoader();
+    let url = environment.googleCalendarTokenEndpoint;
+    var headers = new HttpHeaders();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    let postData = {"":""}
+    let httpOptions = {
+      headers: headers,
+      data: postData
+    };
+    this.httpClient.get<any>(url, httpOptions)
+    .subscribe(data => {
+      console.log(' TEST data: ', data);
+      that.managerService.stopLoader();
+      that.BSAddCalendarEvent.next(data);
+      setTimeout(() => {
+        that.BSAddCalendarEvent.next(null);
+      }, 100);
+
+    }, error => {
+      that.managerService.stopLoader();
+      that.BSAddCalendarEvent.next(error);
+      setTimeout(() => {
+        that.BSAddCalendarEvent.next(null);
+      }, 100);
+      console.log('error TEST', error);
+    });
+  }
+
+
   public addEventToCalendar(token, idCalendar, event){
     const that = this;
     this.managerService.showLoader();

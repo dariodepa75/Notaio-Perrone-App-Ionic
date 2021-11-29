@@ -40,7 +40,11 @@
   }
 
 .no-scroll {
-    --overflow: hidden;
+  --overflow: hidden;
+  overflow: auto;
+  &::-webkit-scrollbar {
+      display: none;
+  }
 }
 
 // CSS GLOBAL CUSTOM //
@@ -77,5 +81,131 @@
   .letter {
     background-color: #705c48;
   }
+}
+
+.ddp-size12 {
+  font-size: 12px;
+  line-height: 2;
+}
+.ddp-size17 {
+  font-size: 17px;
+}
+.ddp-size18 {
+  font-size: 18px;
+  line-height: 2;
+}
+.ddp-size20 {
+  font-size: 20px;
+}
+.ddp-size70 {
+  font-size: 70px;
+  line-height: 1;
+}
+.ddp-size90 {
+  font-size: 90px;
+  line-height: 88px;
+}
+.ddp-sizeSX {
+  font-size: 10px;
+  line-height: 1;
+}
+.ddp-hour{
+  font-size: 40px;
+  line-height: 1;
+}
+
+.ddp-bold {
+  font-weight: bolder;
+}
+.ddp-light {
+  font-weight: normal;
+}
+
+.ddp-panel {
+  height: auto;
+  padding-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.ddp-round {
+  height: 100%;
+  width: 100%;
+  max-width: 50px;
+  max-height: 50px;
+  --border-radius: 100%;
+  border-radius: 100%;
+  padding: 0;
+  margin:0;
+}
+
+.ddp-hc {
+  // max-width: 210px;
+  display: inline-block;
+}   
+.ddp-row-title {
+  padding-top: 10px;
+}
+.ddp-row-text {
+  padding: 10px 0px;
+}
+.ddp_tag_date {
+  color: #F2F2F7;
+  padding: 2px 10px 2px 10px;
+  height: auto;
+  vertical-align: middle;
+  font-size: 15px;
+  line-height: 1.5;
+  background-color: #333333;
+}
+.ddp-border-bottom {
+  border-bottom: 1px solid #333333;
+}
+
+
+
+
+
+.ddp-margin-6v0h {
+  margin: 6px 0;
+}
+
+.ddp-item {
+  color: #777;
+  font-size: 13px;
+  font-family: 'HelveticaNeue-Light','Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,sans-serif;
+  line-height: 18px;
+}
+
+.ddp-date {
+  font-weight: normal;
+  padding-right: 8px;
+  font-size: 12px;
+}
+.ddp-time {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+
+ion-grid{
+  width: 100%;
+}
+
+// ************* HEADER ************** //
+ion-toolbar {
+  background: #f1f1f1;
+  border-top-width: 0;
+  --background: #f1f1f1;
+}
+
+ion-title {
+  color: #333;
+  font-family: 'HelveticaNeue-Light','Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-size: 19px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 300;
+}
+ion-menu-button{
+  color:#333;
 }
 

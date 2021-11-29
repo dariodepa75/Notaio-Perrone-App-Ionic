@@ -31,6 +31,7 @@ export class AuthenticationService {
   ) {
     //this.refreshToken();
     this.loadToken();
+    this.googleCalendarGetToken();
     const that = this;
 
     this.authService.authState.subscribe((user) => {
@@ -72,6 +73,34 @@ export class AuthenticationService {
     return null;
   }
  
+  /** */
+  async googleCalendarGetToken(){
+    // localStorage.setItem(GOOGLE_TOKEN_KEY, environment.googleToken);
+    // this.managerService.setGToken(environment.googleToken);
+    // this.isGoogleToken.next(true);
+
+    const that = this;
+    let url = environment.googleCalendarTokenEndpoint;
+    var headers = new HttpHeaders();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    let postData = {"":""}
+    let httpOptions = {
+      headers: headers,
+      data: postData
+    };
+    this.httpClient.get<any>(url, httpOptions)
+    .subscribe(data => {
+      console.log(' google Token: ', data);
+      localStorage.setItem(GOOGLE_TOKEN_KEY, data.token);
+      that.managerService.setGToken(data.token);
+      that.isGoogleToken.next(true);
+    }, error => {
+      that.isGoogleToken.next(false);
+      console.log('error google Token:', error);
+    });
+  }
+
   /** */
   // login2(credentials: {email, password}): Observable<any> {
   //   return this.http.post(`https://reqres.in/api/login`, credentials).pipe(
@@ -118,19 +147,18 @@ export class AuthenticationService {
 
 
 
-  refreshToken(): void {
-    const googleLoginOptions = {
-      scope: 'profile, email, https://www.googleapis.com/auth/calendar, https://www.googleapis.com/auth/calendar.events'
-    }; 
-    this.authService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
-  }
+  // refreshToken(): void {
+  //   const googleLoginOptions = {
+  //     scope: 'profile, email, https://www.googleapis.com/auth/calendar, https://www.googleapis.com/auth/calendar.events'
+  //   }; 
+  //   this.authService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
+  // }
 
   //----------------------------//
   signInWithGoogle(): void {
     const googleLoginOptions = {
       scope: 'profile email https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events'
     }; // https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiauth2clientconfig
-    
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID, googleLoginOptions);
   }
 

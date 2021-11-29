@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
 
@@ -9,9 +9,10 @@ import { RequestModel } from '../../models/request';
 import {
   STATUS_0, 
   STATUS_100, 
+  STATUS_ERROR,
   MSG_FORMULATE_QUOTE
 } from '../../utils/constants';
-
+import { formatFromDateToString, addTimeToDate, creationDate, formatDate } from '../../utils/utils';
 
 @Component({
   selector: 'app-detail-request',
@@ -19,6 +20,8 @@ import {
   styleUrls: ['./detail-request.page.scss'],
 })
 export class DetailRequestPage implements OnInit {
+  @ViewChild('dateTime') sTime;
+
   public request: RequestModel;
   public key: string;
   public modalDataResponse: any;
@@ -31,9 +34,26 @@ export class DetailRequestPage implements OnInit {
   public timeRequest: string;
   public stringOraDesiderata: string;
 
+  STATUS_ERROR = STATUS_ERROR;
   STATUS_0 = STATUS_0; // in attesa di risposta
   STATUS_100 = STATUS_100; // in attesa di pagamento
   MSG_FORMULATE_QUOTE = MSG_FORMULATE_QUOTE;
+
+  // ion-datetime config ------------- //
+  public ionDatetime: string;
+  public datetimeDisplayFormat: string;
+  public datetimePickerFormat: string;
+  public datetimeDisplayTimezone: string;
+  public datetimeDayShortNames: (string)[];
+  public dateMonthShortNames: (string)[];
+  public datetimeToday: string;
+  public datetimeEndDate: string;
+  public datetimeMinuteValues: string;
+  public datetimeDoneText: string;
+  public datetimeCancelText: string;
+  customPickerOptions: any; 
+  // ---------------------------------- //
+
 
   constructor(
     private requestManagerService : RequestManagerService,
@@ -84,6 +104,7 @@ export class DetailRequestPage implements OnInit {
           that.request = data;
           that.setDate();
           that.formatDate();
+          // that.initDatetime();
           console.log('requestManagerService ***** BSRequestByID *****', that.request);
         }
       });
@@ -115,7 +136,22 @@ export class DetailRequestPage implements OnInit {
   // }
   
 
-  
+  /** */
+  initDatetime(){
+    var isoDate = creationDate(this.request.data_desiderata, this.request.ora_desiderata, "YYYY-MM-DDThh:mmZ"); //, "YYYY-MM-DDThh:mmTZD"
+    this.ionDatetime = new Date(isoDate).toISOString();
+    console.log("1-----------> ",isoDate);
+    this.datetimeDisplayFormat = "DDD, DD MMM YYYY";
+    this.datetimePickerFormat = "DD MMM YYYY";
+    this.datetimeDisplayTimezone = "UTC";
+    this.dateMonthShortNames = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+    this.datetimeDayShortNames = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+    this.datetimeToday = formatDate(new Date());
+    this.datetimeEndDate = addTimeToDate(this.datetimeToday, 'YYYY-MM-DDTHH:mm:ss', 365, 0, 0);
+    this.datetimeMinuteValues = "0, 15, 30, 45";
+    this.datetimeDoneText = "CONFERMA";
+    this.datetimeCancelText = "ANNULLA";
+  }
 
   /** */
   setDate(){
@@ -139,6 +175,21 @@ export class DetailRequestPage implements OnInit {
     console.log('curr_date:', this.timeRequest);
   }
 
+  callNumber(telefono){
+    window.open('tel:' + telefono, '_system');
+  }
+
+  openEmail(email){
+    window.open('mailto:' + email, '_blank')
+  }
+  
+  /** */
+  updateDate($event){
+    // console.log('4-------> '+this.ionDatetime);
+    // this.initDateRequest(this.ionDatetime, '');
+  }
+
+
   /** */
   getBackButtonText() {
     const win = window as any;
@@ -151,6 +202,12 @@ export class DetailRequestPage implements OnInit {
     this.navCtrl.back();
     // this.location.back();
     // this.navCtrl.navigateBack('/');
+  }
+
+  /** */
+  openStart(){
+    this.sTime.open();
+    console.log('openStart');
   }
 
   /** */

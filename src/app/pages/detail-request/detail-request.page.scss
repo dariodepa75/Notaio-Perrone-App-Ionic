@@ -1,13 +1,10 @@
 ion-header {
-  font-family: "Helvetica";
+  font-family: 'HelveticaNeue-Light','Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,sans-serif;
   font-size: 16px;
   line-height: 1.5;
   background-color: #F2F2F2;
 }
 
-// ion-toolbar {
-//   --ion-background-color:#111D12;
-// }
 .toolbar-container {
   --ion-background-color:rgba(0, 0, 0, 0.05);
   background-color: rgba(0, 0, 0, 0.05);
@@ -16,7 +13,7 @@ ion-header {
 
 
 ion-content {
-  font-family: "Helvetica";
+  font-family: 'HelveticaNeue-Light','Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,sans-serif;
   font-size: 16px;
   line-height: 1.5;
 }
@@ -60,9 +57,9 @@ ion-item ion-note {
   margin-right: 12px;
   font-weight: normal;
 }
-ion-footer ion-button {
-  margin-bottom: 20px;
-}
+// ion-footer ion-button {
+//   margin-bottom: 0px;
+// }
 
 
 h1 {
@@ -73,31 +70,6 @@ h1 {
 
 p {
   line-height: 22px;
-}
-
-.ddp-size12 {
-  font-size: 12px;
-  line-height: 2;
-}
-.ddp-size20{
-  font-size: 20px;
-}
-.ddp-size90{
-  font-size: 90px;
-  line-height: 88px;
-}
-
-.ddp-bold {
-  font-weight: bolder;
-}
-.ddp-light {
-  font-weight: lighter;
-}
-
-.ddp-panel{
-  // height: 252px;
-  background-color: rgba(0, 0, 0, 0.05);
-  // padding: 15px;
 }
 
 .request_state {
@@ -119,18 +91,18 @@ p {
   }
 }
 
-.ddp-hc {
-  // max-width: 210px;
-  display: inline-block;
-}   
-
-.ddp-row-title {
-  padding-top: 10px;
-}
-.ddp-row-text {
-  padding: 10px 0px;
+.ddp-pencil-date { 
+  position: absolute;
+  right: calc(50% - 65px);
+  top: 10px;
+  color: #777;
+  font-size: larger;
 }
 
-.no-scroll {
-  --overflow: hidden;
+.ddp-pencil-time { 
+  position: absolute;
+  right: calc(50% - 75px);
+  top: 4px;
+  color: #777;
+  font-size: initial;
 }

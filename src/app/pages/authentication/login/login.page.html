@@ -1,48 +1,103 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>Log In</ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
+
+<ion-content padding>
+   <div class="content-img" text-center>
+      <ion-img src="assets/icon.png"></ion-img>
+   </div>
+   <h3 class="ion-text-center">Notaio Alessandro Perrone</h3>
+
+  <!-- <form #form="ngForm" (ngSubmit)="login(form)">  
+    
+    
+  -->
+  <form [formGroup]="ionicForm" (ngSubmit)="submitForm()" novalidate>
+    <ion-grid padding>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Username</ion-label>
+        <ion-input formControlName="username" type="text"></ion-input>
+      </ion-item>
+      <div class="ion-no-border remove_inner_bottom" lines="none">
+        <span color="danger" class="error ion-padding" *ngIf="isSubmitted && errorControl.username.errors?.required">
+          campo richiesto.
+        </span>
+        <span color="danger" class="error ion-padding" *ngIf="isSubmitted && errorControl.username.errors?.minlength">
+          Minimo 4 caratteri.
+        </span>
+      </div>
+     
+
+      <ion-item lines="full">
+        <ion-label position="floating">Password</ion-label>
+        <ion-input formControlName="password" type="password"></ion-input>
+      </ion-item>
+      <div class="ion-no-border remove_inner_bottom" lines="none">
+        <span color="danger" class="error ion-padding" *ngIf="isSubmitted && errorControl.password.errors?.required">
+          campo richiesto.
+        </span>
+        <span color="danger" class="error ion-padding" *ngIf="isSubmitted && errorControl.password.errors?.minlength">
+          Minimo 4 caratteri.
+        </span> 
+      </div>
+          
+  
+    </ion-grid>
+    
+    <ion-grid class="ion-margin-top">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="12" class="ion-text-center">
+          <ion-button type="submit" expand="block">Invia</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
 
+    <!-- 
+      <ion-row class="ion-padding" justify-content-center>
+        <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
+          <div padding>
+            <ion-item class="ion-no-padding">
+              <ion-input name="email" type="email" placeholder="your@email.com" ngModel required></ion-input>
+            </ion-item>
+            <ion-item class="ion-no-padding">
+              <ion-input name="password" type="password" placeholder="Password" ngModel required></ion-input>
+            </ion-item>
+          </div>
+          <div padding>
+            <ion-button size="large" type="submit" [disabled]="form.invalid" expand="block">Login</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row justify-content-center class="ion-padding">
+        <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
+          <div class="ion-text-center" size-md="6" size-lg="5" size-xs="12">
+            Sei hai scordato i dati di accesso vai <a routerLink='https://studio.notaioperrone.it/wp-admin/users.php'>qui</a>!
+          </div>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid> -->
+  </form>
+  
+  
+
+</ion-content>
+
+<!-- 
 <ion-content>
   <form [formGroup]="ionicForm" (ngSubmit)="submitForm()" novalidate>
 
-    <ion-item lines="full">
-      <ion-label position="floating">Username</ion-label>
-      <ion-input formControlName="username" type="text"></ion-input>
-    </ion-item>
-    <span color="danger" class="error ion-padding" *ngIf="isSubmitted && errorControl.username.errors?.required">
-      campo richiesto.
-    </span>
-    <span color="danger" class="error ion-padding" *ngIf="isSubmitted && errorControl.username.errors?.minlength">
-      Minimo 4 caratteri.
-    </span>
+    
 
-    <!-- <ion-item lines="full">
-      <ion-label position="floating">Email</ion-label>
-      <ion-input formControlName="email" type="email"></ion-input>
-    </ion-item>
-    <span color="danger" class="error ion-padding" *ngIf="isSubmitted && errorControl.email.errors?.required">
-      campo richiesto.
-    </span>
-    <span color="danger" class="error ion-padding" *ngIf="isSubmitted && errorControl.email.errors?.pattern">
-      inserisci una email valida.
-    </span> -->
-
-    <ion-item lines="full">
-      <ion-label position="floating">Password</ion-label>
-      <ion-input formControlName="password" type="password"></ion-input>
-    </ion-item>
-    <span color="danger" class="error ion-padding" *ngIf="isSubmitted && errorControl.password.errors?.required">
-      campo richiesto.
-    </span>
-    <span color="danger" class="error ion-padding" *ngIf="isSubmitted && errorControl.password.errors?.minlength">
-      Minimo 4 caratteri.
-    </span>
+   
 
     <ion-row>
       <ion-col>
@@ -51,4 +106,4 @@
     </ion-row>
   </form>
 
-</ion-content>
+</ion-content> -->

@@ -396,7 +396,7 @@ export class RequestManagerService {
   /**
    * 
    */
-  setQuotation(submission_id, form_id, amount, email_content){
+  setQuotation(submission_id, form_id, amount, email, email_content){
     const that = this;
     this.managerService.showLoader();
     console.log(' setQuotation 2 ----->');
@@ -415,7 +415,8 @@ export class RequestManagerService {
         submission_id: submission_id,
         form_id : form_id,
         amount : amount,
-        email_content : email_content
+        email_content : email_content,
+        email: email
       }
     });
     this.httpClient.post<any>(url, params, {'headers':headers})

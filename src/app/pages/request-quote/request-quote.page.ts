@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NavController, AlertController } from '@ionic/angular';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { RequestManagerService } from '../../services/request-manager.service';
 import { RequestModel } from '../../models/request';
@@ -52,12 +52,13 @@ export class RequestQuotePage implements OnInit {
   private urlPayment = environment.urlPayment;
 
   constructor(
-    private route: ActivatedRoute,
+    private router: Router,
+    private activeRoute: ActivatedRoute,
     public requestManagerService: RequestManagerService,
     public navCtrl: NavController,
     public alertController: AlertController
   ) { 
-    this.route.queryParams.subscribe(params => {
+    this.activeRoute.queryParams.subscribe(params => {
       if (params && params.request) {
         console.log('request:: ', params.request);
         this.request = JSON.parse(params.request);
@@ -171,14 +172,16 @@ export class RequestQuotePage implements OnInit {
     let form_id = this.request.form_id;
     let amount = this.request.amount;
     let email_content =this.message;
-    this.requestManagerService.setQuotation(submission_id, form_id, amount, email_content);
+    let email = this.request.email;
+    this.requestManagerService.setQuotation(submission_id, form_id, amount, email, email_content);
   }
 
   /** */
   sendMessage(){
     console.log('sendMessage');
+    let email = this.request.email;
     if(parseFloat(this.request.amount) > 0){
-      this.requestManagerService.sendMailQuotationDesktop(this.request, this.mailTo, this.subject, this.message);
+      this.requestManagerService.sendMailQuotationDesktop(this.request, email, this.subject, this.message);
     } else {
       this.presentAlertResponse(MSG_ERROR_AMOUNT, false);
     }
@@ -215,7 +218,8 @@ export class RequestQuotePage implements OnInit {
     setTimeout(()=>{
       alert.dismiss().then(() => {
         if (success == true) {
-          this.navCtrl.back();
+          // this.navCtrl.back();
+          this.router.navigate(['/pending-payment-request']);
           //this.modalCtr.dismiss(true).then(() => {
             // let submission_id = this.request.submission_id;
             // let form_id = this.request.form_id;

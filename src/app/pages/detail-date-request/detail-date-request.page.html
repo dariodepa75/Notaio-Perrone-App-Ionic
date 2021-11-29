@@ -1,11 +1,17 @@
-<ion-header [translucent]="false" translucent="false"  class="ion-no-border">
+<ion-header [translucent]="false" translucent="false">
   <ion-toolbar color="transparent">
 
-    <ion-buttons slot="end">
+    <!-- <ion-buttons slot="end">
       <ion-button color="dark" (click)="goBack()">
         <ion-icon name="close-outline"></ion-icon>
       </ion-button>
+    </ion-buttons> -->
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
+
 
     <ion-label *ngIf="request" slot="start" class="ddp-size12 ddp-light">RICHIESTA DEL: <span class="ddp-bold">{{ timeRequest }}</span></ion-label>
     <ion-title></ion-title> 
@@ -14,7 +20,7 @@
 
 <ion-content [fullscreen]="true" fullscreen="true" fullscreen *ngIf="request">
   <div class="ddp-panel">
-    <ion-grid class="ion-no-padding">
+    <ion-grid class="ion-padding-top">
 
       <ion-row class="ddp-border-bottom">
         <ion-col size="auto" class="ion-text-left ddp-light ddp-size17 ddp_tag_date">{{stringAppointmentDate}}</ion-col>
@@ -82,6 +88,7 @@
               [pickerOptions]="customPickerOptions" 
               [displayFormat]="datetimeDisplayFormat"
               [min]="datetimeToday"
+              [max]="datetimeEndDate"
               [pickerFormat]="datetimePickerFormat"
               [dayShortNames]="datetimeDayShortNames"
               [monthShortNames]="dateMonthShortNames"
@@ -102,10 +109,11 @@
           <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">EMAIL</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col class="ion-text-left">{{request.email}}</ion-col>
+          <ion-col class="ion-text-left" (click)="openEmail(request.email)">{{request.email}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
+    
 
     <ion-item *ngIf="request.telefono">
       <ion-grid>
@@ -113,7 +121,7 @@
           <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">TELEFONO</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col class="ion-text-left">{{request.telefono}}</ion-col>
+          <ion-col class="ion-text-left" (click)="callNumber(request.telefono)">{{request.telefono}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
@@ -145,21 +153,23 @@
 
 </ion-content>
 
-<ion-footer class="ion-text-center ion-no-border">
+<ion-footer *ngIf="request && request.status == STATUS_0" class="ion-text-center ion-no-border">
   <ion-toolbar class="ion-text-center ion-no-border" color="transparent">
 
     <!-- <p> <a href="https://www.google.com/calendar/event?eid=Y2tyNnNtbmpsZXFpbG92cG5zZDlob2FhMWtfMjAyMTA4MTlUMTgwMDAwWiB0amI1c24xZG5ndnQ5bmJocGJzNG01amIwNEBn&amp;ctz=America/Los_Angeles" target="_blank">See more details</a> /  <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Coffee+House+Blues&amp;dates=20210819T110000/20210819T130000&amp;details=Come+join+us+every+Thursday+for+lunch%2C+coffee%2C+and+some+local+blues+music+talent.+Large+groups+please+call+ahead.&amp;location=1122+North+Shore+Lake+Drive%2C+San+Francisco%2C+CA&amp;trp=false&amp;ctz=America%2FLos_Angeles" target="_blank">Add to GCal</a></p> -->
 
-    <div *ngIf="googleToken;else no_auth">
+    <!-- <div *ngIf="googleToken;else no_auth">
       <ion-button *ngIf="request && request.status == STATUS_0" color="primary" class="ion-text-uppercase ddp-hc" (click)="addDateToCalendar()" >{{btnCalendario}}</ion-button>
-      <!-- <a *ngIf="request && request.status == STATUS_0" color="primary" class="ion-text-uppercase ddp-hc" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Coffee+House+Blues&amp;dates=20210819T110000/20210819T130000&amp;details=Come+join+us+every+Thursday+for+lunch%2C+coffee%2C+and+some+local+blues+music+talent.+Large+groups+please+call+ahead.&amp;location=1122+North+Shore+Lake+Drive%2C+San+Francisco%2C+CA&amp;trp=false&amp;ctz=America%2FLos_Angeles" target="_blank">{{btnCalendario}}</a> -->
       <ion-button color="primary" class="ion-text-uppercase ddp-hc" (click)="goToCalendar()">vai al calendario</ion-button>
     </div>
-  
-  <ng-template #no_auth>
+   -->
+  <!-- <ng-template #no_auth>
     <ion-button type="button" (click)="signInWithGoogle()" class="btn btn-danger">Login con Google</ion-button>
-  </ng-template>
+  </ng-template> -->
 
+  <ion-button  color="primary" class="ion-text-uppercase ddp-hc" (click)="addDateToCalendar()" >{{btnCalendario}}</ion-button>
+
+      
   
   </ion-toolbar>
 </ion-footer>

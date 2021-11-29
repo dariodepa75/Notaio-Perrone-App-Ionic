@@ -13,12 +13,6 @@ $categories: (
     transparent: rgb(242,242,242,1)
   );
   
-  .ddp-item{
-    font-family: "Helvetica";
-    font-size: 14px;
-    line-height: 18px;
-  }
-  
   
   ion-item h2 {
     font-weight: 600;
@@ -26,18 +20,23 @@ $categories: (
   }
   
   ion-item h3 {
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 20px;
+    font-size: 17px;
+    font-weight: 300;
+    height: 24px;
+    line-height: 24px;
+    margin-left: 0px;
+    margin-top: 4px;
+    font-family: 'HelveticaNeue-Light','Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,sans-serif;
+    color: #060606;
   }
   ion-item h4 {
     font-size: 14px;
-    font-weight: lighter;
+    font-weight: normal;
     line-height: 18px;
   }
   ion-item p {
     font-size: 14px;
-    font-weight: lighter;
+    font-weight: normal;
     line-height: 18px;
   }
   
@@ -117,15 +116,5 @@ $categories: (
       padding: 0 3px;
       line-height: 1.6;
     }
-  }
-  .ddp-date {
-    font-weight: lighter;
-    padding-right: 8px;
-    font-size: 12px;
-  }
-  .ddp-time {
-    font-weight: bold;
-    font-size: 12px;
-  }
-  
+  }  
   

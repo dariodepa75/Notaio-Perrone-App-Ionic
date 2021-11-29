@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ManagerService } from './services/manager.service';
 import { AuthenticationService } from './services/authentication.service';
 import { Router } from '@angular/router';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -11,15 +12,17 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   private isAuthenticated = new BehaviorSubject(null);
-
+  public versionApp: String;
   public appPages = [
     { title: 'Consulenze', url: 'home', icon: 'mail' },
     { title: 'In attesa di pagamento', url: 'pending-payment-request', icon: 'card' },
-    { title: 'Appuntamenti', url: '/date-requests', icon: 'calendar' },
+    { title: 'Appuntamenti', url: '/date-requests', icon: 'time' },
     { title: 'Archiviati', url: '/archived', icon: 'archive' },
     { title: 'Cestino', url: '/trashed', icon: 'trash' },
+    { title: 'Calendario', link:environment.urlGoogleCalendar, icon: 'calendar' },
     { title: 'Log-out', url: '/login', icon: 'person' },
   ];
+
   // public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   constructor(
     public managerService: ManagerService,
@@ -33,6 +36,7 @@ export class AppComponent {
 
   /** */
   initializeApp() {
+    this.versionApp = environment.versionApp;
     this.initSubscriptions();
     this.managerService.checkPlatform();
     this.authenticationService.loadToken();
@@ -54,6 +58,9 @@ export class AppComponent {
     });
   }
 
+  goToCalendar(url){
+    window.open(url,"_blank");
+  }
 
 //   return new Promise((resolve, reject) => {
 //     this.loadScript(GoogleLoginProvider.PROVIDER_ID, 'https://apis.google.com/js/platform.js', () => {
