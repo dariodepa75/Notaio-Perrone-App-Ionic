@@ -67,7 +67,7 @@ export class DetailRequestPage implements OnInit {
   ngOnInit() {
     this.key = this.activatedRoute.snapshot.paramMap.get('id');
     this.initSubscriptions();
-    // this.requestManagerService.getRequestById(this.key);
+    //this.requestManagerService.getRequestById(this.key);
   }
 
   /** */
@@ -99,41 +99,36 @@ export class DetailRequestPage implements OnInit {
     subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
     if (!subscribtion) {
       subscribtion =  this.requestManagerService.BSRequestByID.subscribe((data: any) => {
-        console.log('***** BSRequestByID *****', data);
-        if (data) {
+        console.log('***** BSRequestByID *****', JSON.stringify(data));
+        if (data != null && data) {
           that.request = data;
-          that.setDate();
-          that.formatDate();
+          if(!that.request.data_desiderata || that.request.data_desiderata == undefined){
+            that.request.data_desiderata = '';
+            that.day = 'Data non specificata';
+          } else {
+            that.day = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'day');
+            that.numberDay = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'numberDay');
+            that.month = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'month');
+            that.year = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'year');
+          }
+          if(!that.request.ora_desiderata || that.request.ora_desiderata == undefined){
+            that.request.ora_desiderata = '';
+            that.stringOraDesiderata = 'Ora non specificata';
+          } else {
+            that.stringOraDesiderata = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'hour');
+          }
+          
+         
+
+          that.timeRequest = that.formatDate(this.request.time);
           // that.initDatetime();
-          console.log('requestManagerService ***** BSRequestByID *****', that.request);
+          console.log('requestManagerService ***** BSRequestByID *****', JSON.stringify(that.request));
         }
       });
       const subscribe = {key: subscribtionKey, value: subscribtion };
       this.subscriptions.push(subscribe);
     }
   }
-
-
-  /** */
-  // async initModal() {
-  //   const that = this;
-  //   const modal = await this.modalCtrl.create({
-  //     component: FormulateQuotePage,
-  //     cssClass: 'setting-modal',
-  //     componentProps: {
-  //       'request': that.request
-  //     },
-  //     backdropDismiss: true
-  //   });
-  //   modal.dismiss();
-  //   modal.onDidDismiss().then((modalDataResponse) => {
-  //     // console.log('Modal Sent Data : '+ modalDataResponse.data);
-  //     if (modalDataResponse.data == true) {
-  //       this.checkStatusRequest(modalDataResponse.data);
-  //     }
-  //   });
-  //   return await modal.present();
-  // }
   
 
   /** */
@@ -154,25 +149,28 @@ export class DetailRequestPage implements OnInit {
   }
 
   /** */
-  setDate(){
+  setDate(dataDesiderata, oraDesiderata, type){
     moment.locale('it');
-    var  d = new Date(this.request.data_desiderata); 
+    if (dataDesiderata == '') return;
+    var d = moment(dataDesiderata, 'YYYY-MM-DDThh:mmZ');
     let date = (moment(d).format('LLLL')).split(" ");
     console.log('data_richiesta: ', date);
-    this.day = date[0];
-    this.numberDay = date[1];
-    this.month = date[2];
-    this.year = date[3];
-    this.stringOraDesiderata = "ore "+this.request.ora_desiderata;
+    if (type == 'day') return date[0];
+    if (type == 'numberDay') return date[1];
+    if (type == 'month') return date[2];
+    if (type == 'year') return date[3];
+    if (type == 'hour') return "ore "+oraDesiderata;
   }
 
-  formatDate(){
+  formatDate(time){
     moment.locale('it');
-    var  d = new Date(this.request.time); 
+    // var d = new Date(this.request.time); 
+    var d = moment(time, 'YYYY-MM-DDThh:mmZ');
     let dateRequest = moment(d).format("D MMM YY");
     let timeRequest = moment(d).format("HH:mm");
-    this.timeRequest = dateRequest+" ora "+timeRequest;
-    console.log('curr_date:', this.timeRequest);
+    let resp = dateRequest+" ora "+timeRequest;
+    console.log('curr_date:', resp);
+    return resp;
   }
 
   callNumber(telefono){
@@ -182,7 +180,7 @@ export class DetailRequestPage implements OnInit {
   openEmail(email){
     window.open('mailto:' + email, '_blank')
   }
-  
+
   /** */
   updateDate($event){
     // console.log('4-------> '+this.ionDatetime);

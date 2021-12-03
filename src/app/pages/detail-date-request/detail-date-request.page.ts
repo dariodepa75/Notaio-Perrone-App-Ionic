@@ -8,7 +8,8 @@ import { DateRequestModel } from '../../models/date-request';
 
 import { 
   MSG_DATE_REQUEST, 
-  MSG_ADD_EVENT_OK, 
+  MSG_ADD_EVENT_OK,
+  MSG_ADD_EVENT_KO, 
   MSG_AUTH_OK, 
   MSG_AUTH_KO,
   MSG_GENERIC_OK,
@@ -87,10 +88,10 @@ export class DetailDateRequestPage implements OnInit {
   ngOnInit() {
     this.keyRequest = this.activatedRoute.snapshot.paramMap.get('id');
     // this.googleToken = this.managerService.getGToken();
-    this.authenticationService.loadGoogleToken().then(res => {
-      this.googleToken = res;
-      console.log('this.googleToken: ', this.googleToken);
-    });
+    // this.authenticationService.loadGoogleToken().then(res => {
+    //   this.googleToken = res;
+    //   console.log('this.googleToken: ', this.googleToken);
+    // });
     this.btnCalendario = "Aggiungi al calendario";
     this.initSubscriptions();
 
@@ -117,10 +118,6 @@ export class DetailDateRequestPage implements OnInit {
   }
 
   /** */
-  
-  // ngAfterViewInit(){
-  //   this.requestManagerService.getDateRequestById(this.keyRequest);
-  // }
   ionViewWillEnter(){
     console.log('ionViewWillEnter');
     this.requestManagerService.getDateRequestById(this.keyRequest);
@@ -140,13 +137,11 @@ export class DetailDateRequestPage implements OnInit {
     if (!subscribtion) {
       // console.log('***** BSAddCalendarEvent *****', this.requestManagerService.BSAddCalendarEvent);
       subscribtion = this.requestManagerService.BSAddCalendarEvent.subscribe((data: any) => {
-        console.log('***** BSAddCalendarEvent *****', data);
-        if (data != null && data.message) {
-          that.presentAlertResponse(data.message, false);
-          that.googleToken = null;
-          that.authenticationService.signOutSocial();
-        } else if (data != null && data) {
-          //that.presentAlertResponse(MSG_ADD_EVENT_OK, true);
+        console.log('***** BSAddCalendarEvent *****', JSON.stringify(data));
+        if (data != null && data.success == false) {
+          that.presentAlertResponse(MSG_ADD_EVENT_KO, false);
+        } else if (data != null && data.success == true) {
+          // that.presentAlertResponse(MSG_ADD_EVENT_OK, true);
           that.requestUpdate(data.id);
         }
       });
@@ -179,9 +174,10 @@ export class DetailDateRequestPage implements OnInit {
     if (!subscribtion) {
       // console.log('***** BSRequestByID *****', this.requestManagerService.BSRequestByID);
       subscribtion =  this.requestManagerService.BSRequestByID.subscribe((data: any) => {
-        console.log('***** BSRequestByID *****', data);
+        console.log('***** BSRequestByID XXX *****', JSON.stringify(data));
+
         if (data != null && data) {
-          that.request = data;
+          that.request = data as DateRequestModel;
           that.initDateRequest(that.request.data_desiderata, that.request.ora_desiderata);
           that.initDatetime();
           that.initAppointment();
@@ -222,10 +218,10 @@ export class DetailDateRequestPage implements OnInit {
     subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
     if (!subscribtion) {
       subscribtion =  this.requestManagerService.BSChangeDateStatus.subscribe((data: any) => {
-        console.log('***** BSChangeDateStatus *****', data);
+        console.log('***** BSChangeDateStatus *****', JSON.stringify(data));
         if (data != null && data.success == true) {
-          that.presentAlertResponse(MSG_ADD_EVENT_OK, true);
-          that.requestManagerService.getDateRequestById(that.keyRequest);
+          // that.presentAlertResponse(MSG_ADD_EVENT_OK, true);
+          // that.requestManagerService.getDateRequestById(that.keyRequest);
           // !!! LEGGI invio email se lo stato è quello corretto mi sembra 200!!!
         }
       });
@@ -240,14 +236,16 @@ export class DetailDateRequestPage implements OnInit {
     if (!subscribtion) {
       console.log('***** ADD - BSRequestUpdate *****');
       subscribtion =  this.requestManagerService.BSRequestUpdate.subscribe((data: any) => {
-        console.log('***** 2 - BSRequestUpdate *****', data);
+        console.log('***** 2 - BSRequestUpdate *****', JSON.stringify(data));
         if (data != null && data.success == true) {
           //that.presentAlertResponse(MSG_ADD_EVENT_OK, true);
           console.log('***** TRUE BSRequestUpdate *****', data.success);
+          that.presentAlertResponse(MSG_ADD_EVENT_OK, true);
           that.requestManagerService.changeStatus(that.request, STATUS_200, false);
         } else if (data != null) {
           console.log('***** FALSE BSRequestUpdate *****');
           that.presentAlertResponse(MSG_GENERIC_KO, false);
+          that.requestManagerService.changeStatus(that.request, STATUS_0, false);
           that.removeEventToCalendar();
         }
       });
@@ -402,7 +400,7 @@ export class DetailDateRequestPage implements OnInit {
   /** */
   removeEventToCalendar(){
     console.log('removeEventToCalendar:: ', this.request.eventId);
-    this.requestManagerService.removeEventToCalendar(this.googleToken, this.idCalendar, this.request.eventId);
+    this.requestManagerService.deleteEventToCalendar(this.idCalendar, this.request.eventId);
   }
 
 

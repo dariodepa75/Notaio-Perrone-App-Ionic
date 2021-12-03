@@ -66,7 +66,7 @@ export class DateRequestsPage implements OnInit {
     if (!subscribtion) {
       subscribtion =  this.requestManagerService.BSChangeDateStatus.subscribe((data: any) => {
         console.log('***** BSChangeDateStatus *****', data);
-        if (data) {
+        if (data == true) {
           that.getDateRequests(null);
         }
       });

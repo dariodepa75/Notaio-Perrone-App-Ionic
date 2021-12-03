@@ -45,6 +45,8 @@ export const LBL_CONFERMA = 'Conferma';
 export const MSG_AUTH_OK = 'Autenticazione google riuscita';
 export const MSG_AUTH_KO = 'Autenticazione google NON riuscita';
 export const MSG_ADD_EVENT_OK = 'Evento aggiunto al calendario correttamente';
+export const MSG_ADD_EVENT_KO = 'Errore nell\'aggiunta dell\'evento al calendario';
+
 export const MSG_DATE_REQUEST = 'APPUNTAMENTO';
 export const MSG_GENERIC_KO  = "Operazione fallita";
 export const MSG_GENERIC_OK  = "Operazione conclusa con successo";

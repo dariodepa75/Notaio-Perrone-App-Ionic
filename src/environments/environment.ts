@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  versionApp: 'ver 0.1.4',
+  versionApp: 'ver 0.1.6',
   production: false,
   wpJsonUrl: 'https://studio.notaioperrone.it/wp-json',
   googleIdCalendar: 'dt87td23ioa6dhp5k1g0rirtds@group.calendar.google.com',
@@ -16,7 +16,11 @@ export const environment = {
   dateRequestsEndpoint: 'https://app.notaioperrone.it/API/dateRequestsJson.php',
   setStatusRequestEndpoint: 'https://app.notaioperrone.it/API/setStatus.php',
   updateRequestEndpoint: 'https://app.notaioperrone.it/API/updateRequest.php',
-  googleCalendarEndpoint: 'https://www.googleapis.com/calendar/v3/calendars/',
+  googleCalendarEndpoint: 'https://app.notaioperrone.it/googleAPI/',
+  pgGoogleCalendarInsert: 'insertEvent.php',
+  pgGoogleCalendarDelete: 'deleteEvent.php',
+  
+  // googleCalendarEndpoint: 'https://www.googleapis.com/calendar/v3/calendars/',
   googleCalendarTokenEndpoint: 'https://app.notaioperrone.it/googleAPI/getToken.php',
   urlPayment: 'https://app.notaioperrone.it/checkout/step1.php',
 

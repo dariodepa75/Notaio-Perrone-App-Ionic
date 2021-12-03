@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 
 import { ManagerService } from './manager.service';
 import { environment } from '../../environments/environment';
@@ -23,28 +24,30 @@ export class AuthenticationService {
   token = '';
   googleToken = '';
   user: UserModel;
+  isMobile = false;
 
   constructor(
+    private http: HTTP,
     private httpClient: HttpClient,
     public managerService: ManagerService,
     private authService: SocialAuthService
   ) {
     //this.refreshToken();
     this.loadToken();
-    this.googleCalendarGetToken();
+    
+    // this.googleCalendarGetToken();
     const that = this;
 
     this.authService.authState.subscribe((user) => {
       console.log('-------------------->>>>>> user: ', user, user.authToken);
-      // this.isLoggedin = (user != null);
-      if(user){
-        that.user = user;
-        localStorage.setItem(GOOGLE_TOKEN_KEY, user.authToken);
-        that.managerService.setGToken(user.authToken);
-        that.isGoogleToken.next(true);
-      } else {
-        that.isGoogleToken.next(false);
-      }
+      // if(user){
+      //   that.user = user;
+      //   localStorage.setItem(GOOGLE_TOKEN_KEY, user.authToken);
+      //   that.managerService.setGToken(user.authToken);
+      //   that.isGoogleToken.next(true);
+      // } else {
+      //   that.isGoogleToken.next(false);
+      // }
     });
   }
  
@@ -73,12 +76,53 @@ export class AuthenticationService {
     return null;
   }
  
+
+
+  // ********** googleCalendarGetToken *********** // 
   /** */
   async googleCalendarGetToken(){
-    // localStorage.setItem(GOOGLE_TOKEN_KEY, environment.googleToken);
-    // this.managerService.setGToken(environment.googleToken);
-    // this.isGoogleToken.next(true);
+    const isMobile = this.managerService.isMobile;// <boolean> await this.managerService.checkPlatform();
+    console.log(' isMobile----->', isMobile);
+    if(isMobile){
+      this.googleCalendarGetTokenMobile();
+    } else {
+      this.googleCalendarGetTokenBrowser();
+    }
+  }
 
+  /** */
+  private async googleCalendarGetTokenMobile() {
+    console.log(' googleCalendarGetTokenMobile ----->');
+    const that = this;
+    let url = environment.googleCalendarTokenEndpoint;
+    const headers = { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    } 
+    const params = { };
+    this.http.get(url, params, headers)
+    .then(resp => {
+      console.log(' google Token: resp: ', JSON.stringify(resp));
+      try {
+        let data = JSON.parse(resp.data);
+        let token = data.token;
+        console.log(' google Token: ', token);
+        localStorage.setItem(GOOGLE_TOKEN_KEY, token);
+        that.managerService.setGToken(data.token);
+        that.isGoogleToken.next(true);
+      } catch(error) {
+        that.isGoogleToken.next(false);
+        console.log('error google Token:', error);
+      }
+    }).catch(error => {
+      that.isGoogleToken.next(false);
+      console.log('error google Token:', error);
+    });
+  }
+
+  /** */
+  private async googleCalendarGetTokenBrowser(){
+    console.log(' googleCalendarGetTokenBrowser ----->');
     const that = this;
     let url = environment.googleCalendarTokenEndpoint;
     var headers = new HttpHeaders();
@@ -100,27 +144,61 @@ export class AuthenticationService {
       console.log('error google Token:', error);
     });
   }
+  // ********************************************* //
+
+
+
+  // ****************** login ******************** // 
+  /** */
+  async login(username, password){
+    // const isMobile = <boolean> await this.managerService.checkPlatform();
+    const isMobile = this.managerService.isMobile;
+    console.log(' isMobile----->', isMobile);
+    this.managerService.stopLoader();
+    this.managerService.showLoader();
+    if(isMobile){
+      this.loginMobile(username, password);
+    } else {
+      // this.loginHttp(username, password);
+      this.loginBrowser(username, password);
+    }
+  }
 
   /** */
-  // login2(credentials: {email, password}): Observable<any> {
-  //   return this.http.post(`https://reqres.in/api/login`, credentials).pipe(
-  //     map((data: any) => data.token),
-  //     switchMap(token => {
-  //       return from(Storage.set({key: TOKEN_KEY, value: token}));
-  //     }),
-  //     tap(_ => {
-  //       this.isAuthenticated.next(true);
-  //     })
-  //   )
-  // }
+  private loginMobile(username, password) {
+    console.log(' loginHttp----->');
+    const that = this;
+    const params = { "username":username, "password":password };
+    const header = { };
+    this.http.post(environment.wpJsonUrl+'/jwt-auth/v1/token', params, header)
+    .then(resp => {
+      console.log('response 1: ', JSON.stringify(resp));
+      try {
+        let data = JSON.parse(resp.data);
+        console.log(data.token);
+        that.managerService.setToken(data.token);
+        localStorage.setItem('token', data.token);
+        that.managerService.stopLoader();
+        that.isAuthenticated.next(true);
+      } catch(e) {
+        console.error('JSON parsing error');
+        that.managerService.stopLoader();
+        that.isAuthenticated.next(false);
+      }
+      
+    }).catch(error => {
+      console.log('error login:', JSON.stringify(error));
+      that.managerService.stopLoader();
+      that.isAuthenticated.next(false);
+    });
+  }
 
   /** */
-  login(username, password) {
+  private loginBrowser(username, password) {
     console.log(' login----->');
     // username = "amministratore";
     // password = "R0IXZZgkguTcrBY$Wha3f2UB";
     const that = this;
-    this.managerService.showLoader();
     var headers = new HttpHeaders();
     headers.append("Accept", 'application/json');
     headers.append('Content-Type', 'application/json');
@@ -133,18 +211,18 @@ export class AuthenticationService {
     .subscribe(data => {
       console.log(' login data: ', data);
       console.log(data.token);
-      that.managerService.stopLoader();
-      that.isAuthenticated.next(true);
       this.managerService.setToken(data.token);
       //that.managerService.setAuthentication(username, password);
       localStorage.setItem('token', data.token);
+      that.managerService.stopLoader();
+      that.isAuthenticated.next(true);
     }, error => {
+      console.log('error login', JSON.stringify(error));
       that.managerService.stopLoader();
       that.isAuthenticated.next(false);
-      console.log('error login', error);
     });
   }
-
+  // ********************************************* //
 
 
   // refreshToken(): void {

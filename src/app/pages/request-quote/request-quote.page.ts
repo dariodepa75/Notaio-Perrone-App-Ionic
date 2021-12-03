@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { RequestManagerService } from '../../services/request-manager.service';
 import { RequestModel } from '../../models/request';
-import { formatDate } from '../../utils/utils';
+import { formatDate, htmlEntities } from '../../utils/utils';
 import { 
   MSG_GENERIC_KO,
   LBL_RICHIESTA_DEL,
@@ -31,9 +31,10 @@ export class RequestQuotePage implements OnInit {
   private subscriptions = [];
   public request: RequestModel;
   public price: string;
-  public message: string;
+  public message: any;
   public templates: any;
   public templateSelected: any;
+  public extension: string;
   public mailTo: string;
   public subject: string;
   public timeRequest: string;
@@ -93,10 +94,11 @@ export class RequestQuotePage implements OnInit {
     subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
     if (!subscribtion) {
       subscribtion =  this.requestManagerService.BSGetEmailTemplates.subscribe((data: any) => {
-        console.log('***** BSGetEmailTemplates *****', data);
+        console.log('***** BSGetEmailTemplates *****', JSON.stringify(data));
         if (data) {
           that.templates = data.templates;
           that.templateSelected = that.templates[0].title;
+          that.extension = that.templates[0].ext;
           that.message = that.templates[0].body;
           let amount = that.request.amount.replace(".", ",")+"€";
           let urlPayment = that.urlPayment+"?submission_id="+that.request.submission_id;
@@ -105,6 +107,7 @@ export class RequestQuotePage implements OnInit {
           that.message = that.message.replace("{{urlPayment}}", urlPayment); 
           that.mailTo = data.info.mailTo;
           that.subject = data.info.subject;
+          that.message = htmlEntities(that.message);
         }
       });
       const subscribe = {key: subscribtionKey, value: subscribtion };
@@ -116,7 +119,7 @@ export class RequestQuotePage implements OnInit {
     subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
     if (!subscribtion) {
       subscribtion =  this.requestManagerService.BSSetQuotation.subscribe((data: any) => {
-        console.log('***** BSSetQuotation *****', data);
+        console.log('***** BSSetQuotation *****', JSON.stringify(data));
         if (data != null) {
           let msg = data.message?data.message:MSG_GENERIC_KO;
           if(data.success == true){
@@ -135,7 +138,7 @@ export class RequestQuotePage implements OnInit {
     subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
     if (!subscribtion) {
       subscribtion =  this.requestManagerService.BSRequestSendMailQuotation.subscribe((data: any) => {
-        console.log('***** BSRequestSendMailQuotation *****', data);
+        console.log('***** BSRequestSendMailQuotation *****', JSON.stringify(data));
         if (data != null) {
           let msg = data.message?data.message:MSG_GENERIC_KO;
           if(data.success == true){
@@ -181,7 +184,7 @@ export class RequestQuotePage implements OnInit {
     console.log('sendMessage');
     let email = this.request.email;
     if(parseFloat(this.request.amount) > 0){
-      this.requestManagerService.sendMailQuotationDesktop(this.request, email, this.subject, this.message);
+      this.requestManagerService.sendMailQuotation(this.request, email, this.subject, this.message);
     } else {
       this.presentAlertResponse(MSG_ERROR_AMOUNT, false);
     }
@@ -199,13 +202,16 @@ export class RequestQuotePage implements OnInit {
     let selectedForm = this.templates.find((f)=>{
        return f.title === newform;
     });
-    console.log('selectedForm: ', selectedForm);
+    
+    this.extension = selectedForm.ext;
     this.message = selectedForm.body;
     let amount = this.request.amount.replace(".", ",")+"€";
     let urlPayment = this.urlPayment+"?submission_id="+this.request.submission_id;
     this.message = this.message.replace("{{amount}}", amount); 
     this.message = this.message.replace("{{name}}", this.request.nome); 
     this.message = this.message.replace("{{urlPayment}}", urlPayment); 
+    this.message = htmlEntities(this.message);
+    console.log('selectedForm: ', this.message);
   }
 
   /** */

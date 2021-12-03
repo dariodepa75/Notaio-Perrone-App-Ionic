@@ -26,16 +26,6 @@ export class DateRequestManagerService {
   
   public dateRequests: DateRequestModel[] = [];
   public dateRequestSelected: DateRequestModel;
-  
-  // ENDPOINT 
-  // private dateRequestsEndpoint = 'https://notaioperrone.it/API/dateRequestsJson.php'; //'https://jsonplaceholder.typicode.com/todos/1';
-  // private sendMailEndpoint = 'https://notaioperrone.it/API/sendMail.php';
-  // private emailTemplateEndpoint = 'https://notaioperrone.it/API/emailTemplate.php';
-  // private setQuotationEndpoint = 'https://notaioperrone.it/API/setQuotation.php';
-  // private setStatusRequestEndpoint = 'https://notaioperrone.it/API/setStatus.php';
-  // private googleCalendarEndpoint = 'https://www.googleapis.com/calendar/v3/calendars/';
-
-  
 
   constructor(
     public http: HTTP,
@@ -63,16 +53,56 @@ export class DateRequestManagerService {
     return this.httpClient.get<any>(environment.dateRequestsEndpoint, httpOptions);
   }
 
+  // ********************************************* //
   /** */
   getDateRequestById(key:any){
     console.log('is mobile: '+ this.managerService.isMobile);
+    this.managerService.stopLoader();
     this.managerService.showLoader();
     if(this.managerService.isMobile){
-      // this.getRequestByIdMobile(key);
-      this.getDateRequestByIdDesktop(key);
+      this.getRequestByIdMobile(key);
     } else {
       this.getDateRequestByIdDesktop(key);
     }
+  }
+
+  /** */
+  private async getRequestByIdMobile(key) {
+    console.log(' getRequestByIdMobile ----->');
+    const that = this;
+    let url = environment.dateRequestsEndpoint + "?id=" + key;
+    const headers = { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    } 
+    const params = { };
+    this.http.get(url, params, headers)
+    .then(resp => {
+      console.log(' getRequestByIdMobile resp: ', JSON.stringify(resp.data));
+      try {
+        that.managerService.setDateRequestSelected(JSON.parse(resp.data));
+        let requestSelected = that.managerService.getDateRequestSelected();
+        that.managerService.stopLoader();
+        that.BSRequestByID.next(requestSelected);
+        setTimeout(() => {
+          that.BSRequestByID.next(null);
+        }, 100);
+      } catch(error) {
+        that.managerService.stopLoader();
+        that.BSRequestByID.next(error);
+        setTimeout(() => {
+          that.BSRequestByID.next(null);
+        }, 100);
+        console.log('error getRequestsDesktop', error);
+        }
+    }).catch(error => {
+      that.managerService.stopLoader();
+      that.BSRequestByID.next(error);
+      setTimeout(() => {
+        that.BSRequestByID.next(null);
+      }, 100);
+      console.log('error getRequestsDesktop', error);
+    });
   }
 
   /** */
@@ -92,8 +122,8 @@ export class DateRequestManagerService {
     .subscribe(data => {
       console.log(' getRequestByIdDesktop data: ', data);
       that.managerService.setDateRequestSelected(data);
-      that.managerService.stopLoader();
       let requestSelected = that.managerService.getDateRequestSelected();
+      that.managerService.stopLoader();
       that.BSRequestByID.next(requestSelected);
       setTimeout(() => {
         that.BSRequestByID.next(null);
@@ -107,32 +137,62 @@ export class DateRequestManagerService {
       console.log('error getRequestsDesktop', error);
     });
   }
+  // ********************************************* //
 
 
+
+
+  // ********************************************* //
+  // ADD EVENT TO CALENDAR // 
+  /** */
+  async addEventToCalendar(token, idCalendar, event){
+    // const isMobile = <boolean> await this.managerService.checkPlatform();
+    const isMobile = this.managerService.isMobile;
+    console.log(' isMobile----->', isMobile);
+    this.managerService.stopLoader();
+    this.managerService.showLoader();
+    if(isMobile){
+      this.addEventToCalendarMobile(idCalendar, event);
+    } else {
+      this.addEventToCalendarBrowser(idCalendar, event);
+    }
+  }
 
   /** */
-  public googleCalendarGetToken(){
+  private addEventToCalendarMobile(idCalendar, event) {
+    console.log(' addEventToCalendarMobile ----->');
     const that = this;
-    this.managerService.showLoader();
-    let url = environment.googleCalendarTokenEndpoint;
-    var headers = new HttpHeaders();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let postData = {"":""}
-    let httpOptions = {
-      headers: headers,
-      data: postData
+    let url = environment.googleCalendarEndpoint+environment.pgGoogleCalendarInsert;
+    const headers = { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    } 
+    const params =  {
+      'event': event, 
+      'calendarId': idCalendar
     };
-    this.httpClient.get<any>(url, httpOptions)
-    .subscribe(data => {
-      console.log(' TEST data: ', data);
-      that.managerService.stopLoader();
-      that.BSAddCalendarEvent.next(data);
-      setTimeout(() => {
-        that.BSAddCalendarEvent.next(null);
-      }, 100);
-
-    }, error => {
+    console.log('headers', JSON.stringify(headers));
+    console.log('params', JSON.stringify(params));
+    this.http.post(url, params, headers)
+    .then(resp => {
+      console.log('response 1: ', JSON.stringify(resp.data));
+      try {
+        let data = JSON.parse(resp.data);
+        console.log(' TEST resp: ', JSON.stringify(data));
+        that.managerService.stopLoader();
+        that.BSAddCalendarEvent.next(data);
+        setTimeout(() => {
+          that.BSAddCalendarEvent.next(null);
+        }, 100);
+      } catch(error) {
+        console.error('JSON parsing error');
+        that.managerService.stopLoader();
+        that.BSAddCalendarEvent.next(error);
+        setTimeout(() => {
+          that.BSAddCalendarEvent.next(null);
+        }, 100);
+      }
+    }).catch(error => {
       that.managerService.stopLoader();
       that.BSAddCalendarEvent.next(error);
       setTimeout(() => {
@@ -142,22 +202,19 @@ export class DateRequestManagerService {
     });
   }
 
-
-  public addEventToCalendar(token, idCalendar, event){
+  /** */
+  private addEventToCalendarBrowser(idCalendar, event){
     const that = this;
-    this.managerService.showLoader();
-    let url = environment.googleCalendarEndpoint+idCalendar+'/events';
-    // https://www.googleapis.com/calendar/v3/calendars/ij22s1gosiq653l7a2m35q6ju8@group.calendar.google.com/events';
-    // let basicAuth: string = btoa("admin:12345678");
-    // let token = 'ya29.a0ARrdaM8KQjhkBW8E9pHs-kjKTu27OXinUKJoGXkjw86oYcNMwQ2uUASM6HvNOgrnrJfMxWTmRrlurNidqLGobqDVRlPYbdxbPq2rdVu2LZzg6ysEQt4ME-SLFSJuGorQU-dAhFVkMZ-IIvm0GF9KF11gDAgB3-0Z99_sTMg';
-    // this.managerService.getToken();
+    let url = environment.googleCalendarEndpoint+environment.pgGoogleCalendarInsert;
     const headers = { 
       'Accept': 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer ' + token
+      'Content-Type': 'application/x-www-form-urlencoded'
     } 
-    // console.log('headers: ', headers);
-    this.httpClient.post<any>(url, event, {'headers':headers})
+    const params =  {
+      'event': event, 
+      'calendarId': idCalendar
+    };
+    this.httpClient.post<any>(url, params, {'headers':headers})
     .subscribe(data => {
       console.log(' TEST data: ', data);
       that.managerService.stopLoader();
@@ -165,7 +222,6 @@ export class DateRequestManagerService {
       setTimeout(() => {
         that.BSAddCalendarEvent.next(null);
       }, 100);
-
     }, error => {
       that.managerService.stopLoader();
       that.BSAddCalendarEvent.next(error);
@@ -175,22 +231,85 @@ export class DateRequestManagerService {
       console.log('error TEST', error);
     });
   }
+  // ********************************************* //
+  
+
+  // ********************************************* //
+  // ************ removeEventToCalendar ********** //
 
 
   /** */
-  public removeEventToCalendar(token, calendarId, eventId){
-    const that = this;
+  async deleteEventToCalendar(calendarId, eventId){
+    const isMobile = this.managerService.isMobile;
+    console.log(' isMobile----->', isMobile);
+    this.managerService.stopLoader();
     this.managerService.showLoader();
-    let url = environment.googleCalendarEndpoint+calendarId+'/events/'+eventId;
+    if(isMobile){
+      this.deleteEventToCalendarMobile(calendarId, eventId);
+    } else {
+      this.deleteEventToCalendarBrowser(calendarId, eventId);
+    }
+  }
+
+  /** */
+  private deleteEventToCalendarMobile(calendarId, eventId) {
+    console.log(' deleteEventToCalendarMobile ----->');
+    const that = this;
+    let url = environment.googleCalendarEndpoint+environment.pgGoogleCalendarDelete;
     const headers = { 
       'Accept': 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer ' + token
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
+    const params = {
+      'eventId': eventId, 
+      'calendarId': calendarId
+    };
+    console.log('headers', JSON.stringify(headers));
+    console.log('params', JSON.stringify(params));
+    this.http.post(url, params, headers)
+    .then(resp => {
+      console.log('response : ', JSON.stringify(resp.data));
+      try {
+        let data = JSON.parse(resp.data);
+        console.log('deleteEventToCalendarMobile resp: ', JSON.stringify(data));
+        that.managerService.stopLoader();
+        that.BSRemoveCalendarEvent.next(data);
+        setTimeout(() => {
+          that.BSRemoveCalendarEvent.next(null);
+        }, 100);
+      } catch(error) {
+        console.error('JSON parsing error');
+        that.managerService.stopLoader();
+        that.BSRemoveCalendarEvent.next(error);
+        setTimeout(() => {
+          that.BSRemoveCalendarEvent.next(null);
+        }, 100);
+      }
+    }).catch(error => {
+      that.managerService.stopLoader();
+      that.BSAddCalendarEvent.next(error);
+      setTimeout(() => {
+        that.BSAddCalendarEvent.next(null);
+      }, 100);
+      console.log('error deleteEventToCalendarMobile', JSON.stringify(error));
+    });
+  }
+
+  /** */
+  public deleteEventToCalendarBrowser(calendarId, eventId){
+    const that = this;
+    let url = environment.googleCalendarEndpoint+environment.pgGoogleCalendarDelete;
+    const headers = { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
     } 
-    // console.log('headers: ', headers);
-    this.httpClient.delete<any>(url, {'headers':headers})
+    const params =  {
+      'eventId': eventId, 
+      'calendarId': calendarId
+    };
+    this.httpClient.post<any>(url, params, {'headers':headers})
     .subscribe(data => {
-      console.log(' TEST data: ', data);
+      console.log(' deleteEventToCalendarBrowser data: ', data);
       that.managerService.stopLoader();
       that.BSRemoveCalendarEvent.next(data);
       setTimeout(() => {
@@ -202,7 +321,7 @@ export class DateRequestManagerService {
       setTimeout(() => {
         that.BSRemoveCalendarEvent.next(null);
       }, 100);
-      console.log('error TEST', error);
+      console.log('error deleteEventToCalendarBrowser', error);
     });
   }
   
@@ -228,14 +347,10 @@ export class DateRequestManagerService {
     }
     console.log('requestToBePrevious:', item);
     this.changeStatus(request, status, false);
-    // elimina evento da calendario
-    let token = this.managerService.getToken();
     let eventId = request.eventId?request.eventId:'';
+    let calendarId = request.calendarId?request.calendarId:'';
     if(eventId && status == STATUS_0){
-      this.authenticationService.loadGoogleToken().then(googleToken => {
-        this.removeEventToCalendar(googleToken, this.idCalendar, eventId);
-      });
-      
+      this.deleteEventToCalendar(calendarId, eventId);    
     }
   }
 
@@ -249,28 +364,72 @@ export class DateRequestManagerService {
   requestToBeTrashed(item, request:DateRequestModel){
     console.log('requestToBeTrashed:', request);
     this.changeStatus(request, request.status, true);
-    // elimina evento da calendario
-    let token = this.managerService.getToken();
     let eventId = request.eventId?request.eventId:'';
+    let calendarId = request.calendarId?request.calendarId:'';
     if(eventId){
-      this.authenticationService.loadGoogleToken().then(googleToken => {
-        this.removeEventToCalendar(googleToken, this.idCalendar, eventId);
-      });
+      this.deleteEventToCalendar(calendarId, eventId);
     }
   }
   
-  /** */
-  // requestToBeAddedToCalendar(request:DateRequestModel){
-  //   console.log('requestToBeAddedToCalendar:', request);
-  //   console.log(request);
-  //   this.requestUpdate(request, request.status, false);
-  //   // this.sendEmail(request.id, request.status, false);
-  // }
+
+  // ********************************************* //
+  /** requestUpdate */
+  async requestUpdate(request:DateRequestModel, STATUS, trash){
+    const isMobile = this.managerService.isMobile;
+    this.managerService.stopLoader();
+    this.managerService.showLoader();
+    console.log(' isMobile----->', isMobile);
+    if(isMobile){
+      this.requestUpdateMobile(request, STATUS, trash);
+    } else {
+      this.requestUpdateBrowser(request, STATUS, trash);
+    }
+  }
 
   /** */
-  public requestUpdate(request:DateRequestModel, STATUS, trash){
+  private requestUpdateMobile(request:DateRequestModel, STATUS, trash){
     const that = this;
-    this.managerService.showLoader();
+    let url = environment.updateRequestEndpoint;
+    let token = this.managerService.getToken();
+    const headers = { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token
+    } 
+    const params = {
+      'request': JSON.stringify(request),
+      'status': STATUS,
+      'trash': trash
+    }
+    this.http.post(url, params, headers)
+    .then(resp => {
+      console.log('data requestUpdateMobile: ', JSON.stringify(resp));
+      try {
+        that.managerService.stopLoader();
+        that.BSRequestUpdate.next(JSON.parse(resp.data));
+        setTimeout(() => {
+          that.BSRequestUpdate.next(null);
+        }, 100);
+      } catch(error) {
+        that.managerService.stopLoader();
+        that.BSRequestUpdate.next(false);
+        setTimeout(() => {
+          that.BSRequestUpdate.next(null);
+        }, 100);
+      }
+    }).catch(error => {
+      console.log('error requestUpdateMobile: ', error);
+      that.managerService.stopLoader();
+      that.BSRequestUpdate.next(false);
+      setTimeout(() => {
+        that.BSRequestUpdate.next(null);
+      }, 100);
+    });
+  }
+
+  /** */
+  private requestUpdateBrowser(request:DateRequestModel, STATUS, trash){
+    const that = this;
     let url = environment.updateRequestEndpoint;
     let token = this.managerService.getToken();
     const headers = { 
@@ -283,10 +442,10 @@ export class DateRequestManagerService {
     .set('status', STATUS)
     .set('trash', trash);
     this.httpClient.post<any>(url, params, {'headers':headers})
-    .subscribe(data => {
-      console.log(' updateRequestEndpoint data: ', data);
+    .subscribe(resp => {
+      console.log(' updateRequestEndpoint data: ', resp);
       that.managerService.stopLoader();
-      that.BSRequestUpdate.next(data);
+      that.BSRequestUpdate.next(resp);
       setTimeout(() => {
         that.BSRequestUpdate.next(null);
       }, 100);
@@ -299,11 +458,72 @@ export class DateRequestManagerService {
       }, 100);
     });
   }
+  // ********************************************* //
+
+  // ********************************************* // 
+
+  async changeStatus(request, STATUS, trash){
+    // const isMobile = <boolean> await this.managerService.checkPlatform();
+    this.managerService.stopLoader();
+    this.managerService.showLoader();
+    const isMobile = this.managerService.isMobile;
+    console.log(' isMobile----->', isMobile);
+    if(isMobile){
+      this.changeStatusMobile(request, STATUS, trash);
+    } else {
+      this.changeStatusBrowser(request, STATUS, trash);
+    }
+  }
 
   /** */
-  public changeStatus(request:DateRequestModel, STATUS, trash){
+  private changeStatusMobile(request, STATUS, trash){
     const that = this;
-    this.managerService.showLoader();
+    let url = environment.setStatusRequestEndpoint;
+    let token = this.managerService.getToken();
+    const headers = { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token
+    } 
+    let calendarId = request.calendarId?request.calendarId:'';
+    let eventId = request.eventId?request.eventId:'';
+    const params = {
+      'request_id': request.id,
+      'status': STATUS,
+      'trash': trash,
+      'calendarId': calendarId,
+      'eventId': eventId
+    }
+    this.http.post(url, params, headers)
+    .then(resp => {
+      console.log(' setStatusRequestEndpoint data: ', JSON.stringify(resp));
+      try {
+        that.managerService.stopLoader();
+        that.BSChangeDateStatus.next(true);
+        setTimeout(() => {
+          that.BSChangeDateStatus.next(null);
+        }, 100);
+      } catch(error) {
+        that.managerService.stopLoader();
+        that.BSChangeDateStatus.next(false);
+        setTimeout(() => {
+          that.BSChangeDateStatus.next(null);
+        }, 100);
+        console.log('error setStatusRequestEndpoint', error);
+      }
+    }).catch(error => {
+      that.managerService.stopLoader();
+      that.BSChangeDateStatus.next(false);
+      setTimeout(() => {
+        that.BSChangeDateStatus.next(null);
+      }, 100);
+      console.log('error setStatusRequestEndpoint', error);
+    });
+  }
+
+  /** */
+  private changeStatusBrowser(request:DateRequestModel, STATUS, trash){
+    const that = this;
     let url = environment.setStatusRequestEndpoint;
     let token = this.managerService.getToken();
     const headers = { 

@@ -60,7 +60,9 @@ export class ManagerService {
 
   /** */
   checkPlatform(){
-    this.isMobile = detectIsMobile(this.platform);
+    detectIsMobile(this.platform).then( (resp) => {
+      this.isMobile = resp;
+    });
   }
 
   /** */
@@ -158,12 +160,12 @@ export class ManagerService {
     this.requestSelected = this.checkRequestStatus(request, ARRAY_STATUS);
     // this.requestSelected.data_desiderata = this.formatDate(request.data_desiderata);
     // this.requestSelected.ora_desiderata = this.formatDate(request.ora_desiderata);
-    console.log('************* set request Selected ***',this.requestSelected);
+    console.log('************* set request Selected ***', JSON.stringify(this.requestSelected));
   }
 
   /** */
   getRequestSelected(){
-    console.log('************* get request Selected ***',this.requestSelected);
+    console.log('************* get request Selected ***', JSON.stringify(this.requestSelected));
     return this.requestSelected;
   }
 
@@ -300,7 +302,7 @@ export class ManagerService {
 
   /** */
   checkRequestStatus(request, statusLabel){
-    console.log(request.status);
+    console.log('checkRequestStatus: ', request.status);
     let status = request.status;
     if(request.trash == true){
       status = STATUS_400;
@@ -309,7 +311,7 @@ export class ManagerService {
     request.chr_status = statusLabel[statusLabel.length-1].char;
     let item = this.filterArrayForCode(status, statusLabel);
     if (item.length > 0){
-      console.log('checkRequestStatus ----> ',item[0]);
+      console.log('checkRequestStatus ----> ', JSON.stringify(item[0]));
       request.msg_status = item[0].message;
       request.chr_status = item[0].char;
     } 
@@ -321,14 +323,16 @@ export class ManagerService {
   /** */
   formatDate(date){
     moment.locale('it');
-    var  d = new Date(date); 
+    // var  d = new Date(date); 
+    var d = moment(date, 'YYYY-MM-DDThh:mmZ');
     return moment(d).format("D MMM YY");
   }
 
   /** */
   formatHour(time){
     moment.locale('it');
-    var  d = new Date(time); 
+    // var d = new Date(time); 
+    var d = moment(time, 'YYYY-MM-DDThh:mmZ');
     return moment(d).format("HH:mm");
   }
 

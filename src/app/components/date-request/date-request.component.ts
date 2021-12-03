@@ -47,17 +47,20 @@ export class DateRequestsComponent implements OnInit {
   /** */
   formatDate(){
     moment.locale('it');
-    var  d = new Date(this.request.time); 
-    this.dateRequest = moment(d).format("D MMM YY");
-    this.timeRequest = moment(d).format("HH:mm");
-    console.log('curr_date:', this.timeRequest);
+    //var  d = new Date(this.request.time); 
+    var startDate = moment(this.request.time, 'YYYY-MM-DDThh:mmZ');
+    this.dateRequest = moment(startDate).format("D MMM YY");
+    this.timeRequest = moment(startDate).format("HH:mm");
+    console.log('curr_date:', this.request.time, startDate, this.dateRequest, this.timeRequest);
   }
 
   formatLabelDateRequest(){
     moment.locale('it');
-    var  d = new Date(this.request.data_desiderata); 
-    let dateRequest = moment(d).format("D MMM YY");
+    //var  d = new Date(this.request.data_desiderata); 
+    var startDate = moment(this.request.data_desiderata, 'YYYY-MM-DDThh:mmZ');
+    let dateRequest = moment(startDate).format("D MMM YY");
     //this.timeRequest = moment(d).format("HH:mm");
+    console.log('curr_date:', this.request.data_desiderata, startDate, this.dateRequest);
     this.labelDateRequest =  'Richiesta appuntamento per il '+dateRequest+' alle '+ this.request.ora_desiderata;
   }
 

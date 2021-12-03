@@ -60,19 +60,6 @@ export class RequestManagerService {
     };
     return this.httpClient.get<any>(environment.requestsEndpoint, httpOptions);
   }
-
-  /** */
-  // getArchivedRequestsWithSubcribe(status){
-  //   console.log(' getRequestsDesktop----->');
-  //   var headers = new HttpHeaders();
-  //   headers.append("Accept", 'application/json');
-  //   headers.append('Content-Type', 'application/json');
-  //   let httpOptions = {
-  //     headers: headers,
-  //     params: { 'status': status }
-  //   };
-  //   return this.httpClient.get<any>(this.requestsEndpoint, httpOptions);
-  // }
   
   /** 
    * getRequests
@@ -81,11 +68,11 @@ export class RequestManagerService {
   */
   getRequests(){
     console.log('is mobile: '+ this.managerService.isMobile);
+    this.managerService.stopLoader();
+    this.managerService.showLoader();
     if(this.managerService.isMobile){
-      //this.getRequestsMobile();
-      this.getRequestsDesktop();
+      this.getRequestsMobile();
     } else {
-      //this.getRequestsMobile();
       this.getRequestsDesktop();
     }
   }
@@ -98,7 +85,6 @@ export class RequestManagerService {
   */
   private getRequestsMobile() {
     const that = this;
-    this.managerService.showLoader();
     console.log(' getRequestsMobile----->');
     const params = {};
     const header = { 'Content-Type': 'application/json' };
@@ -128,7 +114,6 @@ export class RequestManagerService {
   */
   private getRequestsDesktop(){
     const that = this;
-    this.managerService.showLoader();
     console.log(' getRequestsDesktop----->');
     //headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     var headers = new HttpHeaders();
@@ -160,21 +145,57 @@ export class RequestManagerService {
   }
 
 
+  // ************************************************** //
   /** */
   getRequestById(key:any){
     console.log('is mobile: '+ this.managerService.isMobile);
-    if(this.managerService.isMobile){
-      // this.getRequestByIdMobile(key);
-      this.getRequestByIdDesktop(key);
+    this.managerService.stopLoader();
+    this.managerService.showLoader();
+    if(this.managerService.isMobile == true){
+      // this.getRequestByIdDesktop(key);
+      this.getRequestByIdMobile(key);
     } else {
       this.getRequestByIdDesktop(key);
     }
   }
 
+  /** 
+   * getRequestByIdMobile
+   * su mobile le richieste vengono fatte con http 
+   * perchè httpclient non funziona. 
+  */
+   private getRequestByIdMobile(key:any){
+    const that = this;
+    console.log(' getRequestByIdMobile ----->');
+    const params = {};
+    const header = { 
+      'Content-Type': 'application/json', 
+      'Accept': 'application/json' 
+    };
+    let url = environment.requestsEndpoint + "?id=" + key;
+    this.http.get(url, params, header)
+    .then(resp => {
+      console.log(' data getRequestByIdMobile: ', JSON.stringify(resp.data));
+      that.managerService.setRequestSelected(JSON.parse(resp.data));
+      let requestSelected = that.managerService.getRequestSelected();
+      that.managerService.stopLoader();
+      that.BSRequestByID.next(requestSelected);
+      setTimeout(() => {
+        that.BSRequestByID.next(null);
+      }, 100);
+    }).catch(error => {
+      console.log('error getRequestByIdMobile: ', error);
+      that.managerService.stopLoader();
+      that.BSRequestByID.next(error);
+      setTimeout(() => {
+        that.BSRequestByID.next(null);
+      }, 100);
+    });
+  }
+
   /** */
   private getRequestByIdDesktop(key:any){
     const that = this;
-    this.managerService.showLoader();
     console.log(' getRequestByIdDesktop ----->');
     var headers = new HttpHeaders();
     headers.append("Accept", 'application/json');
@@ -189,115 +210,25 @@ export class RequestManagerService {
     .subscribe(data => {
       console.log(' getRequestByIdDesktop data: ', data);
       that.managerService.setRequestSelected(data);
-      that.managerService.stopLoader();
       let requestSelected = that.managerService.getRequestSelected();
+      that.managerService.stopLoader();
       that.BSRequestByID.next(requestSelected);
       setTimeout(() => {
         that.BSRequestByID.next(null);
-      }, 100);
+      }, 200);
     }, error => {
       that.managerService.stopLoader();
       that.BSRequestByID.next(error);
       setTimeout(() => {
         that.BSRequestByID.next(null);
-      }, 100);
+      }, 200);
       console.log('error getRequestsDesktop', error);
     });
   }
 
-  /**
-   * getRequestById
-   * recupero detteglio richiesta tramite id
-   */
-  getRequestByIdOLD(key:any){
-    console.log('is mobile: '+ this.managerService.isMobile);
-    this.requestSelected = this.selectRequestById(key);
-    
-    if(this.requestSelected){
-      console.log('is requestSelected'); 
-      this.BSRequestByID.next(this.requestSelected);
-      setTimeout(() => {
-        this.BSRequestByID.next(null);
-      }, 100);
-    } else {
-      console.log('is NOT requestSelected'); 
-      if(this.managerService.isMobile){
-        // this.getRequestByIdMobile(key);
-      } else {
-        // this.getRequestByIdDesktop(key);
-      }
-    }
-  }
+  
 
-  /** 
-   * getRequestByIdMobile
-   * su mobile le richieste vengono fatte con http 
-   * perchè httpclient non funziona. 
-  */
-  private getRequestByIdMobileOLD(key:any){
-    const that = this;
-    this.managerService.showLoader();
-    console.log(' getRequestByIdMobile ----->');
-    const params = {};
-    const header = { 'Content-Type': 'application/json' };
-    let url = environment.requestsEndpoint + "?id=" + key;
-    this.http.get(url, params, header)
-    .then(data => {
-      console.log(' data: ', data);
-      console.log(data.status);
-      that.managerService.setRequestSelected(data);
-      that.managerService.stopLoader();
-      let requestSelected = that.managerService.getRequestSelected();
-      that.BSRequestByID.next(requestSelected);
-      setTimeout(() => {
-        that.BSRequestByID.next(null);
-      }, 100);
-    }).catch(error => {
-      console.log('error getRequestByIdMobile', error);
-      that.managerService.stopLoader();
-      that.BSRequestByID.next(error);
-      setTimeout(() => {
-        that.BSRequestByID.next(null);
-      }, 100);
-    });
-  }
-
-  /** 
-   * getRequestByIdDesktop
-   * su desktop le richieste vengono fatte con httpClient. 
-  */
-  private getRequestByIdDesktopOLD(key:any){
-    const that = this;
-    this.managerService.showLoader();
-    console.log(' getRequestByIdDesktop ----->');
-    var headers = new HttpHeaders();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let postData = {"": ""}
-    let httpOptions = {
-      headers: headers,
-      data: postData
-    };
-    let url = environment.requestsEndpoint + "?id=" + key;
-    this.httpClient.get<any>(url, httpOptions)
-    .subscribe(data => {
-      console.log(' data: ', data);
-      that.managerService.setRequestSelected(data);
-      that.managerService.stopLoader();
-      let requestSelected = that.managerService.getRequestSelected();
-      that.BSRequestByID.next(requestSelected);
-      setTimeout(() => {
-        that.BSRequestByID.next(null);
-      }, 100);
-    }, error => {
-      console.log('error getRequestsDesktop', error);
-      that.managerService.stopLoader();
-      that.BSRequestByID.next(error);
-      setTimeout(() => {
-        that.BSRequestByID.next(null);
-      }, 100);
-    });
-  }
+  
 
   /**
    * selectRequestById
@@ -322,7 +253,8 @@ export class RequestManagerService {
   // ---------------------------------- //
   getEmailTemplates(){
     const that = this;
-    that.managerService.showLoader();
+    this.managerService.stopLoader();
+    this.managerService.showLoader();
     console.log(' getEmailTemplates----->');
     var headers = new HttpHeaders();
     headers.append("Accept", 'application/json');
@@ -352,12 +284,58 @@ export class RequestManagerService {
     });
   }
   
-  /**
-   * 
-   */
-  sendMailQuotationDesktop(request, mailTo, subject, message){
-    const that = this;
+
+  // ************************************************** //
+  sendMailQuotation(request, mailTo, subject, message){
+    console.log('is mobile: '+ this.managerService.isMobile);
+    this.managerService.stopLoader();
     this.managerService.showLoader();
+    if(this.managerService.isMobile == true){
+      this.sendMailQuotationMobile(request, mailTo, subject, message);
+    } else {
+      this.sendMailQuotationDesktop(request, mailTo, subject, message);
+    }
+  }
+
+  /** */
+  private sendMailQuotationMobile(request, mailTo, subject, message){
+    const that = this;
+    console.log(' sendMailQuotationMobile ----->');
+    let token = this.managerService.getToken();
+    let url = environment.sendMailEndpoint;
+    const headers = { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    } 
+    const params = {
+      'to': mailTo,
+      'subject' : subject,
+      'message' : message,
+      'name': request.nome
+    };
+    this.http.post(url, params, headers)
+    .then(resp => {
+      console.log('data sendMailQuotationMobile: ', JSON.stringify(resp.data));
+      that.managerService.stopLoader();
+      let data = JSON.parse(resp.data);
+      that.BSRequestSendMailQuotation.next(data);
+      setTimeout(() => {
+        that.BSRequestSendMailQuotation.next(null);
+      }, 100);
+    }).catch(error => {
+      console.log('error sendMailQuotationMobile',  JSON.stringify(error));
+      that.managerService.stopLoader();
+      that.BSRequestSendMailQuotation.next(error);
+      setTimeout(() => {
+        that.BSRequestSendMailQuotation.next(null);
+      }, 100);
+    });
+  }
+
+  /** */
+  private sendMailQuotationDesktop(request, mailTo, subject, message){
+    const that = this;
     console.log(' sendMailQuotationDesktop ----->');
     let token = this.managerService.getToken();
     let url = environment.sendMailEndpoint;
@@ -393,23 +371,72 @@ export class RequestManagerService {
   }
 
 
-  /**
-   * 
-   */
+
+
+  // ************************************************** //
+  /** */
   setQuotation(submission_id, form_id, amount, email, email_content){
-    const that = this;
+    console.log('is mobile: '+ this.managerService.isMobile);
+    this.managerService.stopLoader();
     this.managerService.showLoader();
-    console.log(' setQuotation 2 ----->');
+    if(this.managerService.isMobile == true){
+      // this.getRequestByIdDesktop(key);
+      this.setQuotationMobile(submission_id, form_id, amount, email, email_content);
+    } else {
+      this.setQuotationDesktop(submission_id, form_id, amount, email, email_content);
+    }
+  }
+
+  private setQuotationMobile(submission_id, form_id, amount, email, email_content){
+    const that = this;
+    console.log(' setQuotationMobile ----->');
     let url = environment.setQuotationEndpoint;
-    // let basicAuth: string = btoa("admin:12345678");
     let token = this.managerService.getToken();
-    // console.log(' token ----->'+token);
+    const headers = { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token
+    };
+    const params = {
+      'submission_id': submission_id,
+      'form_id' : form_id,
+      'amount' : amount,
+      'email_content' : email_content,
+      'email': email
+    };
+
+    this.http.post(url, params, headers)
+    .then(resp => {
+      console.log('data setQuotationMobile: ', JSON.stringify(resp.data));
+      let data = JSON.parse(resp.data);
+      that.managerService.stopLoader();
+      that.BSSetQuotation.next(data);
+      setTimeout(() => {
+        that.BSSetQuotation.next(null);
+      }, 100);
+    }).catch(error => {
+      console.log('error BSSetQuotation',  JSON.stringify(error));
+      that.managerService.stopLoader();
+      that.BSSetQuotation.next(error);
+      setTimeout(() => {
+        that.BSSetQuotation.next(null);
+      }, 100);
+    });
+  }
+
+  /** */
+  setQuotationDesktop(submission_id, form_id, amount, email, email_content){
+    const that = this;
+    this.managerService.stopLoader();
+    this.managerService.showLoader();
+    console.log(' setQuotationDesktop ----->');
+    let url = environment.setQuotationEndpoint;
+    let token = this.managerService.getToken();
     const headers = { 
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Bearer ' + token
     } 
-
     const params = new HttpParams({
       fromObject: { 
         submission_id: submission_id,
@@ -475,10 +502,69 @@ export class RequestManagerService {
     this.changeStatus(request, request.status, true);
   }
 
+
+  // ********************************************* //
+  async changeStatus(request, STATUS, trash){
+    // const isMobile = <boolean> await this.managerService.checkPlatform();
+    const isMobile = this.managerService.isMobile;
+    console.log(' isMobile----->', isMobile);
+    this.managerService.stopLoader();
+    this.managerService.showLoader();
+    if(isMobile){
+      this.changeStatusMobile(request, STATUS, trash);
+    } else {
+      this.changeStatusBrowser(request, STATUS, trash);
+    }
+  }
+
   /** */
-  private changeStatus(request, STATUS, trash){
+  private changeStatusMobile(request, STATUS, trash){
+    console.log(' changeStatusMobile ----->');
     const that = this;
-    that.managerService.showLoader();
+    let url = environment.setStatusRequestEndpoint;
+    let token = this.managerService.getToken();
+    const headers = { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token
+    } 
+    let calendarId = request.calendarId?request.calendarId:'';
+    let eventId = request.eventId?request.eventId:'';
+    const params = {
+      'request_id': request.id,
+      'status': STATUS,
+      'trash': trash,
+      'calendarId': calendarId,
+      'eventId': eventId
+    }
+    this.http.post(url, params, headers)
+    .then(resp => {
+      console.log('setStatusRequestEndpoint data: ', JSON.stringify(resp));
+      try {
+        that.managerService.stopLoader();
+        that.BSChangeStatus.next(true);
+        setTimeout(() => {
+          that.BSChangeStatus.next(null);
+        }, 100);
+      } catch(error) {
+        console.log('error setStatusRequestEndpoint', error);
+        that.managerService.stopLoader();
+        setTimeout(() => {
+          that.BSChangeStatus.next(null);
+        }, 100);
+      }
+    }).catch(error => {
+      console.log('error setStatusRequestEndpoint', error);
+      that.managerService.stopLoader();
+      setTimeout(() => {
+        that.BSChangeStatus.next(null);
+      }, 100);
+    });
+  }
+
+  /** */
+  private changeStatusBrowser(request, STATUS, trash){
+    const that = this;
     let url = environment.setStatusRequestEndpoint;
     // let basicAuth: string = btoa("admin:12345678");
     let token = this.managerService.getToken();
@@ -512,6 +598,7 @@ export class RequestManagerService {
     });
   }
  
+
 
   // ---------------------------------- //
   // httpClient OLD STYLE 

@@ -16,7 +16,7 @@ ion-menu.md ion-content {
 }
 
 ion-menu.md ion-list {
-  padding: 20px 0;
+  padding: 30px 0 20px 0;
 }
 
 ion-menu.md ion-note {
@@ -41,14 +41,18 @@ ion-menu.md ion-list#inbox-list ion-list-header {
 
 ion-list-header {
   img{
-    width: 60px;
+    width: 45px;
   }
   h3{
     font-size: 16px;
-    margin-left: 10px;
-    margin-top: 10px;
+    line-height: initial;
+    position: relative;
+    bottom: 0;
+    margin: 0 0 0 16px;
+    padding: 0;
   }
-  padding-bottom: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 ion-menu.md ion-list#labels-list ion-list-header {

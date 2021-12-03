@@ -43,7 +43,8 @@ export class RequestComponent implements OnInit {
 
   formatDate(){
     moment.locale('it');
-    var  d = new Date(this.request.time); 
+    // var  d = new Date(this.request.time); 
+    var d = moment(this.request.time, 'YYYY-MM-DDThh:mmZ');
     this.dateRequest = moment(d).format("D MMM YY");
     this.timeRequest = moment(d).format("HH:mm");
     console.log('curr_date:', this.timeRequest);
