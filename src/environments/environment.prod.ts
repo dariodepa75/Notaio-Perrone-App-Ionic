@@ -4,7 +4,7 @@ export const environment = {
   wpJsonUrl: 'https://studio.notaioperrone.it/wp-json',
   googleIdCalendar: 'dt87td23ioa6dhp5k1g0rirtds@group.calendar.google.com',
   urlGoogleCalendar: 'https://calendar.google.com/calendar/embed?src=dt87td23ioa6dhp5k1g0rirtds%40group.calendar.google.com&ctz=Europe%2FRome',
-  
+  APIEndpoint: 'https://app.notaioperrone.it/API/',
   requestsEndpoint: 'https://app.notaioperrone.it/API/requestsJson.php',
   sendMailEndpoint: 'https://app.notaioperrone.it/API/sendMail.php',
   emailTemplateEndpoint: 'https://app.notaioperrone.it/API/emailTemplate.php',

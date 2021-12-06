@@ -286,19 +286,19 @@ export class RequestManagerService {
   
 
   // ************************************************** //
-  sendMailQuotation(request, mailTo, subject, message){
+  sendMailQuotation(request, mailTo, subject, ext, message){
     console.log('is mobile: '+ this.managerService.isMobile);
     this.managerService.stopLoader();
     this.managerService.showLoader();
     if(this.managerService.isMobile == true){
-      this.sendMailQuotationMobile(request, mailTo, subject, message);
+      this.sendMailQuotationMobile(request, mailTo, subject, ext, message);
     } else {
-      this.sendMailQuotationDesktop(request, mailTo, subject, message);
+      this.sendMailQuotationDesktop(request, mailTo, subject, ext, message);
     }
   }
 
   /** */
-  private sendMailQuotationMobile(request, mailTo, subject, message){
+  private sendMailQuotationMobile(request, mailTo, subject, ext, message){
     const that = this;
     console.log(' sendMailQuotationMobile ----->');
     let token = this.managerService.getToken();
@@ -309,6 +309,7 @@ export class RequestManagerService {
       'Authorization': 'Bearer ' + token,
     } 
     const params = {
+      'ext': ext,
       'to': mailTo,
       'subject' : subject,
       'message' : message,
@@ -334,7 +335,7 @@ export class RequestManagerService {
   }
 
   /** */
-  private sendMailQuotationDesktop(request, mailTo, subject, message){
+  private sendMailQuotationDesktop(request, mailTo, subject, ext, message){
     const that = this;
     console.log(' sendMailQuotationDesktop ----->');
     let token = this.managerService.getToken();
@@ -346,6 +347,7 @@ export class RequestManagerService {
     } 
     const params = new HttpParams({
       fromObject: { 
+        ext: ext,
         to : mailTo,
         subject : subject,
         message : message,
@@ -628,6 +630,7 @@ export class RequestManagerService {
       return of(result as T);
     };
   }
+  
 
 
 }

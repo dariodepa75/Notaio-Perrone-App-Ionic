@@ -191,14 +191,14 @@ ion-grid{
 }
 
 // ************* HEADER ************** //
-ion-toolbar {
-  background: #f1f1f1;
-  border-top-width: 0;
-  --background: #f1f1f1;
-}
+// ion-toolbar {
+//   background: --ion-color-step-50;
+//   border-top-width: 0;
+//   --background: --ion-color-step-50;
+// }
 
 ion-title {
-  color: #333;
+  color: var(--ion-text-color);
   font-family: 'HelveticaNeue-Light','Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,sans-serif;
   font-size: 19px;
   font-style: normal;
@@ -206,6 +206,6 @@ ion-title {
   font-weight: 300;
 }
 ion-menu-button{
-  color:#333;
+  color: var(--ion-text-color);
 }
 

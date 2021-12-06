@@ -1,5 +1,6 @@
-<ion-header [translucent]="false" translucent="false"  class="ion-border ion-no-padding">
-  <ion-toolbar color="transparent">
+<ion-header [translucent]="false" translucent="false"  class="ion-border">
+  <ion-toolbar > 
+    <!-- color="transparent" -->
     <ion-buttons slot="start">
       <ion-button color="dark" (click)="goBack()">
         <ion-icon name="arrow-back-outline"></ion-icon>
@@ -10,8 +11,7 @@
   </ion-toolbar>
 </ion-header>
 
-
-<ion-content *ngIf="request" [fullscreen]="true" fullscreen="true" fullscreen scroll-y="auto" class="ion-padding">
+<ion-content *ngIf="request" [fullscreen]="true" fullscreen="false" fullscreen scroll-y="auto" class="ion-padding">
 
   <div>
     <ion-grid class="ion-padding-bottom">
@@ -45,7 +45,11 @@
       <ion-row>
         <ion-col class="ion-text-left">
         <ion-textarea *ngIf="extension == 'txt'" [(ngModel)]="message" type="txt" class="ion-no-padding email-content" clearOnEdit="false" autoGrow="true" cols="1" placeholder="Aggiungi un messaggio..."></ion-textarea>
-        <ion-textarea *ngIf="extension == 'html'" type="html" [innerHTML]="message"></ion-textarea>
+        <div *ngIf="extension == 'html'">
+          <div class='webPage' name= "eventsPage" [innerHTML]="this.getInnerHTMLValue()">
+          </div>
+            <!-- <iframe [src]="urlHtlmTemplate"  style="width:100%;height:100%" scrolling="yes" ></iframe> -->
+        </div>
       </ion-col>
       </ion-row>
     </ion-grid>
@@ -58,4 +62,6 @@
     <ion-button color="primary" class="ion-text-uppercase ddp-hc" (click)="saveQuotationOnBD()">{{LBL_INVIA_MESSAGGIO}}</ion-button>
   </ion-toolbar>
 </ion-footer>
+
+
 

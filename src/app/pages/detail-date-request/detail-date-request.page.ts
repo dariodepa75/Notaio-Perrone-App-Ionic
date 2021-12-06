@@ -178,6 +178,12 @@ export class DetailDateRequestPage implements OnInit {
 
         if (data != null && data) {
           that.request = data as DateRequestModel;
+          if(!that.request.data_desiderata || that.request.data_desiderata == undefined){
+            that.request.data_desiderata = '';
+          }
+          if(!that.request.ora_desiderata || that.request.ora_desiderata == undefined){
+            that.request.ora_desiderata = '';
+          }
           that.initDateRequest(that.request.data_desiderata, that.request.ora_desiderata);
           that.initDatetime();
           that.initAppointment();
@@ -260,10 +266,6 @@ export class DetailDateRequestPage implements OnInit {
   /** */
   initDateRequest(appointmentDate, timeDate){
     console.log ('appointmentDate : '+appointmentDate);
-    // this.day = getFormattedDate(request.data_desiderata, LBL_DAY);
-    // this.numberDay = getFormattedDate(request.data_desiderata, LBL_NUM_DAY);
-    // this.month = getFormattedDate(request.data_desiderata, LBL_MONTH);
-    // this.year = getFormattedDate(request.data_desiderata, LBL_YEAR);
     this.startDateTime  = creationDate(appointmentDate, timeDate);
     this.endDateTime  = addTimeToDate(this.startDateTime, '', 0, 0, TIME_MINUTES_APPOINTMENT);
     let dateAppointment = creationDate(this.startDateTime, '', 'dddd, D MMM YYYY');

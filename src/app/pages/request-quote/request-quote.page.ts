@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { RequestManagerService } from '../../services/request-manager.service';
 import { RequestModel } from '../../models/request';
-import { formatDate, htmlEntities } from '../../utils/utils';
+import { formatDate, decodeHTMLEntities } from '../../utils/utils';
 import { 
   MSG_GENERIC_KO,
   LBL_RICHIESTA_DEL,
@@ -18,6 +18,8 @@ import {
 } from '../../utils/constants';
 
 import { environment } from '../../../environments/environment';
+import { DomSanitizer, SafeResourceUrl, SafeUrl} from '@angular/platform-browser';
+
 
 
 
@@ -38,6 +40,7 @@ export class RequestQuotePage implements OnInit {
   public mailTo: string;
   public subject: string;
   public timeRequest: string;
+  // public urlHtlmTemplate: string;
 
   // ------------------------- //
   LBL_RICHIESTA_DEL = LBL_RICHIESTA_DEL;
@@ -57,7 +60,8 @@ export class RequestQuotePage implements OnInit {
     private activeRoute: ActivatedRoute,
     public requestManagerService: RequestManagerService,
     public navCtrl: NavController,
-    public alertController: AlertController
+    public alertController: AlertController,
+    private sanitizer: DomSanitizer
   ) { 
     this.activeRoute.queryParams.subscribe(params => {
       if (params && params.request) {
@@ -73,6 +77,7 @@ export class RequestQuotePage implements OnInit {
     this.request.amount = "100,00";
     this.initSubscriptions();
     this.getEmailTemplates();
+
   }
 
   /** */
@@ -94,20 +99,15 @@ export class RequestQuotePage implements OnInit {
     subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
     if (!subscribtion) {
       subscribtion =  this.requestManagerService.BSGetEmailTemplates.subscribe((data: any) => {
-        console.log('***** BSGetEmailTemplates *****', JSON.stringify(data));
+        // console.log('***** BSGetEmailTemplates *****', JSON.stringify(data));
         if (data) {
+          that.mailTo = data.info.mailTo;
+          that.subject = data.info.subject;
           that.templates = data.templates;
           that.templateSelected = that.templates[0].title;
           that.extension = that.templates[0].ext;
-          that.message = that.templates[0].body;
-          let amount = that.request.amount.replace(".", ",")+"€";
-          let urlPayment = that.urlPayment+"?submission_id="+that.request.submission_id;
-          that.message = that.message.replace("{{amount}}", amount); 
-          that.message = that.message.replace("{{name}}", that.request.nome); 
-          that.message = that.message.replace("{{urlPayment}}", urlPayment); 
-          that.mailTo = data.info.mailTo;
-          that.subject = data.info.subject;
-          that.message = htmlEntities(that.message);
+          that.message =  that.templates[0].body;
+          that.replaceContentEmail(); 
         }
       });
       const subscribe = {key: subscribtionKey, value: subscribtion };
@@ -151,7 +151,7 @@ export class RequestQuotePage implements OnInit {
       const subscribe = {key: subscribtionKey, value: subscribtion };
       this.subscriptions.push(subscribe);
     }
-
+    
   }
 
 
@@ -184,7 +184,7 @@ export class RequestQuotePage implements OnInit {
     console.log('sendMessage');
     let email = this.request.email;
     if(parseFloat(this.request.amount) > 0){
-      this.requestManagerService.sendMailQuotation(this.request, email, this.subject, this.message);
+      this.requestManagerService.sendMailQuotation(this.request, email, this.subject, this.extension, this.message);
     } else {
       this.presentAlertResponse(MSG_ERROR_AMOUNT, false);
     }
@@ -202,17 +202,43 @@ export class RequestQuotePage implements OnInit {
     let selectedForm = this.templates.find((f)=>{
        return f.title === newform;
     });
-    
     this.extension = selectedForm.ext;
     this.message = selectedForm.body;
+    this.replaceContentEmail();         
+  }
+
+  
+  // innerHTMLPage(){
+    // let url = environment.APIEndpoint + 'email-templates/quotation/'+this.templateSelected+'.'+this.extension;
+    // let url2 = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    // ("https://app.notaioperrone.it/API/email-templates/quotation/html-mod001.html");
+    // return url2;
+  // }
+
+  // onFrameLoad() {
+  //   console.log('myframe is loaded');
+  //   this.replaceContentEmail();
+  // };
+
+  getInnerHTMLValue(){
+    return this.sanitizer.bypassSecurityTrustHtml(this.message);
+  }
+
+  replaceContentEmail(){
     let amount = this.request.amount.replace(".", ",")+"€";
     let urlPayment = this.urlPayment+"?submission_id="+this.request.submission_id;
     this.message = this.message.replace("{{amount}}", amount); 
     this.message = this.message.replace("{{name}}", this.request.nome); 
     this.message = this.message.replace("{{urlPayment}}", urlPayment); 
-    this.message = htmlEntities(this.message);
-    console.log('selectedForm: ', this.message);
+    // this.urlHtlmTemplate = environment.APIEndpoint + 'email-templates/quotation/'+this.templateSelected+'.'+this.extension;
+    this.message = decodeHTMLEntities(this.message);
+    console.log(this.message);
+    // if(this.extension !== 'txt' ){
+    //   this.message = this.sanitizer.bypassSecurityTrustHtml(this.message);
+    // }
+    
   }
+  
 
   /** */
   async presentAlertResponse(msg, success) {

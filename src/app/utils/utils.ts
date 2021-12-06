@@ -2,29 +2,43 @@ import * as moment from 'moment/moment';
 import 'moment/locale/it.js';
 import { LBL_DAY, LBL_NUM_DAY, LBL_MONTH, LBL_YEAR } from './constants';
 
-
+export function decodeHTMLEntities (str) {
+    if(str && typeof str === 'string') {
+        let gt = /&gt;/gi;
+        str = str.replace(gt, '>');
+        let lt = /&lt;/gi;
+        str = str.replace(lt, '<');
+        let amp = /&amp;/gi;
+        str = str.replace(amp, '&');
+        let quot = /&quot;/gi;
+        str = str.replace(quot, "'");
+        let apos = /&apos;/gi;
+        str = str.replace(apos, ',');
+        console.log('passa');
+    //   str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+    //   str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+    }
+    return str;
+}
 
 export function htmlEntities(str){
-    // const htmlEntities = {
-    //     "&": "&amp;",
-    //     "<": "&lt;",
-    //     ">": "&gt;",
-    //     '"': "&quot;",
-    //     "'": "&apos;"
-    // };
+    
     const htmlEntities = {
-        "&amp;": "&",
-        "&lt;": "<",
-        "&gt;": ">",
+        "&amp;": '&',
+        "&lt;": '<',
+        "&gt;": '>',
         "&quot;": '"',
-        "&apos;": ","
+        "&apos;": ','
     };
-    str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
-    str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
-    str = str.replaceAll("&lt;", '<'); 
-    str = str.replaceAll("&gt;", '>'); 
-    //return str;
-    return str.replace(/([&<>\"'])/g, match => htmlEntities[match]);
+    // str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+    // str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+    str = str.replaceAll('&amp;', '&'); 
+    str = str.replaceAll('&gt;', '>');
+    str = str.replaceAll('&lt;', '<'); 
+    str = str.replaceAll('&quot;', '"');  
+    str = str.replaceAll('&apos;', ',');
+    return str;
+    // return str.replace(/([&<>\"'])/g, match => htmlEntities[match]);
 }
 
 /** */
