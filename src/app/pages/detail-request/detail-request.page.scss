@@ -93,16 +93,25 @@ p {
 
 .ddp-pencil-date { 
   position: absolute;
-  right: calc(50% - 65px);
-  top: 10px;
-  color: #777;
+  right: 10px;//calc(50% - 65px);
+  top: 6px;
+  // color: #777;
   font-size: larger;
 }
 
 .ddp-pencil-time { 
   position: absolute;
-  right: calc(50% - 75px);
-  top: 4px;
-  color: #777;
+  right: 10px;
+  top: 6px;
+  // color: #777;
   font-size: initial;
+}
+
+.ddp-msg-date {
+  position: absolute;
+  right: 0px;
+}
+.ddp-msg-time {
+  position: absolute;
+  right: 0px;
 }

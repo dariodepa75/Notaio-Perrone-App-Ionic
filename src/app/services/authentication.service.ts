@@ -96,6 +96,9 @@ export class AuthenticationService {
     const that = this;
     let url = environment.googleCalendarTokenEndpoint;
     const headers = { 
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST',
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded'
     } 

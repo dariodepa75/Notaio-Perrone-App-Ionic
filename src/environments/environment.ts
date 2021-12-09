@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  versionApp: 'ver 0.1.6',
+  versionApp: 'ver 1.0.6',
   production: false,
   wpJsonUrl: 'https://studio.notaioperrone.it/wp-json',
   googleIdCalendar: 'dt87td23ioa6dhp5k1g0rirtds@group.calendar.google.com',
@@ -24,7 +24,11 @@ export const environment = {
   googleCalendarTokenEndpoint: 'https://app.notaioperrone.it/googleAPI/getToken.php',
   urlPayment: 'https://app.notaioperrone.it/checkout/step1.php',
 
-  googleToken: 'ya29.a0ARrdaM-mlTm11eGPZPfg90yEIF7cq4vr5aCIZjQQbMhDYJyGcA6srAJF3B2_djElxQIR-t18SN8Ee4NiSFtM99s6o2raSNZscy2l1s2YoWzPxLgxnWioq0WXcciST9_PIdSBsyUiQJXwsG1UrqwPijvCdcnv'
+  googleToken: 'ya29.a0ARrdaM-mlTm11eGPZPfg90yEIF7cq4vr5aCIZjQQbMhDYJyGcA6srAJF3B2_djElxQIR-t18SN8Ee4NiSFtM99s6o2raSNZscy2l1s2YoWzPxLgxnWioq0WXcciST9_PIdSBsyUiQJXwsG1UrqwPijvCdcnv',
+
+ ONESIGNAL_APP_ID: '30fc7d33-aa53-47dc-8209-e4abd86dcece', 
+ ANDROID_ID:''
+  
 };
 
 /*

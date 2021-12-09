@@ -26,45 +26,101 @@
       <ion-row>
         <ion-col class="ion-text-center">RICHIESTA CONSULENZA PER</ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col class="ion-text-center ddp-light ddp-size20">{{day}}</ion-col>
-      </ion-row>
-      <ion-row style="position:relative">
-        <ion-col class="ion-text-center ddp-size70" >{{numberDay}}</ion-col>
-        <ion-icon *ngIf="request.status == STATUS_ERROR" class="ddp-pencil-date" name="pencil" (click)="openStart()">
-            <ion-datetime 
-              #dateTime
-              style="display:none"
-              class="ion-no-padding"
-              [(ngModel)]="ionDatetime"
-              [pickerOptions]="customPickerOptions" 
-              [displayFormat]="datetimeDisplayFormat"
+      
+
+      <div *ngIf="request.data_desiderata == null; then thenData else elseData"></div>
+      
+      <ng-template #thenData>
+        <ion-row>
+          <ion-col class="ion-text-center ddp-light ddp-size20">{{msgDate}}</ion-col>
+            <div class="ddp-msg-date">
+              <ion-icon class="ddp-pencil-date" name="pencil" (click)="openStartDate()">
+                <ion-datetime 
+                #datetimeDate
+                [(ngModel)]="dateDate"
+                dayShortNames="dom, lun, mar, mer, gio, ven, sab"
+                display-format="DDD D MMM YYYY" 
+                picker-format="DDD D MMM YYYY"
+                [min]="datetimeToday"
+                [max]="datetimeEndDate"
+                (ionChange)="updateDate()"
+                ></ion-datetime>
+              </ion-icon>
+            </div>
+        </ion-row>
+      </ng-template>
+
+      <ng-template #elseData>
+        <ion-row>
+          <ion-col class="ion-text-center ddp-light ddp-size20">{{day}}</ion-col>
+        </ion-row>
+        <ion-row style="position:relative">
+          <ion-col class="ion-text-center ddp-size70" >{{numberDay}}</ion-col>
+          <div class="ddp-msg-date">
+            <ion-icon class="ddp-pencil-date" name="pencil" (click)="openStartDate()">
+              <ion-datetime 
+              #datetimeDate
+              [(ngModel)]="dateDate"
+              dayShortNames="dom, lun, mar, mer, gio, ven, sab"
+              display-format="DDD D MMM YYYY" 
+              picker-format="DDD D MMM YYYY"
               [min]="datetimeToday"
               [max]="datetimeEndDate"
-              [pickerFormat]="datetimePickerFormat"
-              [dayShortNames]="datetimeDayShortNames"
-              [monthShortNames]="dateMonthShortNames"
-              [minuteValues]="datetimeMinuteValues"
-              [cancelText]="datetimeCancelText"
-              [doneText]="datetimeDoneText"
-              (ionChange)="updateDate($event)"
-            ></ion-datetime>
-        </ion-icon>
-            
-      </ion-row>
-      
-      <ion-row>
-        <ion-col class="ion-text-center ddp-light ddp-size20">{{month}} {{year}}</ion-col>
-      </ion-row>
-      <ion-row style="position:relative">
-        <ion-col class="ion-text-center ddp-hour">{{stringOraDesiderata}}</ion-col>
-        <ion-icon *ngIf="request.status == STATUS_ERROR" class="ddp-pencil-time" name="pencil"></ion-icon>
-      </ion-row>
+              (ionChange)="updateDate()"
+              ></ion-datetime>
+            </ion-icon>
+          </div>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-center ddp-light ddp-size20">{{month}} {{year}}</ion-col>
+        </ion-row>
+      </ng-template>
+
+
+      <div *ngIf="request.ora_desiderata == null; then thenOra else elseOra"></div>
+      <ng-template #thenOra>
+        <ion-row>
+          <ion-col class="ion-text-center ddp-light ddp-size20">{{msgTime}}</ion-col>
+          <div class="ddp-msg-time">
+            <ion-icon class="ddp-pencil-date" name="pencil" (click)="openStartTime()">
+              <ion-datetime 
+                #datetimeTime
+                [(ngModel)]="dateTime"
+                display-format="HH:mm" 
+                picker-format="HH:mm"
+                (ionChange)="updateTime()"
+              ></ion-datetime>
+            </ion-icon>
+          </div>
+        </ion-row>
+      </ng-template>
+
+      <ng-template #elseOra>
+        <ion-row style="position:relative">
+          <ion-col class="ion-text-center ddp-hour">{{stringOraDesiderata}}</ion-col>
+          <div class="ddp-msg-time">
+            <ion-icon class="ddp-pencil-date" name="pencil" (click)="openStartTime()">
+              <ion-datetime 
+                #datetimeTime
+                [(ngModel)]="dateTime"
+                display-format="HH:mm" 
+                picker-format="HH:mm"
+                (ionChange)="updateTime()"
+              ></ion-datetime>
+            </ion-icon>
+          </div>
+        </ion-row>
+      </ng-template>
+
+
+
+
       <ion-row class="ion-padding-top">
         <ion-col class="ion-text-center">
           <div class="request_state ddp-hc ddp-status-{{request.status}} ddp-trash-{{request.trash}}"><span class="letter">{{request.chr_status}}</span>{{request.msg_status}}</div>
         </ion-col>
       </ion-row>
+
     </ion-grid>
   </div>
 

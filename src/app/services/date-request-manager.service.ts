@@ -72,6 +72,9 @@ export class DateRequestManagerService {
     const that = this;
     let url = environment.dateRequestsEndpoint + "?id=" + key;
     const headers = { 
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST',
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded'
     } 
@@ -164,6 +167,9 @@ export class DateRequestManagerService {
     const that = this;
     let url = environment.googleCalendarEndpoint+environment.pgGoogleCalendarInsert;
     const headers = { 
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST',
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded'
     } 
@@ -257,6 +263,9 @@ export class DateRequestManagerService {
     const that = this;
     let url = environment.googleCalendarEndpoint+environment.pgGoogleCalendarDelete;
     const headers = { 
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST',
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded'
     };
@@ -392,6 +401,9 @@ export class DateRequestManagerService {
     let url = environment.updateRequestEndpoint;
     let token = this.managerService.getToken();
     const headers = { 
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST',
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Bearer ' + token
@@ -480,7 +492,11 @@ export class DateRequestManagerService {
     const that = this;
     let url = environment.setStatusRequestEndpoint;
     let token = this.managerService.getToken();
+
     const headers = { 
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST',
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Bearer ' + token
@@ -541,7 +557,7 @@ export class DateRequestManagerService {
     .set('eventId', eventId);
     this.httpClient.post<any>(url, params, {'headers':headers})
     .subscribe(data => {
-      console.log(' setStatusRequestEndpoint data: ', data);
+      console.log(' setStatusRequestEndpoint data: ', JSON.stringify(data));
       that.managerService.stopLoader();
       that.BSChangeDateStatus.next(true);
       setTimeout(() => {

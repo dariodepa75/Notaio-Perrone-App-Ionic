@@ -169,6 +169,9 @@ export class RequestManagerService {
     console.log(' getRequestByIdMobile ----->');
     const params = {};
     const header = { 
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST',
       'Content-Type': 'application/json', 
       'Accept': 'application/json' 
     };
@@ -304,6 +307,9 @@ export class RequestManagerService {
     let token = this.managerService.getToken();
     let url = environment.sendMailEndpoint;
     const headers = { 
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST',
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Bearer ' + token,
@@ -395,6 +401,9 @@ export class RequestManagerService {
     let url = environment.setQuotationEndpoint;
     let token = this.managerService.getToken();
     const headers = { 
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST',
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Bearer ' + token
@@ -526,6 +535,9 @@ export class RequestManagerService {
     let url = environment.setStatusRequestEndpoint;
     let token = this.managerService.getToken();
     const headers = { 
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST',
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': 'Bearer ' + token
@@ -585,7 +597,7 @@ export class RequestManagerService {
     .set('eventId', eventId);
     this.httpClient.post<any>(url, params, {'headers':headers})
     .subscribe(data => {
-      console.log(' setStatusRequestEndpoint data: ', data);
+      console.log(' setStatusRequestEndpoint data: ', JSON.stringify(data));
       that.managerService.stopLoader();
       that.BSChangeStatus.next(true);
       setTimeout(() => {

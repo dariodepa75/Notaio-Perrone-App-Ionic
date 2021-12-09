@@ -350,7 +350,7 @@ export class DetailDateRequestPage implements OnInit {
   }
 
   /** */
-  updateDate($event){
+  updateDate(){
     console.log('4-------> '+this.ionDatetime);
     this.initDateRequest(this.ionDatetime, '');
   }

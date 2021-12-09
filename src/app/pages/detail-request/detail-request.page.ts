@@ -10,7 +10,8 @@ import {
   STATUS_0, 
   STATUS_100, 
   STATUS_ERROR,
-  MSG_FORMULATE_QUOTE
+  MSG_FORMULATE_QUOTE,
+  TIME_MINUTES_APPOINTMENT
 } from '../../utils/constants';
 import { formatFromDateToString, addTimeToDate, creationDate, formatDate } from '../../utils/utils';
 
@@ -20,7 +21,8 @@ import { formatFromDateToString, addTimeToDate, creationDate, formatDate } from 
   styleUrls: ['./detail-request.page.scss'],
 })
 export class DetailRequestPage implements OnInit {
-  @ViewChild('dateTime') sTime;
+  @ViewChild('datetimeDate') sDate;
+  @ViewChild('datetimeTime') sTime;
 
   public request: RequestModel;
   public key: string;
@@ -33,6 +35,10 @@ export class DetailRequestPage implements OnInit {
   public year: string;
   public timeRequest: string;
   public stringOraDesiderata: string;
+  public msgTime: string;
+  public msgDate: string;
+  public dateDate: any;
+  public dateTime: any;
 
   STATUS_ERROR = STATUS_ERROR;
   STATUS_0 = STATUS_0; // in attesa di risposta
@@ -44,7 +50,7 @@ export class DetailRequestPage implements OnInit {
   public datetimeDisplayFormat: string;
   public datetimePickerFormat: string;
   public datetimeDisplayTimezone: string;
-  public datetimeDayShortNames: (string)[];
+  // public datetimeDayShortNames: (string)[];
   public dateMonthShortNames: (string)[];
   public datetimeToday: string;
   public datetimeEndDate: string;
@@ -102,26 +108,23 @@ export class DetailRequestPage implements OnInit {
         console.log('***** BSRequestByID *****', JSON.stringify(data));
         if (data != null && data) {
           that.request = data;
+          if(!that.request.ora_desiderata || that.request.ora_desiderata == undefined){
+            that.request.ora_desiderata = null;
+            that.msgTime = 'Ora non specificata';
+          } else {
+            that.stringOraDesiderata = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'hour');
+          }
           if(!that.request.data_desiderata || that.request.data_desiderata == undefined){
-            that.request.data_desiderata = '';
-            that.day = 'Data non specificata';
+            that.request.data_desiderata = null;
+            that.msgDate = 'Data non specificata';
           } else {
             that.day = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'day');
             that.numberDay = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'numberDay');
             that.month = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'month');
             that.year = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'year');
           }
-          if(!that.request.ora_desiderata || that.request.ora_desiderata == undefined){
-            that.request.ora_desiderata = '';
-            that.stringOraDesiderata = 'Ora non specificata';
-          } else {
-            that.stringOraDesiderata = that.setDate(that.request.data_desiderata, that.request.ora_desiderata, 'hour');
-          }
-          
-         
-
           that.timeRequest = that.formatDate(this.request.time);
-          // that.initDatetime();
+          that.initDatetime();
           console.log('requestManagerService ***** BSRequestByID *****', JSON.stringify(that.request));
         }
       });
@@ -133,19 +136,20 @@ export class DetailRequestPage implements OnInit {
 
   /** */
   initDatetime(){
-    var isoDate = creationDate(this.request.data_desiderata, this.request.ora_desiderata, "YYYY-MM-DDThh:mmZ"); //, "YYYY-MM-DDThh:mmTZD"
-    this.ionDatetime = new Date(isoDate).toISOString();
-    console.log("1-----------> ",isoDate);
+    // var isoDate = creationDate(this.request.data_desiderata, this.request.ora_desiderata, "YYYY-MM-DDThh:mmZ"); //, "YYYY-MM-DDThh:mmTZD"
+    //this.ionDatetime = new Date(isoDate).toISOString();
+    // console.log("1-----------> ",isoDate);
     this.datetimeDisplayFormat = "DDD, DD MMM YYYY";
     this.datetimePickerFormat = "DD MMM YYYY";
     this.datetimeDisplayTimezone = "UTC";
     this.dateMonthShortNames = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
-    this.datetimeDayShortNames = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+    // this.datetimeDayShortNames = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
     this.datetimeToday = formatDate(new Date());
     this.datetimeEndDate = addTimeToDate(this.datetimeToday, 'YYYY-MM-DDTHH:mm:ss', 365, 0, 0);
     this.datetimeMinuteValues = "0, 15, 30, 45";
     this.datetimeDoneText = "CONFERMA";
     this.datetimeCancelText = "ANNULLA";
+    this.msgTime = 'Ora non specificata';
   }
 
   /** */
@@ -182,11 +186,41 @@ export class DetailRequestPage implements OnInit {
   }
 
   /** */
-  updateDate($event){
-    // console.log('4-------> '+this.ionDatetime);
+  updateDate(){
+    this.request.data_desiderata = this.dateDate;
+    console.log('4 dateDate -------> '+JSON.stringify(this.dateDate));
+    this.day = this.setDate(this.dateDate, '', 'day');
+    this.numberDay = this.setDate(this.dateDate, '', 'numberDay');
+    this.month = this.setDate(this.dateDate, '', 'month');
+    this.year = this.setDate(this.dateDate, '', 'year');
     // this.initDateRequest(this.ionDatetime, '');
   }
 
+  updateTime(){
+    this.request.ora_desiderata = this.dateTime;
+    console.log('5 dateTime -------> '+JSON.stringify(this.dateTime));
+    let startTime  = formatDate(this.dateTime, 'HH:mm');
+    let endDateTime  = addTimeToDate(this.dateTime, '', 0, 0, TIME_MINUTES_APPOINTMENT);
+    let endTime = formatDate(endDateTime, 'HH:mm');
+    this.stringOraDesiderata = " dalle "+ startTime + " alle " + endTime;
+    //this.initDateRequest(this.ionDatetime, '');
+  }
+
+  /** */
+  // initDateRequest(appointmentDate, timeDate){
+  //   console.log ('appointmentDate : '+appointmentDate);
+  //   let startDateTime  = creationDate(appointmentDate, timeDate);
+  //   let endDateTime  = addTimeToDate(startDateTime, '', 0, 0, TIME_MINUTES_APPOINTMENT);
+  //   let dateAppointment = creationDate(startDateTime, '', 'dddd, D MMM YYYY');
+  //   let startTime  = formatDate(startDateTime, 'HH:mm');
+  //   let endTime = formatDate(endDateTime, 'HH:mm');
+  //   this.stringOraDesiderata = dateAppointment + " dalle "+ startTime + " alle " + endTime;
+  //   console.log ('initDateRequest : '+this.stringOraDesiderata);
+  //   let data_desiderata  = formatDate(startDateTime, 'YYYY-MM-DD');
+  //   this.request.ora_desiderata = startTime;
+  //   this.request.data_desiderata = data_desiderata;
+  // }
+  
 
   /** */
   getBackButtonText() {
@@ -203,20 +237,23 @@ export class DetailRequestPage implements OnInit {
   }
 
   /** */
-  openStart(){
+  openStartDate(){
+    this.sDate.open();
+    console.log('openStartDate');
+  }
+  openStartTime(){
     this.sTime.open();
-    console.log('openStart');
+    console.log('openStartTime');
   }
 
   /** */
   formulateQuote(){
     let navigationExtras: NavigationExtras = {
       queryParams: {
-        //special: JSON.stringify('ciao')
         request: JSON.stringify(this.request)
       }
     };
-    this.router.navigate(['request-quote'], navigationExtras);
+    this.router.navigate(['/request-quote'], navigationExtras);
     //this.router.navigateByUrl('/request-quote', { replaceUrl: true });
   }
 
