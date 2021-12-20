@@ -174,7 +174,7 @@ export class DateRequestManagerService {
       'Content-Type': 'application/x-www-form-urlencoded'
     } 
     const params =  {
-      'event': event, 
+      'event': JSON.stringify(event), 
       'calendarId': idCalendar
     };
     console.log('headers', JSON.stringify(headers));
@@ -217,7 +217,7 @@ export class DateRequestManagerService {
       'Content-Type': 'application/x-www-form-urlencoded'
     } 
     const params =  {
-      'event': event, 
+      'event': JSON.stringify(event), 
       'calendarId': idCalendar
     };
     this.httpClient.post<any>(url, params, {'headers':headers})

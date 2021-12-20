@@ -14,7 +14,12 @@ export function decodeHTMLEntities (str) {
         str = str.replace(quot, "'");
         let apos = /&apos;/gi;
         str = str.replace(apos, ',');
+
+        quot = /&#039;/gi;
+        str = str.replace(quot, "'");
+
         console.log('passa');
+
     //   str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
     //   str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
     }

@@ -378,7 +378,8 @@ export class DetailDateRequestPage implements OnInit {
   addDateToCalendar(){
     //let format = "YYYY-MM-DDTHH:mm:ss";
     let startDateTime  = creationDate(this.startDateTime);
-    let endDateTime  = creationDate(this.endDateTime);
+    //let endDateTime  = creationDate(this.endDateTime);
+    let endDateTime  = addTimeToDate(startDateTime, '', 0, 0, TIME_MINUTES_APPOINTMENT);
     // console.log('endDateTime: ', endDateTime);
     let description =  "Appuntamento con "+this.request.nome+" indirizzo email: "+this.request.email+" presso la sede di "+this.request.sede + ". La richiesta è pervenuta il "+this.timeRequest+" dall'indirizzo "+this.request.source_url; 
     let event = {
@@ -407,8 +408,8 @@ export class DetailDateRequestPage implements OnInit {
 
 
   goToCalendar(){
-    let url = "https://calendar.google.com/calendar/embed?src=dt87td23ioa6dhp5k1g0rirtds%40group.calendar.google.com&ctz=Europe%2FRome";
-    window.open(url,"_blank");
+    let url = "https://calendar.google.com/calendar/embed?src="+environment.googleIdCalendar+"&ctz=Europe%2FRome";
+    window.open(url,"_system", "location=yes");
   }
   
 

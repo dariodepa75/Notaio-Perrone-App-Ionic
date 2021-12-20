@@ -33,7 +33,7 @@
       <ng-template #thenData>
         <ion-row>
           <ion-col class="ion-text-center ddp-light ddp-size20">{{msgDate}}</ion-col>
-            <div class="ddp-msg-date">
+            <div *ngIf="request && request.status !== STATUS_200" class="ddp-msg-date">
               <ion-icon class="ddp-pencil-date" name="pencil" (click)="openStartDate()">
                 <ion-datetime 
                 #datetimeDate
@@ -56,7 +56,7 @@
         </ion-row>
         <ion-row style="position:relative">
           <ion-col class="ion-text-center ddp-size70" >{{numberDay}}</ion-col>
-          <div class="ddp-msg-date">
+          <div *ngIf="request && request.status !== STATUS_200" class="ddp-msg-date">
             <ion-icon class="ddp-pencil-date" name="pencil" (click)="openStartDate()">
               <ion-datetime 
               #datetimeDate
@@ -81,7 +81,7 @@
       <ng-template #thenOra>
         <ion-row>
           <ion-col class="ion-text-center ddp-light ddp-size20">{{msgTime}}</ion-col>
-          <div class="ddp-msg-time">
+          <div *ngIf="request && request.status !== STATUS_200" class="ddp-msg-time">
             <ion-icon class="ddp-pencil-date" name="pencil" (click)="openStartTime()">
               <ion-datetime 
                 #datetimeTime
@@ -98,7 +98,7 @@
       <ng-template #elseOra>
         <ion-row style="position:relative">
           <ion-col class="ion-text-center ddp-hour">{{stringOraDesiderata}}</ion-col>
-          <div class="ddp-msg-time">
+          <div *ngIf="request && request.status !== STATUS_200" class="ddp-msg-time">
             <ion-icon class="ddp-pencil-date" name="pencil" (click)="openStartTime()">
               <ion-datetime 
                 #datetimeTime
@@ -214,8 +214,48 @@
           <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">RISPOSTA DEL: <span class="ddp-bold">{{ request.email_time }}</span></ion-col>
         </ion-row>
         <ion-row class="ddp-row-text">
-          <ion-col class="ion-text-left"><div [innerHTML]="request.email_content"></div></ion-col>
+          <!-- *ngIf="extension == 'txt'" -->
+          <!-- <ion-col  type="html" class="ion-text-left">
+            <div [innerHTML]="request.email_content"></div>
+          </ion-col> *ngIf="extension = 'html'" -->
+          
+          <ion-col >
+            <div class='webPage' type="html" name="eventsPage" [innerHTML]="this.getInnerHTMLValue()"></div>
+          </ion-col>
+
         </ion-row>
+      </ion-grid>
+    </ion-item>
+
+
+    <ion-item *ngIf="request.payment_time" >
+      <ion-grid >
+        <ion-row>
+          <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">DETTAGLIO PAGAMENTO</ion-col>
+        </ion-row>
+
+        <ion-row class="ion-no-padding">
+          <ion-col >
+            <ion-col size="8" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">ID</ion-col>
+            <ion-col class="ion-text-right ddp-bold">{{request.payment_intent}}</ion-col>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-no-padding">
+          <ion-col >
+            <ion-col size="8" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">DATA</ion-col>
+            <ion-col class="ion-text-right ddp-bold">{{request.payment_time}}</ion-col>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-no-padding">
+          <ion-col >
+            <ion-col size="8" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">IMPORTO PAGATO</ion-col>
+            <ion-col class="ion-text-right ddp-bold">{{request.payment_amount}}€</ion-col>
+          </ion-col>
+        </ion-row>
+
+
       </ion-grid>
     </ion-item>
 
@@ -223,9 +263,11 @@
 
 </ion-content>
 
-<ion-footer *ngIf="request && request.status == STATUS_0 && request.trash == false" class="ion-text-center ion-no-border">
+<ion-footer class="ion-text-center ion-no-border">
   <ion-toolbar class="ion-text-center ion-no-border" color="transparent">
     <!-- <button ion-button (click)="Upload()"  full>Upload</button> -->
-    <ion-button color="primary" class="ion-text-uppercase ddp-hc" (click)="formulateQuote()">{{MSG_FORMULATE_QUOTE}}</ion-button>
+    <ion-button *ngIf="request && request.status == STATUS_0 && request.trash == false" color="primary" class="ion-text-uppercase ddp-hc" (click)="formulateQuote()">{{MSG_FORMULATE_QUOTE}}</ion-button>
+    <!-- <ion-button *ngIf="request && request.status == STATUS_200" color="primary" class="ion-text-uppercase ddp-hc" (click)="addDateToCalendar(request.payment_time)" >{{btnCalendario}}</ion-button> -->
+
   </ion-toolbar>
 </ion-footer>

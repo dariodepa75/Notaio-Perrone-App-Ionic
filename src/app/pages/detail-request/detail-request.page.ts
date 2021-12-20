@@ -5,15 +5,22 @@ import { ModalController, NavController } from '@ionic/angular';
 import * as moment from 'moment';
 
 import { RequestManagerService } from '../../services/request-manager.service';
+import { DateRequestManagerService } from '../../services/date-request-manager.service';
+
 import { RequestModel } from '../../models/request';
 import {
   STATUS_0, 
   STATUS_100, 
+  STATUS_200,
   STATUS_ERROR,
   MSG_FORMULATE_QUOTE,
-  TIME_MINUTES_APPOINTMENT
+  TIME_MINUTES_APPOINTMENT,
+  MSG_DATE_REQUEST
 } from '../../utils/constants';
-import { formatFromDateToString, addTimeToDate, creationDate, formatDate } from '../../utils/utils';
+import { decodeHTMLEntities, addTimeToDate, creationDate, formatDate } from '../../utils/utils';
+import { DomSanitizer, SafeResourceUrl, SafeUrl} from '@angular/platform-browser';
+import { environment } from '../../../environments/environment';
+
 
 @Component({
   selector: 'app-detail-request',
@@ -39,10 +46,13 @@ export class DetailRequestPage implements OnInit {
   public msgDate: string;
   public dateDate: any;
   public dateTime: any;
+  public googleToken: string;
+  private idCalendar = environment.googleIdCalendar;
 
   STATUS_ERROR = STATUS_ERROR;
   STATUS_0 = STATUS_0; // in attesa di risposta
   STATUS_100 = STATUS_100; // in attesa di pagamento
+  STATUS_200 = STATUS_200;
   MSG_FORMULATE_QUOTE = MSG_FORMULATE_QUOTE;
 
   // ion-datetime config ------------- //
@@ -58,20 +68,24 @@ export class DetailRequestPage implements OnInit {
   public datetimeDoneText: string;
   public datetimeCancelText: string;
   customPickerOptions: any; 
+  public btnCalendario: string;
   // ---------------------------------- //
 
 
   constructor(
     private requestManagerService : RequestManagerService,
+    // private dateRequestManagerService : DateRequestManagerService,
     private activatedRoute: ActivatedRoute,
     public modalCtrl: ModalController,
     public navCtrl: NavController,
-    public router: Router
+    public router: Router,
+    private sanitizer: DomSanitizer
   ) { }
 
   /** */
   ngOnInit() {
     this.key = this.activatedRoute.snapshot.paramMap.get('id');
+    this.btnCalendario = "Aggiungi al calendario";
     this.initSubscriptions();
     //this.requestManagerService.getRequestById(this.key);
   }
@@ -100,6 +114,22 @@ export class DetailRequestPage implements OnInit {
     let subscribtion: any;
     const that = this;
 
+    // /** BSAddCalendarEvent */
+    // subscribtionKey = 'BSAddCalendarEvent';
+    // subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
+    // if (!subscribtion) {
+    //   subscribtion = this.dateRequestManagerService.BSAddCalendarEvent.subscribe((data: any) => {
+    //     console.log('***** BSAddCalendarEvent *****', JSON.stringify(data));
+    //     if (data != null && data.success == false) {
+    //       that.presentAlertResponse(MSG_ADD_EVENT_KO, false);
+    //     } else if (data != null && data.success == true) {
+    //       that.requestUpdate(data.id);
+    //     }
+    //   });
+    //   const subscribe = {key: subscribtionKey, value: subscribtion };
+    //   this.subscriptions.push(subscribe);
+    // }
+
     /** BSGetEmailTemplates */
     subscribtionKey = 'BSRequestByID';
     subscribtion = this.subscriptions.find(item => item.key === subscribtionKey);
@@ -125,6 +155,10 @@ export class DetailRequestPage implements OnInit {
           }
           that.timeRequest = that.formatDate(this.request.time);
           that.initDatetime();
+
+          if(that.request.ora_desiderata && that.request.ora_desiderata !== undefined){
+            this.request.payment_time = that.formatDate(this.request.payment_time);
+          }
           console.log('requestManagerService ***** BSRequestByID *****', JSON.stringify(that.request));
         }
       });
@@ -172,7 +206,7 @@ export class DetailRequestPage implements OnInit {
     var d = moment(time, 'YYYY-MM-DDThh:mmZ');
     let dateRequest = moment(d).format("D MMM YY");
     let timeRequest = moment(d).format("HH:mm");
-    let resp = dateRequest+" ora "+timeRequest;
+    let resp = dateRequest+" ore "+timeRequest;
     console.log('curr_date:', resp);
     return resp;
   }
@@ -206,6 +240,43 @@ export class DetailRequestPage implements OnInit {
     //this.initDateRequest(this.ionDatetime, '');
   }
 
+
+  getInnerHTMLValue(){
+    let message = decodeHTMLEntities(this.request.email_content);
+    return this.sanitizer.bypassSecurityTrustHtml(message);
+  }
+
+
+  // -------------------------------- //
+  // GOOGLE CALENDAR 
+  // -------------------------------- //
+
+ 
+
+  /** */
+  // addDateToCalendar(date){
+  //   //let format = "YYYY-MM-DDTHH:mm:ss";
+  //   let startDateTime  = creationDate(date);
+  //   let endDateTime  = addTimeToDate(startDateTime, '', 0, 0, TIME_MINUTES_APPOINTMENT);
+
+  //   let description =  "Richiesta consulenza inviat da "+this.request.nome+" indirizzo email: "+this.request.email+" modalità di fruizione: "+this.request.modalita + ". La richiesta è pervenuta il "+this.timeRequest+" dall'indirizzo "+this.request.source_url; 
+  //   let event = {
+  //     "summary":  MSG_DATE_REQUEST,
+  //     "location": this.request.modalita,
+  //     "description": description,
+  //     "start": {
+  //       "dateTime": startDateTime,
+  //       "timeZone": "Europe/Rome"
+  //     },
+  //     "end": {
+  //       "dateTime": endDateTime,
+  //       "timeZone": "Europe/Rome"
+  //     },
+  //     "recurrence": ["RRULE:FREQ=DAILY;COUNT=1"]
+  //   }
+  //   // let event2 = "{\n  \"summary\": \"Google I/O 2015\",\n  \"location\": \"800 Howard St., San Francisco, CA 94103\",\n  \"description\": \"A chance to hear more about Google\\'s developer products.\",\n  \"start\": {\n    \"dateTime\": \"2021-10-12T09:00:00-07:00\",\n    \"timeZone\": \"America/Los_Angeles\"\n  },\n  \"end\": {\n    \"dateTime\": \"2021-10-12T17:00:00-07:00\",\n    \"timeZone\": \"America/Los_Angeles\"\n  },\n  \"recurrence\": [\n    \"RRULE:FREQ=DAILY;COUNT=2\"\n  ]\n}";
+  //   this.dateRequestManagerService.addEventToCalendar(this.googleToken, this.idCalendar, event);
+  // }
   /** */
   // initDateRequest(appointmentDate, timeDate){
   //   console.log ('appointmentDate : '+appointmentDate);

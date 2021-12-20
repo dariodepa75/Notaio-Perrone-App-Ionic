@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  versionApp: 'ver 1.0.6',
+  versionApp: 'ver 1.0.9',
   production: false,
   wpJsonUrl: 'https://studio.notaioperrone.it/wp-json',
   googleIdCalendar: 'dt87td23ioa6dhp5k1g0rirtds@group.calendar.google.com',

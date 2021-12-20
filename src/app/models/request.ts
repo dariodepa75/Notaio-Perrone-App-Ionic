@@ -27,6 +27,10 @@ export class RequestModel {
         public email_time: string,
 
         public calendarId: string,
-        public eventId: string
+        public eventId: string,
+
+        public payment_time: string,
+        public payment_amount: string,
+        public payment_intent: string
     ) {}
   }

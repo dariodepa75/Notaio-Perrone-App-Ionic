@@ -1,5 +1,5 @@
 export const environment = {
-  versionApp: 'ver 1.0.6',
+  versionApp: 'ver 1.0.9',
   production: true,
   wpJsonUrl: 'https://studio.notaioperrone.it/wp-json',
   googleIdCalendar: 'dt87td23ioa6dhp5k1g0rirtds@group.calendar.google.com',
