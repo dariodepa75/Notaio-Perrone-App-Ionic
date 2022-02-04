@@ -114,9 +114,9 @@ export class AppComponent {
 
 
 
-  goToCalendar(url){
-    window.open(url,"_blank");
-  }
+  openSite(siteUrl) {
+    window.open("https://" + siteUrl, '_blank');
+ }
 
 //   return new Promise((resolve, reject) => {
 //     this.loadScript(GoogleLoginProvider.PROVIDER_ID, 'https://apis.google.com/js/platform.js', () => {

@@ -22,6 +22,7 @@ import {
 } from 'angularx-social-login';
 
 
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -63,3 +64,4 @@ import {
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+

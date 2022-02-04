@@ -4,7 +4,7 @@ import { RequestModel } from '../models/request';
 import { DateRequestModel } from '../models/date-request';
 
 import { LoadingController, AlertController, Platform } from '@ionic/angular';
-import { ARRAY_STATUS, ARRAY_STATUS_DATE_REQUEST, STATUS_400 } from '../utils/constants';
+import { TOKEN_KEY, ARRAY_STATUS, ARRAY_STATUS_DATE_REQUEST, STATUS_400 } from '../utils/constants';
 import { detectIsMobile } from '../utils/utils';
 import * as moment from 'moment';
 
@@ -73,7 +73,16 @@ export class ManagerService {
   /** */
   getToken(){
     // return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc3R1ZGlvLm5vdGFpb3BlcnJvbmUuaXQiLCJpYXQiOjE2MzcyNDE4NTYsIm5iZiI6MTYzNzI0MTg1NiwiZXhwIjoxNjM3ODQ2NjU2LCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.6SJUg0GPnzZPlQwhZex9d0fKmzZZxKHK8N8XmyObEiU";
+    console.log('---> getToken: ', this.token);
     return this.token;
+  }
+
+  async loadToken() {
+    const token = await localStorage.getItem(TOKEN_KEY);    
+    if (token) {
+      console.log('set token: ', token);
+      this.token = token;
+    }
   }
 
   /** */

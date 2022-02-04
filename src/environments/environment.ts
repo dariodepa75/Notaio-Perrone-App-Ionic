@@ -3,11 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  versionApp: 'ver 1.0.9',
+  versionApp: 'ver 1.0.13',
   production: false,
-  wpJsonUrl: 'https://studio.notaioperrone.it/wp-json',
+  wpJsonUrl: 'https://notaioperrone.it/wp-json',
   googleIdCalendar: 'dt87td23ioa6dhp5k1g0rirtds@group.calendar.google.com',
-  urlGoogleCalendar: 'https://calendar.google.com/calendar/embed?src=dt87td23ioa6dhp5k1g0rirtds%40group.calendar.google.com&ctz=Europe%2FRome',
+  urlGoogleCalendar: 'calendar.google.com/calendar/embed?src=dt87td23ioa6dhp5k1g0rirtds%40group.calendar.google.com&ctz=Europe%2FRome',
   APIEndpoint: 'https://app.notaioperrone.it/API/',
   requestsEndpoint: 'https://app.notaioperrone.it/API/requestsJson.php',
   sendMailEndpoint: 'https://app.notaioperrone.it/API/sendMail.php',

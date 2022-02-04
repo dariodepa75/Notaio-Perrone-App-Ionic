@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
+// import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 
 import * as moment from 'moment';
 
@@ -218,6 +219,23 @@ export class DetailRequestPage implements OnInit {
   openEmail(email){
     window.open('mailto:' + email, '_blank')
   }
+
+
+  urlInvoice(formato){
+    let url = "https://app.notaioperrone.it/checkout/PDFinvoice.php?submission_id="+this.request.submission_id;
+    if(formato == "XML"){
+      url = "https://app.notaioperrone.it/checkout/XMLinvoice.php?submission_id="+this.request.submission_id;
+    }
+    return url;  
+  }
+  
+  openSite(formato) {
+    let url = "app.notaioperrone.it/checkout/PDFinvoice.php?submission_id="+this.request.submission_id;
+    if(formato == "XML"){
+      url = "app.notaioperrone.it/checkout/XMLinvoice.php?submission_id="+this.request.submission_id;
+    }
+    window.open("https://" + url, '_blank');
+ }
 
   /** */
   updateDate(){

@@ -15,7 +15,7 @@
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
 
-            <ion-item *ngIf="p.link" routerDirection="root" (click)="goToCalendar(p.link)" lines="none" detail="false" routerLinkActive="selected">
+            <ion-item *ngIf="p.link" routerDirection="root" (click)="openSite(p.link)" lines="none" detail="false" routerLinkActive="selected">
               <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>

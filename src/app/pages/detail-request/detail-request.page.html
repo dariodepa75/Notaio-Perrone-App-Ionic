@@ -228,7 +228,7 @@
     </ion-item>
 
 
-    <ion-item *ngIf="request.payment_time" >
+    <ion-item *ngIf="request.payment_intent && request.payment_intent !=''" >
       <ion-grid >
         <ion-row>
           <ion-col class="ion-text-uppercase ion-text-left ddp-light ddp-sizeSX">DETTAGLIO PAGAMENTO</ion-col>
@@ -252,6 +252,14 @@
           <ion-col >
             <ion-col size="8" class="ion-text-uppercase ion-text-left ddp-light ddp-size12">IMPORTO PAGATO</ion-col>
             <ion-col class="ion-text-right ddp-bold">{{request.payment_amount}}€</ion-col>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-no-padding">
+          <ion-col class="ion-text-center ion-no-border">
+              <div (click)="openSite('PDF')" class="request_state ddp-hc ddp-status-200 ion-margin-end"><span class="letter">PDF</span>scarica fattura</div>
+              <div (click)="openSite('XML')" class="request_state ddp-hc ddp-status-100 ion-margin-start"><span class="letter">XML</span>scarica fattura</div>
+            <!-- <ion-col class="ion-text-right ddp-bold">{{request.payment_amount}}</ion-col> -->
           </ion-col>
         </ion-row>
 

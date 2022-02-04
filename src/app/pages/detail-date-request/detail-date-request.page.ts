@@ -409,7 +409,9 @@ export class DetailDateRequestPage implements OnInit {
 
   goToCalendar(){
     let url = "https://calendar.google.com/calendar/embed?src="+environment.googleIdCalendar+"&ctz=Europe%2FRome";
-    window.open(url,"_system", "location=yes");
+    //window.open(url,"_system", "location=yes");
+    return url;
+
   }
   
 

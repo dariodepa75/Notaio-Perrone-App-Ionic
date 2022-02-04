@@ -50,6 +50,7 @@ export class RequestManagerService {
 
   /** */
   getRequestsWithSubcribe(status, trash){
+    this.managerService.loadToken();
     console.log(' getRequestsDesktop----->');
     var headers = new HttpHeaders();
     headers.append("Accept", 'application/json');
@@ -67,6 +68,7 @@ export class RequestManagerService {
    * su mobile o su desktop
   */
   getRequests(){
+    this.managerService.loadToken();
     console.log('is mobile: '+ this.managerService.isMobile);
     this.managerService.stopLoader();
     this.managerService.showLoader();
@@ -148,6 +150,7 @@ export class RequestManagerService {
   // ************************************************** //
   /** */
   getRequestById(key:any){
+    this.managerService.loadToken();
     console.log('is mobile: '+ this.managerService.isMobile);
     this.managerService.stopLoader();
     this.managerService.showLoader();

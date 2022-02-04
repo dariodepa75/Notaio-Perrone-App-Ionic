@@ -42,6 +42,7 @@ export class DateRequestManagerService {
   
   /** */
   getDateRequestsWithSubcribe(status, trash){
+    this.managerService.loadToken();
     console.log(' getDateRequestsWithSubcribe----->');
     var headers = new HttpHeaders();
     headers.append("Accept", 'application/json');
@@ -56,6 +57,7 @@ export class DateRequestManagerService {
   // ********************************************* //
   /** */
   getDateRequestById(key:any){
+    this.managerService.loadToken();
     console.log('is mobile: '+ this.managerService.isMobile);
     this.managerService.stopLoader();
     this.managerService.showLoader();
